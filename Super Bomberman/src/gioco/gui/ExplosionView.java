@@ -8,8 +8,8 @@ import java.util.Vector;
 
 import javax.imageio.ImageIO;
 
-import gioco.Settings;
 import gioco.model.Explosion;
+import gioco.utilities.Settings;
 
 public class ExplosionView {
 	private Vector<Image> center;

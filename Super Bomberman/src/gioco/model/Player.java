@@ -1,6 +1,6 @@
 package gioco.model;
 
-import gioco.Settings;
+import gioco.utilities.Settings;
 
 public class Player extends Entity{
 	public static final int IDLE_LEFT = 0;
@@ -15,7 +15,7 @@ public class Player extends Entity{
 
 	public static final int DYING_EXPLOSION = 8;
 	public static final int DYING_ENEMY = 9;
-	public static final int DEAD= 10;
+	public static final int WINNING= 10;
 	
 	private int lifes;
 	private int state;
@@ -29,9 +29,9 @@ public class Player extends Entity{
 		direction = Settings.RIGHT;
 		state = Player.IDLE_DOWN;
 		lifes = 1;
-		bombs = 2;
+		bombs = 1;
 		radius = 2;
-		width = Settings.BLOCKSIZEX*7/10;
+		width = Settings.BLOCKSIZEX*8/10;
 		height = Settings.BLOCKSIZEY*9/10;
 		points = 0;
 	}

@@ -6,11 +6,10 @@ import java.awt.Color;
 import java.awt.Graphics;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
-import gioco.Settings;
 import gioco.controller.PlayerController;
-import gioco.model.Player;
 
-public class BombermanPanel extends JPanel implements Runnable{
+
+public class GameInterface extends JPanel {
 	
 
 
@@ -20,7 +19,7 @@ public class BombermanPanel extends JPanel implements Runnable{
 	private int width;
 	private GamePanel giocoView;
 	
-	public BombermanPanel(int height , int width) {
+	public GameInterface(int height , int width) {
 		this.height = height;
 		this.width = width;
 
@@ -46,22 +45,10 @@ public class BombermanPanel extends JPanel implements Runnable{
 		super.paintComponents(g);
 	}
 	
-	@Override
-	public void run() {
-		giocoView.repaint();
-		while (!controller.getGioco().isGameOver()) {
-			giocoView.getNotStatics().update();
-			try {
-				Thread.sleep(20);
-
-			} catch (InterruptedException e) {
-				return;
-			}
-			
-		}
-		
+	public void paintMap() {
+		repaint();
 	}
-
+	
 
 	public GamePanel getGiocoView() {
 		return giocoView;

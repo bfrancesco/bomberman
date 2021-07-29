@@ -1,6 +1,6 @@
 package gioco.model;
 
-import gioco.Settings;
+import gioco.utilities.Settings;
 
 public class Explosion {
 	public static final int CENTRAL= 13;

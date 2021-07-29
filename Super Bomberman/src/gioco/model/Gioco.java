@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Vector;
 
-import gioco.Settings;
+import gioco.utilities.Settings;
 
 public class Gioco {
 	public static final int VICTORYPLAYER1 = 0;
@@ -24,7 +24,7 @@ public class Gioco {
 	private Vector<Explosion> explosions;
 	private boolean multiplayer;
 	private boolean gameOver;
-	private int winner;
+	private String map;
 
 	public Gioco(boolean multiplayer, String mapName) {
 		this.multiplayer = multiplayer;
@@ -33,10 +33,10 @@ public class Gioco {
 		explosions = new Vector<Explosion>();
 		matrix = new Block[height][width];
 		gameOver = true;
-		winner = 0;
 
 		try {
 			loadMap(mapName);
+			map = mapName;
 		} catch (IOException e) {
 			System.out.println("IL FILE NON ESISTE PER IL PERCORSO SPECIFICATO:" + mapName);
 			e.printStackTrace();
@@ -55,7 +55,7 @@ public class Gioco {
 	public void loadMap(String mapName) throws IOException {
 		BufferedReader reader = null;
 		try {
-			reader = new BufferedReader(new FileReader(mapName));
+			reader = new BufferedReader(new FileReader("src/gioco/resources/maps/"+mapName+".txt"));
 			String s = reader.readLine();
 			// lettura dei players e dei nemici
 			while (!(s.equals("END"))) {
@@ -147,26 +147,22 @@ public class Gioco {
 	public void moveEnemy(Enemy e) {
 		if(e instanceof Enemy3) {
 			Enemy3 e3 = (Enemy3) e;
-			//if(!e3.isVisible()){
 			e3.changeVisibility();
-			if(e3.getUnseenTime() == Enemy3.stateTime*85/100 && !e3.isVisible())
+			if(e3.getUnseenTime() == e3.getRandomVisibilityTime()*85/100 && !e3.isVisible())
 				e3.Teleport(player1.xcenterBlock(), player1.ycenterBlock());
-			
-				
-			//}
 		}
 		if (collisionBlock(e, e.getDirection()) != Settings.TOTALCOLLISION && !collisionBombs(e, e.getDirection())) {
 				e.move();
 		}
 		else { 
 			ArrayList<Integer> directions = new ArrayList<Integer>();
-			if(e.getDirection() != Settings.DOWN && e.downBlock()+1<13 && matrix[e.downBlock()+1][e.xcenterBlock()].isWalkable() )
+			if(e.getDirection() != Settings.DOWN && e.downBlock()+1<height && matrix[e.downBlock()+1][e.xcenterBlock()].isWalkable() )
 				directions.add(Settings.DOWN);
 			if(e.getDirection() != Settings.LEFT && e.leftBlock()-1>=0 && matrix[e.ycenterBlock()][e.leftBlock()-1].isWalkable())
 				directions.add(Settings.LEFT);
 			if(e.getDirection() != Settings.UP && e.upBlock()-1>=0 && matrix[e.upBlock()-1][e.xcenterBlock()].isWalkable())
 				directions.add(Settings.UP);
-			if(e.getDirection() != Settings.RIGHT && e.rightBlock()+1<13 && matrix[e.ycenterBlock()][e.rightBlock()+1].isWalkable())
+			if(e.getDirection() != Settings.RIGHT && e.rightBlock()+1<width && matrix[e.ycenterBlock()][e.rightBlock()+1].isWalkable())
 				directions.add(Settings.RIGHT);
 			if(directions.size()>0)
 				e.changeDirection(directions);
@@ -204,9 +200,12 @@ public class Gioco {
 	public int collisionBlock(Entity e, int dir) {
 		switch (dir) {
 		case Settings.LEFT:
-			if (e.getX() - e.getSpeed() < 0
-					|| !matrix[e.ycenterBlock()][(e.getX() - e.getSpeed()) / Settings.BLOCKSIZEX].isWalkable())
+			if (e.getX() - e.getSpeed() < 0) {
 				return Settings.TOTALCOLLISION;
+			}
+			else if(!matrix[e.ycenterBlock()][(e.getX() - e.getSpeed()) / Settings.BLOCKSIZEX].isWalkable()) {
+				return Settings.TOTALCOLLISION;
+			}
 			else if(!matrix[e.downBlock()][(e.getX() - e.getSpeed()) / Settings.BLOCKSIZEX].isWalkable()) {
 				if(e.downSide() + e.getSpeed() >= Settings.BLOCKSIZEY * 13)
 					return Settings.TOTALCOLLISION;
@@ -219,9 +218,12 @@ public class Gioco {
 			}
 			break;
 		case Settings.RIGHT:
-			if (e.rightSide() + e.getSpeed() >= Settings.BLOCKSIZEX * 13
-					|| !matrix[e.ycenterBlock()][(e.rightSide() + e.getSpeed()) / Settings.BLOCKSIZEX].isWalkable()) 
+			if (e.rightSide() + e.getSpeed() >= Settings.BLOCKSIZEX * width) {
 				return Settings.TOTALCOLLISION;
+			}
+			else if(!matrix[e.ycenterBlock()][(e.rightSide() + e.getSpeed()) / Settings.BLOCKSIZEX].isWalkable()) {
+				return Settings.TOTALCOLLISION;
+			}
 			else if(!matrix[e.downBlock()][(e.rightSide() + e.getSpeed()) / Settings.BLOCKSIZEX].isWalkable()) {
 				if(e.downSide() + e.getSpeed() >= Settings.BLOCKSIZEY * 13)
 					return Settings.TOTALCOLLISION;
@@ -526,13 +528,13 @@ public class Gioco {
 	public void setGameOver(boolean gameOver) {
 		this.gameOver = gameOver;
 	}
-
-	public int getWinner() {
-		return winner;
+	
+	public String getMap() {
+		return map;
 	}
 
-	public void setWinner(int winner) {
-		this.winner = winner;
+	public void setMap(String map) {
+		this.map = map;
 	}
 
 	public Block getElement(int y, int x) {
@@ -546,12 +548,12 @@ public class Gioco {
 			if (player1.getBombs() > 0) {
 				int px = player1.xcenterBlock();
 				int py = player1.ycenterBlock();
-				if (player1.getState() == Player.WALKING_DOWN) 
-					py = player1.upBlock();
-				else if (player1.getState() == Player.WALKING_UP) 
+				/*if (player1.getState() == Player.WALKING_DOWN) 
+					py = player1.upBlock();*/
+				if (player1.getState() == Player.WALKING_UP) 
 					py = player1.downBlock();
-				else if (player1.getState() == Player.WALKING_RIGHT)
-					px = player1.leftBlock();
+				/*else if (player1.getState() == Player.WALKING_RIGHT)
+					px = player1.leftBlock();*/
 				else if (player1.getState() == Player.WALKING_LEFT) {
 					px = player1.rightBlock();
 				}
@@ -565,16 +567,18 @@ public class Gioco {
 	}
 
 	public boolean finishLevel() {
-		if (enemies.size() == 0)
+		if (enemies.size() == 0) {
+			player1.setState(Player.WINNING);
 			return true;
-		if (multiplayer && (player1.getState() == Player.DEAD || player2.getState() == Player.DEAD))
-			return true;
+		}
+		//if (multiplayer && (player1.getState() == Player.DEAD || player2.getState() == Player.DEAD))
+		//	return true;
 		return false;
 	}
 
 	public int results() {
-		if (multiplayer) {
-			if (player1.getState() == Player.DEAD && player2.getState() != Player.DEAD)
+		//if (multiplayer) {
+			/*if (player1.getState() == Player.DEAD && player2.getState() != Player.DEAD)
 				return VICTORYPLAYER2;
 			else if (player1.getState() != Player.DEAD && player2.getState() == Player.DEAD)
 				return VICTORYPLAYER1;
@@ -584,12 +588,14 @@ public class Gioco {
 				return VICTORYPLAYER2;
 			else
 				return DRAW;
-		} else {
-			if (player1.getState() == Player.DYING_ENEMY || player1.getState() == Player.DYING_EXPLOSION)
+		} else {*/
+			if (player1.getState() == Player.DYING_ENEMY || player1.getState() == Player.DYING_EXPLOSION) {
 				return LOSS;
-			else
+			}
+			else {
 				return VICTORYPLAYER1;
-		}
+			}
+		//}
 	}
 
 }

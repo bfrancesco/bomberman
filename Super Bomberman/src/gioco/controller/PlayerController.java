@@ -4,17 +4,17 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
-import gioco.gui.BombermanPanel;
+import gioco.gui.GameInterface;
 import gioco.model.Gioco;
 import gioco.model.Player;
 
 public class PlayerController extends KeyAdapter {
-	BombermanPanel panel;
-	Gioco gioco;
-	ArrayList<Integer> movements;
+	private GameInterface panel;
+	private Gioco gioco;
+	private ArrayList<Integer> movements;
 
 	// Client client;
-	public PlayerController(BombermanPanel panel, Gioco gioco) {
+	public PlayerController(GameInterface panel, Gioco gioco) {
 		super();
 		this.panel = panel;
 		this.gioco = gioco;
@@ -22,7 +22,7 @@ public class PlayerController extends KeyAdapter {
 		movements.add(Player.IDLE_DOWN);
 	}
 
-	public BombermanPanel getPanel() {
+	public GameInterface getPanel() {
 		return panel;
 	}
 
@@ -48,34 +48,36 @@ public class PlayerController extends KeyAdapter {
 		// if (!game.isStarted())
 		// return;
 		if (!gioco.isMultiplayer()) {
+			if (!gioco.isGameOver()) {
+				switch (e.getKeyCode()) {
+				case KeyEvent.VK_SHIFT:
+				case KeyEvent.VK_SPACE:
+					gioco.addBomb("player1");
+					break;
+				case KeyEvent.VK_A:
+				case KeyEvent.VK_LEFT:
+					movements.remove((Object) Player.WALKING_LEFT);
+					movements.set(0, Player.IDLE_LEFT);
+					break;
+				case KeyEvent.VK_D:
+				case KeyEvent.VK_RIGHT:
+					movements.remove((Object) Player.WALKING_RIGHT);
+					movements.set(0, Player.IDLE_RIGHT);
+					break;
+				case KeyEvent.VK_W:
+				case KeyEvent.VK_UP:
+					movements.remove((Object) Player.WALKING_UP);
+					movements.set(0, Player.IDLE_UP);
+					break;
+				case KeyEvent.VK_S:
+				case KeyEvent.VK_DOWN:
+					movements.remove((Object) Player.WALKING_DOWN);
+					movements.set(0, Player.IDLE_DOWN);
+					break;
 
-			switch (e.getKeyCode()) {
-			case KeyEvent.VK_SHIFT:
-			case KeyEvent.VK_SPACE:
-				gioco.addBomb("player1");
-				break;
-			case KeyEvent.VK_A:
-			case KeyEvent.VK_LEFT:
-				movements.remove((Object) Player.WALKING_LEFT);
-				movements.set(0, Player.IDLE_LEFT);
-				break;
-			case KeyEvent.VK_D:
-			case KeyEvent.VK_RIGHT:
-				movements.remove((Object) Player.WALKING_RIGHT);
-				movements.set(0, Player.IDLE_RIGHT);
-				break;
-			case KeyEvent.VK_W:
-			case KeyEvent.VK_UP:
-				movements.remove((Object) Player.WALKING_UP);
-				movements.set(0, Player.IDLE_UP);
-				break;
-			case KeyEvent.VK_S:
-			case KeyEvent.VK_DOWN:
-				movements.remove((Object) Player.WALKING_DOWN);
-				movements.set(0, Player.IDLE_DOWN);
-				break;
+				}
+				gioco.getPlayer1().setState(movements.get(movements.size() - 1));
 			}
-			gioco.getPlayer1().setState(movements.get(movements.size() - 1));
 		}
 	}
 

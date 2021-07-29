@@ -3,12 +3,15 @@ package gioco.model;
 import java.util.ArrayList;
 import java.util.Random;
 
-import gioco.Settings;
+import gioco.utilities.Settings;
 
 public class Enemy extends Entity{
 	
 	public Enemy(int x, int y) {
 		super(x ,y);
+		//Per creare i nemici al centro del blocco considerato e non ai margini
+		this.x += Settings.BLOCKSIZEX/4;
+		this.y += Settings.BLOCKSIZEY/4;
 		Random r = new Random();
 		r.setSeed(System.currentTimeMillis()+x);
 		int dir = r.nextInt(4);

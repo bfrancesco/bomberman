@@ -1,4 +1,4 @@
-package gioco;
+package gioco.utilities;
 
 public class Settings {
 	public final static int LEFT = 0;
@@ -21,8 +21,8 @@ public class Settings {
 	
 	public static int BLOCKSIZEX = 600/13;
 	public static int BLOCKSIZEY = 600/13;
-	public static int NORMALSPEED = BLOCKSIZEX/9;
+	public static int NORMALSPEED = BLOCKSIZEX/12;
 	
 	public static int EXPLOSIONTIME = 10;
-	public static int BOMBTIME = 65;
+	public static int BOMBTIME = 80;
 }

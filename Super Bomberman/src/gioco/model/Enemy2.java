@@ -1,6 +1,6 @@
 package gioco.model;
 
-import gioco.Settings;
+import gioco.utilities.Settings;
 
 public class Enemy2 extends Enemy {
 	private int changement;

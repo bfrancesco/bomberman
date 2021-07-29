@@ -1,10 +1,13 @@
 package gioco;
 
+import java.util.Random;
+
 import javax.swing.JFrame;
 
 import gioco.controller.PlayerController;
-import gioco.gui.BombermanPanel;
+import gioco.gui.GameInterface;
 import gioco.model.Gioco;
+import gioco.utilities.Settings;
 
 public class Main {
 
@@ -13,9 +16,13 @@ public class Main {
 		f.setSize(700,700);
 		Settings.BLOCKSIZEX = f.getWidth()/14;
 		Settings.BLOCKSIZEY = f.getHeight()/14;
-		BombermanPanel panel = new BombermanPanel( f.getSize().height , f.getSize().width);
+		GameInterface panel = new GameInterface( f.getSize().height , f.getSize().width);
 		panel.setFocusable(true);
-		String mapName =   "src/gioco/resources/maps/Map1.txt";
+		String mapName;
+		Random r = new Random();
+		if(!r.nextBoolean())
+			 mapName = "Map1";
+		else mapName = "Map2";
 		boolean multi = false;
 		Gioco gioco = new Gioco(multi, mapName);
 		PlayerController controller = new PlayerController(panel, gioco);

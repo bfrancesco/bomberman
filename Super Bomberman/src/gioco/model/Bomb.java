@@ -1,6 +1,6 @@
 package gioco.model;
 
-import gioco.Settings;
+import gioco.utilities.Settings;
 
 public class Bomb {
 	private int xCell;

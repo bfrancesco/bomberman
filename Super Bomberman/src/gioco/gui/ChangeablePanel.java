@@ -13,7 +13,6 @@ import java.util.Vector;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
-import gioco.Settings;
 import gioco.controller.PlayerController;
 import gioco.model.Block;
 import gioco.model.Bomb;
@@ -23,6 +22,7 @@ import gioco.model.Enemy2;
 import gioco.model.Enemy3;
 import gioco.model.Explosion;
 import gioco.model.Player;
+import gioco.utilities.Settings;
 
 public class ChangeablePanel extends JPanel {
 
@@ -31,7 +31,7 @@ public class ChangeablePanel extends JPanel {
 	private Image brick;
 	private ExplosionView explosions;
 	private BombView bombs;
-	private WhiteBombermanView player1;
+	private BombermanView player1;
 
 	public ChangeablePanel(PlayerController controller) {
 		this.controller = controller;
@@ -41,7 +41,7 @@ public class ChangeablePanel extends JPanel {
 		} catch (IOException e) {
 			System.out.println("CANNOT FIND BRICK RESOURCE");
 		}
-		player1 = new WhiteBombermanView();
+		player1 = new BombermanView();
 		explosions = new ExplosionView();
 		bombs = new BombView();
 	}
@@ -64,23 +64,20 @@ public class ChangeablePanel extends JPanel {
 					break;
 				}
 			}
-
-		
-
 		g.setColor(Color.MAGENTA);
 		for (Enemy b : controller.getGioco().getEnemies()) {
 			if (b instanceof Enemy1) {
 				g.setColor(Color.MAGENTA);
-				g.fillRect(b.getX() + Settings.BLOCKSIZEX / 12, b.getY() + Settings.BLOCKSIZEY / 12, b.getWidth(),
+				g.fillRect(b.getX() , b.getY() , b.getWidth(),
 						b.getHeight());
 			} else if (b instanceof Enemy2) {
 				g.setColor(Color.PINK);
-				g.fillRect(b.getX() + Settings.BLOCKSIZEX / 12, b.getY() + Settings.BLOCKSIZEY / 12, b.getWidth(),
+				g.fillRect(b.getX(), b.getY(), b.getWidth(),
 						b.getHeight());
 			} else if (b instanceof Enemy3) {
 				if (((Enemy3) b).isVisible()) {
 					g.setColor(Color.ORANGE);
-					g.fillRect(b.getX() + Settings.BLOCKSIZEX / 12, b.getY() + Settings.BLOCKSIZEX / 12, b.getWidth(),
+					g.fillRect(b.getX(), b.getY() , b.getWidth(),
 							b.getHeight());
 				} else {
 					g.setColor(Color.ORANGE);
@@ -97,16 +94,17 @@ public class ChangeablePanel extends JPanel {
 					b.getX() * Settings.BLOCKSIZEX, b.getY() * Settings.BLOCKSIZEY, null);
 		}
 		
-		Player p1 = controller.getGioco().getPlayer1();
-		g.setColor(Color.BLUE);
-		g.drawImage(player1.getCurrentImage().getScaledInstance(p1.getWidth(), p1.getHeight(), Image.SCALE_FAST),
-				p1.getX(), p1.getY(), p1.getWidth() * 12 / 10, Settings.BLOCKSIZEY-2, null);	
+		
 		
 		Vector<Explosion> tmpE= new Vector<Explosion>(controller.getGioco().getExplosions());
 		for (Explosion b : tmpE) {
 			g.drawImage( explosions.get(b.getType(),b.getDurata() , b.getDirection()).getScaledInstance(Settings.BLOCKSIZEX, Settings.BLOCKSIZEY, Image.SCALE_SMOOTH),
 					b.getX() * Settings.BLOCKSIZEX, b.getY() * Settings.BLOCKSIZEY, null);
 		}
+		
+		Player p1 = controller.getGioco().getPlayer1();
+		g.drawImage(player1.getCurrentImage().getScaledInstance(p1.getWidth(), p1.getHeight(), Image.SCALE_FAST),
+				p1.getX(), p1.getY(), p1.getWidth(), Settings.BLOCKSIZEY-2, null);	
 	}
 
 }

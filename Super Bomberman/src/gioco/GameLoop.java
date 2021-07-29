@@ -5,6 +5,7 @@ import gioco.gui.GamePanel;
 import gioco.model.Enemy;
 import gioco.model.Gioco;
 import gioco.model.Player;
+import gioco.utilities.Settings;
 
 public class GameLoop extends Thread {
 
@@ -13,64 +14,90 @@ public class GameLoop extends Thread {
 	public GameLoop(PlayerController controller) {
 		this.controller = controller;
 	}
-	
+
 	public void moveplayers() {
-		if(!controller.getGioco().isMultiplayer()) {
-			switch(controller.getGioco().getPlayer1().getState()) {
-			case Player.WALKING_LEFT : 
-				controller.getGioco().movePlayer(controller.getGioco().getPlayer1() ,Settings.LEFT);
+		if (!controller.getGioco().isMultiplayer()) {
+			switch (controller.getGioco().getPlayer1().getState()) {
+			case Player.WALKING_LEFT:
+				controller.getGioco().movePlayer(controller.getGioco().getPlayer1(), Settings.LEFT);
 				break;
-			
-			case Player.WALKING_RIGHT : 
-				controller.getGioco().movePlayer(controller.getGioco().getPlayer1() ,Settings.RIGHT);
+
+			case Player.WALKING_RIGHT:
+				controller.getGioco().movePlayer(controller.getGioco().getPlayer1(), Settings.RIGHT);
 				break;
-			
-			case Player.WALKING_UP : 
-				controller.getGioco().movePlayer(controller.getGioco().getPlayer1() ,Settings.UP);
+
+			case Player.WALKING_UP:
+				controller.getGioco().movePlayer(controller.getGioco().getPlayer1(), Settings.UP);
 				break;
-			
-			case Player.WALKING_DOWN : 
-				controller.getGioco().movePlayer(controller.getGioco().getPlayer1() ,Settings.DOWN);
-				break;
-			case Player.DEAD : 
+
+			case Player.WALKING_DOWN:
+				controller.getGioco().movePlayer(controller.getGioco().getPlayer1(), Settings.DOWN);
 				break;
 			default:
 				break;
+
 			}
-		}	
-	}
-	
-	public void moveEnemies() {
-		for(Enemy e : controller.getGioco().getEnemies()) {
-			controller.getGioco().moveEnemy(e);	
 		}
 	}
-		@Override
+
+	public void moveEnemies() {
+		for (Enemy e : controller.getGioco().getEnemies()) {
+			controller.getGioco().moveEnemy(e);
+		}
+	}
+
+	public void next() {
+		controller.getGioco().checkBombs();
+		controller.getGioco().checkExplosions();
+
+		if (controller.getGioco().collisionExposion() || controller.getGioco().collisionEnemyPlayer()
+				|| controller.getGioco().finishLevel())
+			controller.getGioco().setGameOver(true);
+		moveEnemies();
+		moveplayers();
+	}
+
+	public void render() {
+		controller.getPanel().getGiocoView().getNotStatics().update();
+	}
+
+	@Override
 	public void run() {
 		super.run();
-		Thread t = new Thread(controller.getPanel());
-		t.start();
+		boolean gameOver = false;
+		long now = System.nanoTime();
+		long updateTime;
+		long sleepTime;
+		long maxTime = 1000000000 / 50;
+		controller.getPanel().paintMap();
 		controller.getGioco().inizia();
-		while (!controller.getGioco().isGameOver()) {
-			controller.getGioco().checkBombs();
-			controller.getGioco().checkExplosions();
-			
-			if(controller.getGioco().collisionExposion() || controller.getGioco().collisionEnemyPlayer() || controller.getGioco().finishLevel())
-				controller.getGioco().setGameOver(true);
-			moveEnemies();
-			moveplayers();
+		// Thread t = new Thread(controller.getPanel());
+		while (this.isAlive()) {
+			now = System.nanoTime();
+
+			render();
+			if (!controller.getGioco().isGameOver())
+				next();
+			else if (!gameOver) {
+				gameOver = true;
+				controller.getGioco().checkExplosions();
+				if (controller.getGioco().results() == Gioco.VICTORYPLAYER1) {
+					System.out.println(
+							"YOU WIN!!! TOTAL POINTS: " + controller.getGioco().getPlayer1().getPoints() + " !!!");
+				} else
+					System.out.println("OH NO! YOU LOSE!!! ARE YOU BRAVE ENOUGH TO TRY AGAIN?");
+			}
+			else
+				controller.getGioco().checkExplosions();
+
+			updateTime = System.nanoTime() - now;
+			sleepTime = (maxTime - updateTime) / 1000000;
 			try {
-				Thread.sleep(20);
+				Thread.sleep(sleepTime);
 			} catch (InterruptedException e) {
 				return;
 			}
 		}
-		controller.getPanel().getGiocoView().getNotStatics().update();
-		int result = controller.getGioco().results();
-		if(result == Gioco.VICTORYPLAYER1) {
-			System.out.println("YOU WIN!!! TOTAL POINTS: " + controller.getGioco().getPlayer1().getPoints() + " !!!");
-		}
-		else System.out.println("OH NO! YOU LOSE!!! ARE YOU BRAVE ENOUGH TO TRY AGAIN?");
-		
+
 	}
 }
