@@ -16,8 +16,6 @@ public class Enemy3 extends Enemy {
 		super(x, y);
 		visible = true;
 		unseenTime = 0;
-		width=Settings.BLOCKSIZEX*5/6;
-		height = Settings.BLOCKSIZEY*5/6;
 		Random r = new Random();
 		randomVisibilityTime = VISIBLETIME - r.nextInt(VISIBLETIME/2);
 	}
@@ -39,6 +37,8 @@ public class Enemy3 extends Enemy {
 	
 
 	public void changeVisibility() {
+		if(state == Entity.DYING_EXPLOSION)
+			visible= true;
 		if(unseenTime == randomVisibilityTime) {
 			if(visible)
 				visible=false;

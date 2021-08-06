@@ -20,6 +20,7 @@ public class Gioco {
 	private Player player1;
 	private Player player2;
 	private Vector<Enemy> enemies;
+	private Vector<Enemy> enemiesToBeRemoved;
 	private Vector<Bomb> bombs;
 	private Vector<Explosion> explosions;
 	private boolean multiplayer;
@@ -31,6 +32,7 @@ public class Gioco {
 		enemies = new Vector<Enemy>();
 		bombs = new Vector<Bomb>();
 		explosions = new Vector<Explosion>();
+		enemiesToBeRemoved = new Vector<Enemy>();
 		matrix = new Block[height][width];
 		gameOver = true;
 
@@ -55,13 +57,14 @@ public class Gioco {
 	public void loadMap(String mapName) throws IOException {
 		BufferedReader reader = null;
 		try {
-			reader = new BufferedReader(new FileReader("src/gioco/resources/maps/"+mapName+".txt"));
+			reader = new BufferedReader(new FileReader("src/gioco/resources/maps/" + mapName + ".txt"));
 			String s = reader.readLine();
 			// lettura dei players e dei nemici
 			while (!(s.equals("END"))) {
 				String[] elements = s.split(" ");
 				if (elements[0].equals("player1")) {
-					player1 = new Player(Integer.valueOf(elements[1]) * Settings.BLOCKSIZEX, Integer.valueOf(elements[2])*Settings.BLOCKSIZEY);
+					player1 = new Player(Integer.valueOf(elements[1]) * Settings.BLOCKSIZEX,
+							Integer.valueOf(elements[2]) * Settings.BLOCKSIZEY);
 				}
 
 				else if (multiplayer && elements[0].equals("player2")) {
@@ -71,10 +74,12 @@ public class Gioco {
 							Integer.valueOf(elements[2]) * Settings.BLOCKSIZEY);
 					enemies.add(e);
 				} else if (elements[0].equals("enemy2")) {
-					Enemy2 e = new Enemy2(Integer.valueOf(elements[1])* Settings.BLOCKSIZEX, Integer.valueOf(elements[2])* Settings.BLOCKSIZEY);
+					Enemy2 e = new Enemy2(Integer.valueOf(elements[1]) * Settings.BLOCKSIZEX,
+							Integer.valueOf(elements[2]) * Settings.BLOCKSIZEY);
 					enemies.add(e);
 				} else if (elements[0].equals("enemy3")) {
-					Enemy3 e = new Enemy3(Integer.valueOf(elements[1])* Settings.BLOCKSIZEX, Integer.valueOf(elements[2])* Settings.BLOCKSIZEY);
+					Enemy3 e = new Enemy3(Integer.valueOf(elements[1]) * Settings.BLOCKSIZEX,
+							Integer.valueOf(elements[2]) * Settings.BLOCKSIZEY);
 					enemies.add(e);
 				}
 				s = reader.readLine();
@@ -143,57 +148,81 @@ public class Gioco {
 	 * e.getSpeed()) / Settings.BLOCKSIZEY][e.leftBlock()].isWalkable()) return
 	 * true; break; } return false; }
 	 */
+	
+	
+	public synchronized void removeEnemies() {
+		enemies.removeAll(enemiesToBeRemoved);
+		enemiesToBeRemoved.clear();
+	}
 
-	public void moveEnemy(Enemy e) {
-		if(e instanceof Enemy3) {
-			Enemy3 e3 = (Enemy3) e;
-			e3.changeVisibility();
-			if(e3.getUnseenTime() == e3.getRandomVisibilityTime()*85/100 && !e3.isVisible())
-				e3.Teleport(player1.xcenterBlock(), player1.ycenterBlock());
+	public synchronized void updateEnemy() {
+		if(!gameOver) {
+		for (Enemy e : enemies) {
+			if (e.getState() != Entity.DYING_EXPLOSION) {
+				if (e instanceof Enemy3) {
+					Enemy3 e3 = (Enemy3) e;
+					e3.changeVisibility();
+					if (e3.getUnseenTime() == e3.getRandomVisibilityTime() * 85 / 100 && !e3.isVisible())
+						e3.Teleport(player1.xcenterBlock(), player1.ycenterBlock());
+				}
+				if (collisionBlock(e, e.getDirection()) != Settings.TOTALCOLLISION
+						&& !collisionBombs(e, e.getDirection()) && e.getState() != Entity.IDLE_DOWN) {
+					e.move();
+				} else {
+					ArrayList<Integer> directions = new ArrayList<Integer>();
+					if ( e.getDirection()!= Settings.DOWN && e.ycenterBlock() + 1 < height
+							&& matrix[e.ycenterBlock() + 1][e.xcenterBlock()].isWalkable())
+						directions.add(Settings.DOWN);
+					if (e.getDirection()!= Settings.LEFT && e.xcenterBlock() - 1 >= 0
+							&& matrix[e.ycenterBlock()][e.xcenterBlock() - 1].isWalkable())
+						directions.add(Settings.LEFT);
+					if (e.getDirection()!= Settings.UP &&e.ycenterBlock() - 1 >= 0
+							&& matrix[e.ycenterBlock() - 1][e.xcenterBlock()].isWalkable())
+						directions.add(Settings.UP);
+					if (e.getDirection()!= Settings.RIGHT &&e.xcenterBlock() + 1 < width
+							&& matrix[e.ycenterBlock()][e.xcenterBlock() + 1].isWalkable())
+						directions.add(Settings.RIGHT);
+					//if (directions.size() > 0)
+						e.changeDirection(directions);
+				}
+			} else {
+				if (e.getDyingTime() == 0)
+					enemiesToBeRemoved.add(e);
+				else
+					e.decreasedyingTime();
+			}
 		}
-		if (collisionBlock(e, e.getDirection()) != Settings.TOTALCOLLISION && !collisionBombs(e, e.getDirection())) {
-				e.move();
 		}
-		else { 
-			ArrayList<Integer> directions = new ArrayList<Integer>();
-			if(e.getDirection() != Settings.DOWN && e.downBlock()+1<height && matrix[e.downBlock()+1][e.xcenterBlock()].isWalkable() )
-				directions.add(Settings.DOWN);
-			if(e.getDirection() != Settings.LEFT && e.leftBlock()-1>=0 && matrix[e.ycenterBlock()][e.leftBlock()-1].isWalkable())
-				directions.add(Settings.LEFT);
-			if(e.getDirection() != Settings.UP && e.upBlock()-1>=0 && matrix[e.upBlock()-1][e.xcenterBlock()].isWalkable())
-				directions.add(Settings.UP);
-			if(e.getDirection() != Settings.RIGHT && e.rightBlock()+1<width && matrix[e.ycenterBlock()][e.rightBlock()+1].isWalkable())
-				directions.add(Settings.RIGHT);
-			if(directions.size()>0)
-				e.changeDirection(directions);
+		else {
+			for(Enemy e :  enemies)
+				e.setState(Entity.IDLE_DOWN);
 		}
-
 	}
 
 	public void movePlayer(Player player, int direction) {
-		if (player.getState() == Player.DYING_ENEMY || player.getState() == Player.DYING_EXPLOSION )
+		if (player.getState() == Player.DYING_ENEMY || player.getState() == Player.DYING_EXPLOSION)
 			return;
 		int collisionType = collisionBlock(player1, direction);
 		if (collisionType != Settings.TOTALCOLLISION && !collisionBombs(player1, direction)) {
-			if(collisionType == Settings.NOCOLLISION)
+			if (collisionType == Settings.NOCOLLISION)
 				player.move(direction);
-				else {
-			switch (collisionType) {
-			case Settings.DOWNCOLLISION:
-				direction = Settings.UP;
-				break;
-			case Settings.UPCOLLISION:
-				direction = Settings.DOWN;
-				break;
-			case Settings.RIGHTCOLLISION:
-				direction = Settings.LEFT;
-				break;
-			case Settings.LEFTCOLLISION:
-				direction = Settings.RIGHT;
-				break;
+			else {
+				switch (collisionType) {
+				case Settings.DOWNCOLLISION:
+					direction = Settings.UP;
+					break;
+				case Settings.UPCOLLISION:
+					direction = Settings.DOWN;
+					break;
+				case Settings.RIGHTCOLLISION:
+					direction = Settings.LEFT;
+					break;
+				case Settings.LEFTCOLLISION:
+					direction = Settings.RIGHT;
+					break;
+				}
+				player.move(direction, player1.getSpeed() * 2 / 3);
 			}
-			player.move(direction , player1.getSpeed()*2/3);
-		}
 		}
 	}
 
@@ -202,17 +231,14 @@ public class Gioco {
 		case Settings.LEFT:
 			if (e.getX() - e.getSpeed() < 0) {
 				return Settings.TOTALCOLLISION;
-			}
-			else if(!matrix[e.ycenterBlock()][(e.getX() - e.getSpeed()) / Settings.BLOCKSIZEX].isWalkable()) {
+			} else if (!matrix[e.ycenterBlock()][(e.getX() - e.getSpeed()) / Settings.BLOCKSIZEX].isWalkable()) {
 				return Settings.TOTALCOLLISION;
-			}
-			else if(!matrix[e.downBlock()][(e.getX() - e.getSpeed()) / Settings.BLOCKSIZEX].isWalkable()) {
-				if(e.downSide() + e.getSpeed() >= Settings.BLOCKSIZEY * 13)
+			} else if (!matrix[e.downBlock()][(e.getX() - e.getSpeed()) / Settings.BLOCKSIZEX].isWalkable()) {
+				if (e.downSide() + e.getSpeed() >= Settings.BLOCKSIZEY * 13)
 					return Settings.TOTALCOLLISION;
 				return Settings.DOWNCOLLISION;
-			}
-			else if(!matrix[e.upBlock()][(e.getX() - e.getSpeed()) / Settings.BLOCKSIZEX].isWalkable()) {
-				if(e.getY() - e.getSpeed() < 0)
+			} else if (!matrix[e.upBlock()][(e.getX() - e.getSpeed()) / Settings.BLOCKSIZEX].isWalkable()) {
+				if (e.getY() - e.getSpeed() < 0)
 					return Settings.TOTALCOLLISION;
 				return Settings.UPCOLLISION;
 			}
@@ -220,17 +246,14 @@ public class Gioco {
 		case Settings.RIGHT:
 			if (e.rightSide() + e.getSpeed() >= Settings.BLOCKSIZEX * width) {
 				return Settings.TOTALCOLLISION;
-			}
-			else if(!matrix[e.ycenterBlock()][(e.rightSide() + e.getSpeed()) / Settings.BLOCKSIZEX].isWalkable()) {
+			} else if (!matrix[e.ycenterBlock()][(e.rightSide() + e.getSpeed()) / Settings.BLOCKSIZEX].isWalkable()) {
 				return Settings.TOTALCOLLISION;
-			}
-			else if(!matrix[e.downBlock()][(e.rightSide() + e.getSpeed()) / Settings.BLOCKSIZEX].isWalkable()) {
-				if(e.downSide() + e.getSpeed() >= Settings.BLOCKSIZEY * 13)
+			} else if (!matrix[e.downBlock()][(e.rightSide() + e.getSpeed()) / Settings.BLOCKSIZEX].isWalkable()) {
+				if (e.downSide() + e.getSpeed() >= Settings.BLOCKSIZEY * 13)
 					return Settings.TOTALCOLLISION;
 				return Settings.DOWNCOLLISION;
-			}
-			else if(!matrix[e.upBlock()][(e.rightSide() + e.getSpeed()) / Settings.BLOCKSIZEX].isWalkable()) {
-				if(e.getY() - e.getSpeed() < 0)
+			} else if (!matrix[e.upBlock()][(e.rightSide() + e.getSpeed()) / Settings.BLOCKSIZEX].isWalkable()) {
+				if (e.getY() - e.getSpeed() < 0)
 					return Settings.TOTALCOLLISION;
 				return Settings.UPCOLLISION;
 			}
@@ -239,13 +262,12 @@ public class Gioco {
 			if (e.getY() - e.getSpeed() < 0
 					|| !matrix[(e.getY() - e.getSpeed()) / Settings.BLOCKSIZEY][e.xcenterBlock()].isWalkable())
 				return Settings.TOTALCOLLISION;
-			else if(!matrix[(e.getY() - e.getSpeed()) / Settings.BLOCKSIZEY][e.rightBlock()].isWalkable()) {
-				if(e.rightSide() + e.getSpeed() >= Settings.BLOCKSIZEY * 13)
+			else if (!matrix[(e.getY() - e.getSpeed()) / Settings.BLOCKSIZEY][e.rightBlock()].isWalkable()) {
+				if (e.rightSide() + e.getSpeed() >= Settings.BLOCKSIZEY * 13)
 					return Settings.TOTALCOLLISION;
 				return Settings.RIGHTCOLLISION;
-			}
-			else if(!matrix[(e.getY() - e.getSpeed()) / Settings.BLOCKSIZEY][e.leftBlock()].isWalkable()) {
-				if(e.getX() - e.getSpeed() < 0)
+			} else if (!matrix[(e.getY() - e.getSpeed()) / Settings.BLOCKSIZEY][e.leftBlock()].isWalkable()) {
+				if (e.getX() - e.getSpeed() < 0)
 					return Settings.TOTALCOLLISION;
 				return Settings.LEFTCOLLISION;
 			}
@@ -254,13 +276,12 @@ public class Gioco {
 			if (e.downSide() + e.getSpeed() >= Settings.BLOCKSIZEY * 13
 					|| !matrix[(e.downSide() + e.getSpeed()) / Settings.BLOCKSIZEY][e.xcenterBlock()].isWalkable())
 				return Settings.TOTALCOLLISION;
-			else if(!matrix[(e.downSide() + e.getSpeed()) / Settings.BLOCKSIZEY][e.rightBlock()].isWalkable()) {
-				if(e.rightSide() + e.getSpeed() >= Settings.BLOCKSIZEY * 13)
+			else if (!matrix[(e.downSide() + e.getSpeed()) / Settings.BLOCKSIZEY][e.rightBlock()].isWalkable()) {
+				if (e.rightSide() + e.getSpeed() >= Settings.BLOCKSIZEY * 13)
 					return Settings.TOTALCOLLISION;
 				return Settings.RIGHTCOLLISION;
-			}
-			else if(!matrix[(e.downSide() + e.getSpeed()) / Settings.BLOCKSIZEY][e.leftBlock()].isWalkable()) {
-				if(e.getX() - e.getSpeed() < 0)
+			} else if (!matrix[(e.downSide() + e.getSpeed()) / Settings.BLOCKSIZEY][e.leftBlock()].isWalkable()) {
+				if (e.getX() - e.getSpeed() < 0)
 					return Settings.TOTALCOLLISION;
 				return Settings.LEFTCOLLISION;
 			}
@@ -320,16 +341,16 @@ public class Gioco {
 			explosions.remove(e);
 	}
 
-	public synchronized boolean collisionExposion() {
+	public synchronized boolean collisionExplosion() {
 		boolean playerCollision = false;
-		Vector<Enemy> toBeRemoved = new Vector<Enemy>();
 		for (Explosion elem : explosions) {
 			for (Enemy enemy : enemies) {
-				if (!toBeRemoved.contains(enemy)  && ( elem.getX() == enemy.xcenterBlock() && (elem.getY() == enemy.ycenterBlock())
-						|| ((elem.getX() == enemy.rightBlock() || elem.getX() == enemy.leftBlock())
-								&& (elem.getY() == enemy.upBlock() || elem.getY() == enemy.downBlock())))) {
-					if(!(enemy instanceof Enemy3) ||  ((Enemy3) enemy ).isVisible() ) {
-						toBeRemoved.add(enemy);
+				if (enemy.getState() != Entity.DYING_EXPLOSION
+						&& (elem.getX() == enemy.xcenterBlock() && (elem.getY() == enemy.ycenterBlock())
+								|| ((elem.getX() == enemy.rightBlock() || elem.getX() == enemy.leftBlock())
+										&& (elem.getY() == enemy.upBlock() || elem.getY() == enemy.downBlock())))) {
+					if (!(enemy instanceof Enemy3) || ((Enemy3) enemy).isVisible()) {
+						enemy.setState(Entity.DYING_EXPLOSION);
 						if (enemy instanceof Enemy1) {
 							elem.getPlayer().increasePoints(100);
 						} else if (enemy instanceof Enemy2) {
@@ -344,29 +365,27 @@ public class Gioco {
 			if (elem.getX() == player1.xcenterBlock() && (elem.getY() == player1.ycenterBlock())
 					|| ((elem.getX() == player1.rightBlock() || elem.getX() == player1.leftBlock())
 							&& (elem.getY() == player1.upBlock() || elem.getY() == player1.downBlock()))) {
-				playerCollision = true;				
-				player1.setState( Player.DYING_EXPLOSION);
+				playerCollision = true;
+				player1.setState(Player.DYING_EXPLOSION);
 			}
 			if (multiplayer && elem.getX() == player2.xcenterBlock() && elem.getY() == player2.ycenterBlock()) {
 				playerCollision = true;
-				player2.setState( Player.DYING_EXPLOSION);
+				player2.setState(Player.DYING_EXPLOSION);
 			}
 		}
 
-		for (Enemy r : toBeRemoved) 
-			enemies.remove(r);
-	
 		return playerCollision;
 
 	}
 
 	public boolean collisionEnemyPlayer() {
 		for (Enemy enemy : enemies) {
-			if (((player1.rightSide() <= enemy.rightSide() && player1.rightSide() >= enemy.getX())
-					|| (player1.getX() <= enemy.rightSide() && player1.getX() >= enemy.getX()))
+			if (enemy.getState() != Entity.DYING_EXPLOSION
+					&& ((player1.rightSide() <= enemy.rightSide() && player1.rightSide() >= enemy.getX())
+							|| (player1.getX() <= enemy.rightSide() && player1.getX() >= enemy.getX()))
 					&& ((player1.downSide() <= enemy.downSide() && player1.downSide() >= enemy.getY())
 							|| (player1.getY() <= enemy.downSide() && player1.downSide() >= enemy.getY()))) {
-				if(!(enemy instanceof Enemy3) ||  ((Enemy3) enemy ).isVisible() ) {
+				if (!(enemy instanceof Enemy3) || ((Enemy3) enemy).isVisible()) {
 					player1.setState(Player.DYING_ENEMY);
 					return true;
 				}
@@ -390,8 +409,8 @@ public class Gioco {
 
 			if (bombs.get(k).getTimer() == 0) {
 				int type = Explosion.MIDDLE;
-				explosions.add(new Explosion(bombs.get(k).getX(), bombs.get(k).getY(), Explosion.CENTRAL, Settings.RIGHT,
-						bombs.get(k).getPlayer()));
+				explosions.add(new Explosion(bombs.get(k).getX(), bombs.get(k).getY(), Explosion.CENTRAL,
+						Settings.RIGHT, bombs.get(k).getPlayer()));
 				for (int i = 1; i <= bombs.get(k).getPlayer().getRadius(); ++i) {
 					// CONTROLLO L'ESPLOSIONE DI SOPRA
 					if (i == bombs.get(k).getPlayer().getRadius())
@@ -488,6 +507,10 @@ public class Gioco {
 	public synchronized Player getPlayer1() {
 		return player1;
 	}
+	
+	public Vector<Enemy> getEnemiesToBeRemoved() {
+		return enemiesToBeRemoved;
+	}
 
 	public Player getPlayer2() {
 		return player2;
@@ -528,7 +551,7 @@ public class Gioco {
 	public void setGameOver(boolean gameOver) {
 		this.gameOver = gameOver;
 	}
-	
+
 	public String getMap() {
 		return map;
 	}
@@ -548,17 +571,20 @@ public class Gioco {
 			if (player1.getBombs() > 0) {
 				int px = player1.xcenterBlock();
 				int py = player1.ycenterBlock();
-				/*if (player1.getState() == Player.WALKING_DOWN) 
-					py = player1.upBlock();*/
-				if (player1.getState() == Player.WALKING_UP) 
+				/*
+				 * if (player1.getState() == Player.WALKING_DOWN) py = player1.upBlock();
+				 */
+				if (player1.getState() == Player.WALKING_UP)
 					py = player1.downBlock();
-				/*else if (player1.getState() == Player.WALKING_RIGHT)
-					px = player1.leftBlock();*/
+				/*
+				 * else if (player1.getState() == Player.WALKING_RIGHT) px =
+				 * player1.leftBlock();
+				 */
 				else if (player1.getState() == Player.WALKING_LEFT) {
 					px = player1.rightBlock();
 				}
-				Bomb b = new Bomb(px,py, player1.getRadius(), player1);
-				if(!bombs.contains(b)) {
+				Bomb b = new Bomb(px, py, player1.getRadius(), player1);
+				if (!bombs.contains(b)) {
 					bombs.add(b);
 					player1.decreaseBombs();
 				}
@@ -571,31 +597,28 @@ public class Gioco {
 			player1.setState(Player.WINNING);
 			return true;
 		}
-		//if (multiplayer && (player1.getState() == Player.DEAD || player2.getState() == Player.DEAD))
-		//	return true;
+		// if (multiplayer && (player1.getState() == Player.DEAD || player2.getState()
+		// == Player.DEAD))
+		// return true;
 		return false;
 	}
 
 	public int results() {
-		//if (multiplayer) {
-			/*if (player1.getState() == Player.DEAD && player2.getState() != Player.DEAD)
-				return VICTORYPLAYER2;
-			else if (player1.getState() != Player.DEAD && player2.getState() == Player.DEAD)
-				return VICTORYPLAYER1;
-			if (player1.getPoints() > player2.getPoints())
-				return VICTORYPLAYER1;
-			else if (player1.getPoints() < player2.getPoints())
-				return VICTORYPLAYER2;
-			else
-				return DRAW;
-		} else {*/
-			if (player1.getState() == Player.DYING_ENEMY || player1.getState() == Player.DYING_EXPLOSION) {
-				return LOSS;
-			}
-			else {
-				return VICTORYPLAYER1;
-			}
-		//}
+		// if (multiplayer) {
+		/*
+		 * if (player1.getState() == Player.DEAD && player2.getState() != Player.DEAD)
+		 * return VICTORYPLAYER2; else if (player1.getState() != Player.DEAD &&
+		 * player2.getState() == Player.DEAD) return VICTORYPLAYER1; if
+		 * (player1.getPoints() > player2.getPoints()) return VICTORYPLAYER1; else if
+		 * (player1.getPoints() < player2.getPoints()) return VICTORYPLAYER2; else
+		 * return DRAW; } else {
+		 */
+		if (player1.getState() == Player.DYING_ENEMY || player1.getState() == Player.DYING_EXPLOSION) {
+			return LOSS;
+		} else {
+			return VICTORYPLAYER1;
+		}
+		// }
 	}
 
 }

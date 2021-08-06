@@ -9,8 +9,8 @@ public class Explosion {
 	private int x ; 
 	private int y;
 	private int  durata ; 
-	int type ;
-	int direction;
+	private int type ;
+	private int direction;
 	private Player player ;
 	public Explosion(int x , int y , int type , int direction , Player player) {
 		this.x =x ;

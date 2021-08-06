@@ -47,8 +47,11 @@ public class PlayerController extends KeyAdapter {
 	public void keyReleased(KeyEvent e) {
 		// if (!game.isStarted())
 		// return;
+		if(e.getKeyCode() == KeyEvent.VK_ESCAPE)
+					System.exit(0);
 		if (!gioco.isMultiplayer()) {
 			if (!gioco.isGameOver()) {
+				Integer state;
 				switch (e.getKeyCode()) {
 				case KeyEvent.VK_SHIFT:
 				case KeyEvent.VK_SPACE:
@@ -56,25 +59,29 @@ public class PlayerController extends KeyAdapter {
 					break;
 				case KeyEvent.VK_A:
 				case KeyEvent.VK_LEFT:
-					movements.remove((Object) Player.WALKING_LEFT);
+					state = Player.WALKING_LEFT;
+					movements.remove(state);
 					movements.set(0, Player.IDLE_LEFT);
 					break;
 				case KeyEvent.VK_D:
 				case KeyEvent.VK_RIGHT:
-					movements.remove((Object) Player.WALKING_RIGHT);
+					state = Player.WALKING_RIGHT;
+					movements.remove( state);
 					movements.set(0, Player.IDLE_RIGHT);
 					break;
 				case KeyEvent.VK_W:
 				case KeyEvent.VK_UP:
-					movements.remove((Object) Player.WALKING_UP);
+					state = Player.WALKING_UP;
+					movements.remove( state);
 					movements.set(0, Player.IDLE_UP);
 					break;
 				case KeyEvent.VK_S:
 				case KeyEvent.VK_DOWN:
-					movements.remove((Object) Player.WALKING_DOWN);
+					state = Player.WALKING_DOWN;
+					movements.remove( state);
 					movements.set(0, Player.IDLE_DOWN);
 					break;
-
+				
 				}
 				gioco.getPlayer1().setState(movements.get(movements.size() - 1));
 			}

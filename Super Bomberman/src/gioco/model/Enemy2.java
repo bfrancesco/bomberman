@@ -10,8 +10,6 @@ public class Enemy2 extends Enemy {
 		super(x, y);
 		changement = 0;
 		increasing = true;
-		width = Settings.BLOCKSIZEX*2/3;
-		height = Settings.BLOCKSIZEY*2/3;
 	}
 	
 

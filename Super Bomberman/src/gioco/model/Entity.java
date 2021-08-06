@@ -3,13 +3,42 @@ package gioco.model;
 import gioco.utilities.Settings;
 
 public class Entity {
+	
+	
+	public static final int IDLE_LEFT = 0;
+	public static final int IDLE_RIGHT = 1;
+	public static final int IDLE_UP = 2;
+	public static final int IDLE_DOWN = 3;
+
+	public static final int WALKING_LEFT = 4;
+	public static final int WALKING_RIGHT = 5;
+	public static final int WALKING_UP = 6;
+	public static final int WALKING_DOWN = 7;
+
+	public static final int DYING_EXPLOSION = 8;
+	public static final int DYING_ENEMY = 9;
+	public static final int WINNING= 10;
+	
+	
 	protected int x;
 	protected  int y;
 	protected int width;
 	protected int height;
 	protected int direction;
 	protected int speed;
+	protected int state;
+
 	
+	public int getState() {
+		return state;
+	}
+
+
+	public void setState(int state) {
+		this.state = state;
+	}
+
+
 	public int getX() {
 		return x;
 	}

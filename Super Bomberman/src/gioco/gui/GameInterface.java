@@ -18,6 +18,7 @@ public class GameInterface extends JPanel {
 	private int height; 
 	private int width;
 	private GamePanel giocoView;
+	private pointsPanel pointView;
 	
 	public GameInterface(int height , int width) {
 		this.height = height;

@@ -13,16 +13,16 @@ public class Main {
 
 	public static void main(String[] args) {
 		JFrame f = new JFrame("BOMBERMAN PROVA");
-		f.setSize(700,700);
-		Settings.BLOCKSIZEX = f.getWidth()/14;
-		Settings.BLOCKSIZEY = f.getHeight()/14;
+		f.setSize(715,715);
+		f.setUndecorated(true);
+		Settings.BLOCKSIZEX = f.getWidth()/13;
+		Settings.BLOCKSIZEY = f.getHeight()/13;
 		GameInterface panel = new GameInterface( f.getSize().height , f.getSize().width);
 		panel.setFocusable(true);
 		String mapName;
 		Random r = new Random();
-		if(!r.nextBoolean())
-			 mapName = "Map1";
-		else mapName = "Map2";
+		int a = r.nextInt(3)+1;	
+		mapName = "Map"+a;
 		boolean multi = false;
 		Gioco gioco = new Gioco(multi, mapName);
 		PlayerController controller = new PlayerController(panel, gioco);

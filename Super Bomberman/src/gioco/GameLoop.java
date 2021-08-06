@@ -40,20 +40,15 @@ public class GameLoop extends Thread {
 		}
 	}
 
-	public void moveEnemies() {
-		for (Enemy e : controller.getGioco().getEnemies()) {
-			controller.getGioco().moveEnemy(e);
-		}
-	}
 
 	public void next() {
 		controller.getGioco().checkBombs();
 		controller.getGioco().checkExplosions();
-
-		if (controller.getGioco().collisionExposion() || controller.getGioco().collisionEnemyPlayer()
+		controller.getGioco().removeEnemies();
+		if (controller.getGioco().collisionExplosion() || controller.getGioco().collisionEnemyPlayer()
 				|| controller.getGioco().finishLevel())
 			controller.getGioco().setGameOver(true);
-		moveEnemies();
+		controller.getGioco().updateEnemy();
 		moveplayers();
 	}
 
@@ -68,13 +63,12 @@ public class GameLoop extends Thread {
 		long now = System.nanoTime();
 		long updateTime;
 		long sleepTime;
-		long maxTime = 1000000000 / 50;
+		long maxTime = 1000000000 / 40;
 		controller.getPanel().paintMap();
 		controller.getGioco().inizia();
 		// Thread t = new Thread(controller.getPanel());
 		while (this.isAlive()) {
 			now = System.nanoTime();
-
 			render();
 			if (!controller.getGioco().isGameOver())
 				next();

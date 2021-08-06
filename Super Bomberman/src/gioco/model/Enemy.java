@@ -6,40 +6,65 @@ import java.util.Random;
 import gioco.utilities.Settings;
 
 public class Enemy extends Entity{
+	protected int dyingTime;
+	
 	
 	public Enemy(int x, int y) {
 		super(x ,y);
-		//Per creare i nemici al centro del blocco considerato e non ai margini
-		this.x += Settings.BLOCKSIZEX/4;
-		this.y += Settings.BLOCKSIZEY/4;
+		dyingTime = Settings.ENEMYDYINGTIME;
+		state = Entity.IDLE_DOWN;
 		Random r = new Random();
 		r.setSeed(System.currentTimeMillis()+x);
 		int dir = r.nextInt(4);
 		this.direction = dir;
-		this.setSpeed(Settings.NORMALSPEED/2);
+		this.setSpeed(Settings.NORMALSPEED/3*2);
 	}
 
 	public void changeDirection(ArrayList<Integer> directions) {
-		Random r = new Random();
-		r.setSeed(System.currentTimeMillis()+x);
-		int dir = r.nextInt(directions.size());
-		this.direction = directions.get(dir);
+		if(directions.size()==0) {
+			state = Entity.IDLE_DOWN;
+			direction = Settings.NONE;
+		}
+		else {
+			Random r = new Random();
+			r.setSeed(System.currentTimeMillis()+x+y);
+			int dir = r.nextInt(directions.size());
+			this.direction = directions.get(dir);
+			switch(direction) {
+				case Settings.DOWN:
+					state = WALKING_DOWN;
+					break;
+				case Settings.RIGHT:
+					state = WALKING_RIGHT;
+					break;
+				case Settings.LEFT:
+					state = WALKING_LEFT;
+					break;
+				case Settings.UP:
+					state = WALKING_UP;
+					break;
+			}
+		}
 	}
 	
 	public void move() {
-		switch(this.direction) {
-		case Settings.LEFT :
-				x-=speed;
-				break;
-		case Settings.RIGHT:
-				x+=speed;
-				break;
-		case Settings.DOWN:
-				y+=speed;
-				break;
-		case Settings.UP:
-				y-=speed;
-				break;	
+		super.move(this.direction);
 	}
+	
+	
+	public void decreasedyingTime() {
+		dyingTime-=1;
 	}
+
+	public int getDyingTime() {
+		return dyingTime;
+	}
+
+	public void setDyingTime(int dyingTime) {
+		this.dyingTime = dyingTime;
+	}
+	
+	
+	
+	
 }
