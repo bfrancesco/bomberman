@@ -14,9 +14,10 @@ public class Gioco {
 	public static final int DRAW = 2;
 	public static final int LOSS = 3;
 
+	private int time = 150;
 	private Block[][] matrix;
 	private int height = 13;
-	private int width = 13;
+	private int width = 15;
 	private Player player1;
 	private Player player2;
 	private Vector<Enemy> enemies;
@@ -48,7 +49,14 @@ public class Gioco {
 	public void inizia() {
 		gameOver = false;
 	}
-
+	
+	public void setTime(int t) {
+		time = t;
+	}
+	
+	public int getTime() {
+		return time;
+	}
 	/*
 	 * DA CONTROLLARE : Player1 non si sovrappone al 2 multiplayer aggiungere errori
 	 * in caso di mancata connessione aggiungere nemici gestione mappa Lettura della
@@ -234,7 +242,7 @@ public class Gioco {
 			} else if (!matrix[e.ycenterBlock()][(e.getX() - e.getSpeed()) / Settings.BLOCKSIZEX].isWalkable()) {
 				return Settings.TOTALCOLLISION;
 			} else if (!matrix[e.downBlock()][(e.getX() - e.getSpeed()) / Settings.BLOCKSIZEX].isWalkable()) {
-				if (e.downSide() + e.getSpeed() >= Settings.BLOCKSIZEY * 13)
+				if (e.downSide() + e.getSpeed() >= Settings.BLOCKSIZEY * height)
 					return Settings.TOTALCOLLISION;
 				return Settings.DOWNCOLLISION;
 			} else if (!matrix[e.upBlock()][(e.getX() - e.getSpeed()) / Settings.BLOCKSIZEX].isWalkable()) {
@@ -249,7 +257,7 @@ public class Gioco {
 			} else if (!matrix[e.ycenterBlock()][(e.rightSide() + e.getSpeed()) / Settings.BLOCKSIZEX].isWalkable()) {
 				return Settings.TOTALCOLLISION;
 			} else if (!matrix[e.downBlock()][(e.rightSide() + e.getSpeed()) / Settings.BLOCKSIZEX].isWalkable()) {
-				if (e.downSide() + e.getSpeed() >= Settings.BLOCKSIZEY * 13)
+				if (e.downSide() + e.getSpeed() >= Settings.BLOCKSIZEY * height)
 					return Settings.TOTALCOLLISION;
 				return Settings.DOWNCOLLISION;
 			} else if (!matrix[e.upBlock()][(e.rightSide() + e.getSpeed()) / Settings.BLOCKSIZEX].isWalkable()) {
@@ -263,7 +271,7 @@ public class Gioco {
 					|| !matrix[(e.getY() - e.getSpeed()) / Settings.BLOCKSIZEY][e.xcenterBlock()].isWalkable())
 				return Settings.TOTALCOLLISION;
 			else if (!matrix[(e.getY() - e.getSpeed()) / Settings.BLOCKSIZEY][e.rightBlock()].isWalkable()) {
-				if (e.rightSide() + e.getSpeed() >= Settings.BLOCKSIZEY * 13)
+				if (e.rightSide() + e.getSpeed() >= Settings.BLOCKSIZEY * height)
 					return Settings.TOTALCOLLISION;
 				return Settings.RIGHTCOLLISION;
 			} else if (!matrix[(e.getY() - e.getSpeed()) / Settings.BLOCKSIZEY][e.leftBlock()].isWalkable()) {
@@ -273,11 +281,11 @@ public class Gioco {
 			}
 			break;
 		case Settings.DOWN:
-			if (e.downSide() + e.getSpeed() >= Settings.BLOCKSIZEY * 13
+			if (e.downSide() + e.getSpeed() >= Settings.BLOCKSIZEY * height
 					|| !matrix[(e.downSide() + e.getSpeed()) / Settings.BLOCKSIZEY][e.xcenterBlock()].isWalkable())
 				return Settings.TOTALCOLLISION;
 			else if (!matrix[(e.downSide() + e.getSpeed()) / Settings.BLOCKSIZEY][e.rightBlock()].isWalkable()) {
-				if (e.rightSide() + e.getSpeed() >= Settings.BLOCKSIZEY * 13)
+				if (e.rightSide() + e.getSpeed() >= Settings.BLOCKSIZEY *height)
 					return Settings.TOTALCOLLISION;
 				return Settings.RIGHTCOLLISION;
 			} else if (!matrix[(e.downSide() + e.getSpeed()) / Settings.BLOCKSIZEY][e.leftBlock()].isWalkable()) {
@@ -352,11 +360,11 @@ public class Gioco {
 					if (!(enemy instanceof Enemy3) || ((Enemy3) enemy).isVisible()) {
 						enemy.setState(Entity.DYING_EXPLOSION);
 						if (enemy instanceof Enemy1) {
-							elem.getPlayer().increasePoints(100);
+							elem.getPlayer().increasePoints(1000);
 						} else if (enemy instanceof Enemy2) {
-							elem.getPlayer().increasePoints(150);
+							elem.getPlayer().increasePoints(1500);
 						} else if (enemy instanceof Enemy3) {
-							elem.getPlayer().increasePoints(300);
+							elem.getPlayer().increasePoints(3000);
 						}
 					}
 				}
@@ -563,7 +571,7 @@ public class Gioco {
 	public Block getElement(int y, int x) {
 		if (x > width || y > height || x < 0 || y < 0)
 			return null;
-		return matrix[x][y];
+		return matrix[y][x];
 	}
 
 	public synchronized void addBomb(String player) {
@@ -601,6 +609,14 @@ public class Gioco {
 		// == Player.DEAD))
 		// return true;
 		return false;
+	}
+	
+	public void timeOut() {
+		for(Enemy e : enemies) {
+			e.setState(Entity.IDLE_DOWN);
+		}
+		player1.setState(Player.DYING_ENEMY);
+		gameOver = true;
 	}
 
 	public int results() {

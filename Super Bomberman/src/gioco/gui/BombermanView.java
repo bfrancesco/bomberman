@@ -20,7 +20,6 @@ public class BombermanView {
 	int player;
 	
 	public BombermanView() {
-		Resources.loadBombermanImages();
 
 		currentState = Player.IDLE_DOWN;
 		int player = 1;

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.Vector;
 
 import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 
 public class Resources {
 	
@@ -49,6 +50,29 @@ public class Resources {
 	public static Vector<Image> leftEnemy3;
 	public static Vector<Image> dyingExplosionEnemy3 ;
 	
+	public static Image iconWhite;
+	public static Image iconEnemy;
+	public static Image iconClock;
+	
+	public static void loadResources() {
+		loadBombermanImages();
+		loadBombImages();
+		loadEnemyImages();
+		loadExplosionImages();
+		loadIcons();
+	}
+	
+	public static void loadIcons() {
+		try {
+			iconEnemy =  ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/icons/enemiesIcon.png")).getScaledInstance(30 , 30, 0);
+			iconWhite = ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/icons/whiteBombermanIcon.png")).getScaledInstance(30 , 30, 0);
+			iconClock =  ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/icons/clock.png")).getScaledInstance(30 , 30, 0);
+		} catch (IOException e) {
+			System.out.println("ICONS RESOURCES ARE UNAVAILABLE");
+			e.printStackTrace();
+		}
+		
+	}
 	
 	public static void loadEnemyImages() {
 		rightEnemy1 = new Vector<Image>();
@@ -93,6 +117,8 @@ public class Resources {
 				leftEnemy3.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/enemy3/ghost_left_" + i + ".png")));
 				upEnemy3.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/enemy3/ghost_up_" + i + ".png")));
 			}
+			
+		
 						
 		} catch (IOException e) {
 			/* Aggiungere finestra */
@@ -160,22 +186,22 @@ public class Resources {
 		victory = new Vector<Image>();
 		dyingExplosion = new Vector<Image>();
 		dyingByEnemy = new Vector<Image>();
-		
 		try {
 			for (int i = 0; i < 3; ++i) {
-				left.add( ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/Walking/left/left_" + i + ".png")));
-				right.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/Walking/right/right_" + i + ".png")));
-				up.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/Walking/up/up_" + i + ".png")));
-				down.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/Walking/down/down_" + i + ".png")));
+				left.add( ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/whiteBomberman/left_" + i + ".png")));
+				right.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/whiteBomberman/right_" + i + ".png")));
+				up.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/whiteBomberman/up_" + i + ".png")));
+				down.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/whiteBomberman/down_" + i + ".png")));
 			}
 			for (int i = 0; i < 5; ++i) {
-				dyingByEnemy.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/dyingByEnemy/dying_" + i + ".png")));
-				dyingExplosion.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/dyingExplosion/dying_" + i + ".png")));
+				dyingByEnemy.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/whiteBomberman/dyingEnemy_" + i + ".png")));
+				dyingExplosion.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/whiteBomberman/dying_" + i + ".png")));
 			}
 			for (int i = 0; i < 2; ++i) {
-				victory.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/winning/victory_" + i + ".png")));
+				victory.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/whiteBomberman/victory_" + i + ".png")));
 			}
 						
+			
 		} catch (IOException e) {
 			/* Aggiungere finestra */
 			System.out.println("WHITE BOMBERMAN RESOURCES ARE UNAVAILABLE");

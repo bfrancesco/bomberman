@@ -15,7 +15,6 @@ import gioco.utilities.Settings;
 public class ExplosionView {
 
 	public ExplosionView() {
-		Resources.loadExplosionImages();
 	}
 
 	public synchronized Image get(int type, int dur, int dir) {

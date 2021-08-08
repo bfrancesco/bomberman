@@ -79,7 +79,7 @@ public class ChangeablePanel extends JPanel {
 				switch (controller.getGioco().getElement(i, j).getType()) {
 				case Block.BRICK:
 					g.drawImage(brick.getScaledInstance(Settings.BLOCKSIZEX, Settings.BLOCKSIZEY, Image.SCALE_FAST),
-							i * Settings.BLOCKSIZEX, j * Settings.BLOCKSIZEY, Settings.BLOCKSIZEX, Settings.BLOCKSIZEY,
+							j * Settings.BLOCKSIZEX, i * Settings.BLOCKSIZEY, Settings.BLOCKSIZEX, Settings.BLOCKSIZEY,
 							null);
 					break;
 				}

@@ -7,7 +7,6 @@ import gioco.utilities.Resources;
 public class BombView {
 	
 	public BombView() {
-		Resources.loadBombImages();
 	}
 
 	public Image get( int dur) {

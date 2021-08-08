@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import gioco.gui.GameInterface;
 import gioco.model.Gioco;
 import gioco.model.Player;
+import gioco.utilities.Resources;
 
 public class PlayerController extends KeyAdapter {
 	private GameInterface panel;
@@ -16,10 +17,12 @@ public class PlayerController extends KeyAdapter {
 	// Client client;
 	public PlayerController(GameInterface panel, Gioco gioco) {
 		super();
+		Resources.loadResources();
 		this.panel = panel;
 		this.gioco = gioco;
 		this.movements = new ArrayList<Integer>();
 		movements.add(Player.IDLE_DOWN);
+		
 	}
 
 	public GameInterface getPanel() {

@@ -22,7 +22,7 @@ public class Settings {
 	
 	public static int BLOCKSIZEX = 600/13;
 	public static int BLOCKSIZEY = 600/13;
-	public static int NORMALSPEED = BLOCKSIZEX/12;
+	public static int NORMALSPEED = BLOCKSIZEY/12;
 	
 	public static int EXPLOSIONTIME = 12;
 	public static int BOMBTIME = 70;

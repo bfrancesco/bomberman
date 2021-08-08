@@ -5,6 +5,7 @@ import gioco.gui.GamePanel;
 import gioco.model.Enemy;
 import gioco.model.Gioco;
 import gioco.model.Player;
+import gioco.utilities.Resources;
 import gioco.utilities.Settings;
 
 public class GameLoop extends Thread {
@@ -64,14 +65,23 @@ public class GameLoop extends Thread {
 		long updateTime;
 		long sleepTime;
 		long maxTime = 1000000000 / 40;
+		long startTime = System.currentTimeMillis();
 		controller.getPanel().paintMap();
 		controller.getGioco().inizia();
 		// Thread t = new Thread(controller.getPanel());
 		while (this.isAlive()) {
 			now = System.nanoTime();
 			render();
-			if (!controller.getGioco().isGameOver())
+			if (!controller.getGioco().isGameOver()) { 
 				next();
+				int walltime = ((Long)(System.currentTimeMillis() - startTime)).intValue()/1000;
+				controller.getPanel().setStat(controller.getGioco().getTime() - walltime);
+				if(controller.getGioco().getTime() - walltime == 0) {
+					controller.getGioco().timeOut();
+
+				}
+
+			}
 			else if (!gameOver) {
 				gameOver = true;
 				controller.getGioco().checkExplosions();
