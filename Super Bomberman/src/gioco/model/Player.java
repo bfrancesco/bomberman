@@ -2,15 +2,15 @@ package gioco.model;
 
 import gioco.utilities.Settings;
 
-public class Player extends Entity{
+public  class Player extends Entity{
 	
 	private int lifes;
 	private int bombs;
 	private int radius;
 	private int points;
-
+	private int type;
 	
-	public Player(int x , int y) {
+	public Player(int x , int y , int type) {
 		super(x,y);
 		direction = Settings.RIGHT;
 		state = Player.IDLE_DOWN;
@@ -18,8 +18,9 @@ public class Player extends Entity{
 		bombs = 1;
 		radius = 2;
 		width = Settings.BLOCKSIZEX*8/10;
-		height = Settings.BLOCKSIZEY*9/10;
+		//height = Settings.BLOCKSIZEY*9/110;
 		points = 0;
+		this.type =type;
 	}
 
 	
@@ -34,6 +35,7 @@ public class Player extends Entity{
 		this.points += pointsPlayer;
 	}
 
+	
 
 
 	public int getBombs() {
@@ -92,6 +94,20 @@ public class Player extends Entity{
 	}
 
 
+	
+
+
+	public int getType() {
+		return type;
+	}
+
+
+
+	public void setType(int type) {
+		this.type = type;
+	}
+
+
 
 	public void setRadius(int radius) {
 		this.radius = radius;
@@ -103,6 +119,10 @@ public class Player extends Entity{
 		this.lifes = lifes;
 	}
 	
+	@Override
+	public String toString() {
+		return x+" " + y+" "+state;
+	}
 	
 	
 }

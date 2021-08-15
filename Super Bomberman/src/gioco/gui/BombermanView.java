@@ -12,17 +12,16 @@ import gioco.utilities.Resources;
 import gioco.utilities.Settings;
 
 public class BombermanView {
-	
 
 	Image currentImage;
 	int currentState;
 	int index;
 	int player;
 	
-	public BombermanView() {
+	public BombermanView(int player) {
 
 		currentState = Player.IDLE_DOWN;
-		int player = 1;
+		this.player = player;
 		
 	}
 	
@@ -44,89 +43,89 @@ public class BombermanView {
 		switch (state) {
 			case Player.IDLE_DOWN :
 				index = 0;
-				currentImage = Resources.down.get(index);
+				currentImage = Resources.downBomberman(player).get(index);
 				currentState = state;
 				break;
 			case Player.IDLE_UP :
 				index = 0;
-				currentImage = Resources.up.get(index);
+				currentImage = Resources.upBomberman(player).get(index);
 				currentState = state;
 				break;
 			case Player.IDLE_RIGHT :
 				index = 0;
-				currentImage =Resources.right.get(index);
+				currentImage =Resources.rightBomberman(player).get(index);
 				currentState = state;
 				break;
 			case Player.IDLE_LEFT :
 				index = 0;
-				currentImage = Resources.left.get(index);
+				currentImage = Resources.leftBomberman(player).get(index);
 				currentState = state;
 				break;
 			case Player.WALKING_DOWN :
 				if(state == currentState)
-					index =++index % (Resources.down.size()*3);
+					index =++index % (Resources.downBomberman(player).size()*3);
 				else 
 					index = 0;
 				currentState = state;
-				currentImage = Resources.down.get(index/3);
+				currentImage = Resources.downBomberman(player).get(index/3);
 				break;
 			case Player.WALKING_UP :
 				if(state == currentState) 
-					index = ++index % (Resources.up.size()*3);						
+					index = ++index % (Resources.upBomberman(player).size()*3);						
 				else 
 					index = 0;
 				currentState = state;
-				currentImage = Resources.up.get(index/3); 
+				currentImage = Resources.upBomberman(player).get(index/3); 
 				break;
 			case Player.WALKING_RIGHT :
 				if(state == currentState) 
-					index = ++index % (Resources.right.size()*3);
+					index = ++index % (Resources.rightBomberman(player).size()*3);
 				
 				else 
 					index = 0;
 				currentState = state;
-				currentImage = Resources.right.get(index/3); 
+				currentImage = Resources.rightBomberman(player).get(index/3); 
 				break;
 			case Player.WALKING_LEFT :
 				if(state == currentState) 
-					index = ++index % (Resources.left.size()*3);
+					index = ++index % (Resources.leftBomberman(player).size()*3);
 				else 
 				index = 0;
 				currentState = state;
-				currentImage = Resources.left.get(index/3);
+				currentImage = Resources.leftBomberman(player).get(index/3);
 				break;
 			case Player.DYING_ENEMY : 
 				if(state == currentState) {
-					if(index!=(Resources.dyingByEnemy.size()-1)*3)
+					if(index!=(Resources.dyingByEnemyBomberman(player).size()-1)*3)
 						++index;
 				}
 				else {
 					index = 0;
 					currentState = state;
 				}
-				currentImage = Resources.dyingByEnemy.get(index/3);
+				currentImage = Resources.dyingByEnemyBomberman(player).get(index/3);
 				break;
 			case Player.DYING_EXPLOSION : 
 				if(state == currentState) {
-					if(index!=(Resources.dyingExplosion.size()-1)*5)
+					if(index!=(Resources.dyingExplosionBomberman(player).size()-1)*5)
 						++index;
 				}
 				else {
 					index = 0;
 					currentState = state;
 				}
-				currentImage = Resources.dyingExplosion.get(index/5);
+				currentImage = Resources.dyingExplosionBomberman(player).get(index/5);
 				break;
 			case Player.WINNING: 
 				if(state == currentState) {
-					if(index!=(Resources.victory.size()-1)*5)
+					if(index!=(Resources.victoryBomberman(player).size()-1)*5)
 						++index;
 				}
 				else {
 					index = 0;
 					currentState = state;
 				}
-				currentImage = Resources.victory.get(index/5);
+				currentImage = Resources.victoryBomberman(player).get(index/5);
 				break;
 		}
 	}

@@ -20,12 +20,12 @@ public class Settings {
 	public final static int ENEMY2 = 13;
 	public final static int ENEMY3 = 14;
 	
-	public static int BLOCKSIZEX = 600/13;
-	public static int BLOCKSIZEY = 600/13;
+	public static int BLOCKSIZEX = 825/15;
+	public static int BLOCKSIZEY = 715/13;;
 	public static int NORMALSPEED = BLOCKSIZEY/12;
 	
 	public static int EXPLOSIONTIME = 12;
-	public static int BOMBTIME = 70;
+	public static int BOMBTIME = 80;
 	public static final int ENEMYDYINGTIME = 20;
 	
 	

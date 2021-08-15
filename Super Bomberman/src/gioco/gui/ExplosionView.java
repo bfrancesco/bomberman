@@ -1,12 +1,7 @@
 package gioco.gui;
 
 import java.awt.Image;
-import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.util.Vector;
 
-import javax.imageio.ImageIO;
 
 import gioco.model.Explosion;
 import gioco.utilities.Resources;

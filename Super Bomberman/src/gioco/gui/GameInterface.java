@@ -41,7 +41,7 @@ public class GameInterface extends JPanel {
 		addKeyListener(controller);	
 		requestFocus();
 		giocoView = new GamePanel(controller , 715 , 715);
-		pointView = new pointsPanel(false);
+		pointView = new pointsPanel(controller.isMultiplayer());
 		BoxLayout b = new BoxLayout(this, BoxLayout.Y_AXIS);
 		this.setLayout( b );
 		this.add(pointView , b);

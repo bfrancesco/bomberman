@@ -14,15 +14,17 @@ import gioco.utilities.Resources;
 public class EnemyView {
 
 
-	Image currentImage;
-	int currentState;
-	int index;
-	int type; 
+	private Image currentImage;
+	private int currentState;
+	private int index;
+	private int type; 
+	private int id;
 	
-	public  EnemyView(int type) {
+	public  EnemyView(int type,int id) {
 		this.type = type;
 		currentState = Entity.IDLE_DOWN;
 		currentImage = Resources.downEnemy1.get(0);
+		this.id =id;
 	}
 	
 	public void setState(int state) {
@@ -30,6 +32,12 @@ public class EnemyView {
 	}
 	
 	
+	
+	public int getId() {
+		return id;
+	}
+
+
 	public Image getCurrentImage() {
 		return currentImage;
 	}

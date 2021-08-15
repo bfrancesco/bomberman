@@ -16,11 +16,11 @@ public class Bomb {
 		this.timer = Settings.BOMBTIME; 
 	}
 
-	public int getX() {
+	public int getXCell() {
 		return xCell;
 	}
 
-	public void setX(int x) {
+	public void setXCell(int x) {
 		this.xCell = x;
 	}
 	
@@ -29,16 +29,22 @@ public class Bomb {
 	public Player getPlayer() {
 		return player;
 	}
-
+	
+	public void update(int x , int y , int durata) {
+		xCell = x;
+		yCell = y;
+		timer = durata;
+	}
+	
 	public void setPlayer(Player player) {
 		this.player = player;
 	}
 
-	public int getY() {
+	public int getYCell() {
 		return yCell;
 	}
 
-	public void setY(int y) {
+	public void setYCell(int y) {
 		this.yCell = y;
 	}
 
@@ -63,7 +69,13 @@ public class Bomb {
 		if(obj.getClass() != this.getClass())
 			return false;
 		Bomb b = (Bomb) obj;
-		return b.getX() == this.getX() && b.getY() == this.getY();	
+		return b.getXCell() == this.getXCell() && b.getYCell() == this.getYCell();	
 	}
-
+	
+	@Override
+	public String toString() {
+		
+		return xCell+" " +yCell+ " "+timer;
+	}
+	
 }

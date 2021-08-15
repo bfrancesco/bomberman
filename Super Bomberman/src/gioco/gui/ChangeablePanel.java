@@ -34,43 +34,54 @@ public class ChangeablePanel extends JPanel {
 	private BombView bombs;
 	private Vector<EnemyView> enemyview;
 	private BombermanView player1;
+	private BombermanView player2;
 
 	public ChangeablePanel(PlayerController controller) {
 		this.controller = controller;
 		this.setOpaque(false);
-		try {
-			brick = ImageIO.read(getClass().getResourceAsStream("/gioco/resources/blocks/brick.jpg"));
-		} catch (IOException e) {
-			System.out.println("CANNOT FIND BRICK RESOURCE");
-		}
-		player1 = new BombermanView();
+	
+		brick = Resources.brick;
+
+		player1 = new BombermanView(Settings.PLAYER1);
+		if(controller.isMultiplayer())
+			player2 = new BombermanView(Settings.PLAYER2);
 		explosions = new ExplosionView();
 		bombs = new BombView();
-		Resources.loadEnemyImages();
 		enemyview= new Vector<EnemyView>();
 		for(int i = 0; i < controller.getGioco().getEnemies().size();++i) {
+			int id = controller.getGioco().getEnemies().get(i).getID();
 			if(controller.getGioco().getEnemies().get(i) instanceof Enemy1)
-				enemyview.add(new EnemyView(1));
+				enemyview.add(new EnemyView(1 , id));
 			else if(controller.getGioco().getEnemies().get(i) instanceof Enemy3)
-				enemyview.add(new EnemyView(3));
-			else 	enemyview.add(new EnemyView(2));
+				enemyview.add(new EnemyView(3,id));
+			else 	enemyview.add(new EnemyView(2,id));
 		}
 		
 	}
 
 	public void update() {
 		player1.update(controller.getGioco().getPlayer1().getState());
-		Vector<Enemy> enemyToBeRemoved = controller.getGioco().getEnemiesToBeRemoved();
+		if(controller.isMultiplayer())
+			player2.update(controller.getGioco().getPlayer2().getState());
+		updateEnemies();
+		repaint();
+	}
+		
+	private void updateEnemies() {
 		Vector<EnemyView> enemyViewToBeRemoved = new Vector<EnemyView>();
 		for(int i = 0; i < controller.getGioco().getEnemies().size();++i) {
 			enemyview.get(i).update(controller.getGioco().getEnemies().get(i).getState());
-			if(enemyToBeRemoved.contains(controller.getGioco().getEnemies().get(i)))
-				enemyViewToBeRemoved.add(enemyview.get(i));			
+			boolean trovato = false;
+			for(Enemy e : controller.getGioco().getEnemies()) {
+				if(e.getID() == enemyview.get(i).getId() )
+					trovato = true;
+			}
+			if(!trovato)
+				enemyViewToBeRemoved.add(enemyview.get(i));
 		}
 		enemyview.removeAll(enemyViewToBeRemoved);
-		repaint();
 	}
-
+	
 	@Override
 	protected synchronized void paintComponent(Graphics g) {
 
@@ -89,7 +100,7 @@ public class ChangeablePanel extends JPanel {
 		Vector<Bomb> tmpB= new Vector<Bomb>(controller.getGioco().getBombs());
 		for (Bomb b : tmpB) {
 			g.drawImage( bombs.get(b.getTimer()).getScaledInstance(Settings.BLOCKSIZEX, Settings.BLOCKSIZEY, Image.SCALE_SMOOTH),
-					b.getX() * Settings.BLOCKSIZEX, b.getY() * Settings.BLOCKSIZEY, null);
+					b.getXCell() * Settings.BLOCKSIZEX, b.getYCell() * Settings.BLOCKSIZEY, null);
 		}
 		
 		
@@ -97,15 +108,12 @@ public class ChangeablePanel extends JPanel {
 		Vector<Explosion> tmpE= new Vector<Explosion>(controller.getGioco().getExplosions());
 		for (Explosion b : tmpE) {
 			g.drawImage( explosions.get(b.getType(),b.getDurata() , b.getDirection()).getScaledInstance(Settings.BLOCKSIZEX, Settings.BLOCKSIZEY, Image.SCALE_SMOOTH),
-					b.getX() * Settings.BLOCKSIZEX, b.getY() * Settings.BLOCKSIZEY, null);
+					b.getXCell() * Settings.BLOCKSIZEX, b.getYCell() * Settings.BLOCKSIZEY, null);
 		}
 		
 		for (int i = 0;i<controller.getGioco().getEnemies().size();++i) {
 			Enemy b = controller.getGioco().getEnemies().get(i);
 			if (b instanceof Enemy1) {
-				/*g.setColor(Color.MAGENTA);
-				g.fillRect(b.getX(), b.getY() , b.getWidth(),  
-						b.getHeight());*/
 				g.drawImage(enemyview.get(i).getCurrentImage().getScaledInstance(b.getWidth(), b.getHeight(), Image.SCALE_FAST),
 						b.getX(), b.getY() , null);	
 			} else if (b instanceof Enemy2) {
@@ -126,7 +134,12 @@ public class ChangeablePanel extends JPanel {
 		
 		Player p1 = controller.getGioco().getPlayer1();
 		g.drawImage(player1.getCurrentImage().getScaledInstance(p1.getWidth(), p1.getHeight(), Image.SCALE_FAST),
-				p1.getX(), p1.getY(), p1.getWidth(), Settings.BLOCKSIZEY-2, null);	
+				p1.getX(), p1.getY(), p1.getWidth(),  p1.getHeight(), null);	
+		if(controller.getGioco().isMultiplayer()) {
+			Player p2 = controller.getGioco().getPlayer2();
+			g.drawImage(player2.getCurrentImage().getScaledInstance(p2.getWidth(), p2.getHeight(), Image.SCALE_FAST),
+					p2.getX(), p2.getY(), p2.getWidth(),  p2.getHeight(), null);	
+		}
 	}
 
 }

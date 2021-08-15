@@ -29,12 +29,12 @@ public class Entity {
 	protected int state;
 
 	
-	public int getState() {
+	public  int getState() {
 		return state;
 	}
 
 
-	public void setState(int state) {
+	public  void setState(int state) {
 		this.state = state;
 	}
 
@@ -63,6 +63,11 @@ public class Entity {
 		return y;
 	}
 
+	public void update(int x , int y , int state) {
+		this.x = x;
+		this.y = y;
+		this.state= state;
+	}
 	
 	
 	public void setWidth(int width) {

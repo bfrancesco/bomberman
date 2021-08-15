@@ -4,10 +4,10 @@ import gioco.utilities.Settings;
 
 public class Enemy2 extends Enemy {
 	private int changement;
-	boolean increasing;
+	private boolean increasing;
 	
-	public Enemy2(int x, int y) {
-		super(x, y);
+	public Enemy2(int x, int y,int id) {
+		super(x, y,id);
 		changement = 0;
 		increasing = true;
 	}
@@ -32,6 +32,11 @@ public class Enemy2 extends Enemy {
 	public void move() {
 		changeSpeed();
 		super.move(direction);
+	}
+	
+	@Override
+	protected int getType() {
+		return 2;
 	}
 	
 

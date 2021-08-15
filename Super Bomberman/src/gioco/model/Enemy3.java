@@ -12,21 +12,21 @@ public class Enemy3 extends Enemy {
 	private int randomVisibilityTime;
 	
 
-	public Enemy3(int x, int y) {
-		super(x, y);
+	public Enemy3(int x, int y, int id) {
+		super(x, y , id);
 		visible = true;
 		unseenTime = 0;
 		Random r = new Random();
 		randomVisibilityTime = VISIBLETIME - r.nextInt(VISIBLETIME/2);
 	}
 
-	public void Teleport(int px1, int px2, int py1, int py2) {
-		x = px1;
-		y = py1;
+	public void Teleport(int px1, int py1, int px2, int py2) {
+		x = px1*Settings.BLOCKSIZEX;
+		y = py1*Settings.BLOCKSIZEY;
 		Random r = new Random();
 		if (r.nextBoolean()) {
-			x = px2;
-			y = py2;
+			x = px2*Settings.BLOCKSIZEX;
+			y = py2*Settings.BLOCKSIZEY;
 		}
 	}
 	
@@ -69,6 +69,24 @@ public class Enemy3 extends Enemy {
 		return unseenTime;
 	}
 	
+	@Override
+	protected int getType() {
+		return 3;
+	}
+	
+	public void update(int x, int y, int state , boolean visible , int unseenTime , int visibilityTime) {
+		// TODO Auto-generated method stub
+		super.update(x, y, state);
+		this.visible = visible;
+		this.unseenTime = unseenTime;
+		this.randomVisibilityTime = visibilityTime;
+	}
+	
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return super.toString() +" " + visible +  " "+ unseenTime+" "+randomVisibilityTime;
+	}
 
 	
 }

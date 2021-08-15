@@ -6,20 +6,31 @@ public class Explosion {
 	public static final int CENTRAL= 13;
 	public static final int MIDDLE = 14;
 	public static final int LAST = 15;
-	private int x ; 
-	private int y;
+	private int xCell ; 
+	private int yCell;
 	private int  durata ; 
 	private int type ;
 	private int direction;
 	private Player player ;
 	public Explosion(int x , int y , int type , int direction , Player player) {
-		this.x =x ;
-		this.y=y;
+		this.xCell =x ;
+		this.yCell=y;
 		this.type = type;
 		this.direction = direction;
 		this.durata = Settings.EXPLOSIONTIME;
 		this.player = player ;
 	}
+	
+	public Explosion(int x , int y , int type ,int durata ,  int direction , Player player) {
+		this.xCell =x ;
+		this.yCell=y;
+		this.type = type;
+		this.durata = durata;
+		this.direction = direction;
+		this.durata = Settings.EXPLOSIONTIME;
+		this.player = player ;
+	}
+	
 	public int getDurata() {
 		return durata;
 	}
@@ -32,11 +43,11 @@ public class Explosion {
 	public Player getPlayer() {
 		return player;
 	}
-	public int getX() {
-		return x;
+	public int getXCell() {
+		return xCell;
 	}
-	public int getY() {
-		return y;
+	public int getYCell() {
+		return yCell;
 	}
 	public int getType() {
 		return type;
@@ -49,6 +60,11 @@ public class Explosion {
 		this.durata = durata;
 	}
 	
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return xCell+" " +yCell+ " " +type+" " +durata+" "+direction+" ";
+	}
 	
 	
 }
