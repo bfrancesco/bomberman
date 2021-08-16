@@ -104,8 +104,8 @@ public class GameHandler implements Runnable {
 	
 	public synchronized void writeInformations() {
 		StringBuffer message = new StringBuffer();
-		message.append(Protocol.player(1  , gioco.getPlayer1().toString())+" ");
-		message.append(Protocol.player(2  , gioco.getPlayer2().toString())+" ");
+		message.append(Protocol.player(gioco.getPlayer1().toString())+" ");
+		message.append(Protocol.player(gioco.getPlayer2().toString())+" ");
 		for(Enemy e : gioco.getEnemies()) {
 			if(e!=null)
 				message.append(Protocol.enemy(e.toString())+ " ");

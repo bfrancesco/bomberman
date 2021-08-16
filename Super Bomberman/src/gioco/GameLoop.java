@@ -42,7 +42,7 @@ public class GameLoop extends Thread {
 				}
 				else {					
 					controller.readAndUpdate();	
-					controller.sendState();	
+					controller.sendAction();	
 					controller.getPanel().setStat(200);
 					if(!controller.getClient().isConnected()) {
 						break ;
@@ -60,9 +60,12 @@ public class GameLoop extends Thread {
 						System.out.println("OH NO! YOU LOSE!!! ARE YOU BRAVE ENOUGH TO TRY AGAIN?");
 				}
 				else {
-					if (controller.getGioco().results() == Gioco.VICTORYPLAYER1 && controller.getClient().getOrderConnection()==1) {
+					int res = controller.getGioco().results();
+					if (res== Gioco.VICTORYPLAYER1 && controller.getClient().getOrderConnection()==1) {
 						System.out.println("YOU WIN!!! TOTAL POINTS: " + controller.getGioco().getPlayer1().getPoints() + " !!!");
 					}
+					else if (res == Gioco.DRAW)
+						System.out.println("DRAW! LUCK WAS BY ITS SIDE, WASN'T IT?");
 					else
 					System.out.println("OH NO! YOU LOSE!!! ARE YOU BRAVE ENOUGH TO TRY AGAIN?");
 				}

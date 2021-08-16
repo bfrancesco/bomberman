@@ -46,22 +46,22 @@ public class pointsPanel extends JPanel {
 		pointsPlayer1.setForeground(Color.BLACK);
 		pointsPlayer1.setBackground(new Color(255 ,255 ,255 ));
 		pointsPlayer1.setOpaque(false);
-		pointsPlayer1.setIconTextGap(30);
+		pointsPlayer1.setIconTextGap(25);
 		pointsPlayer1.setFont(font);
 		pointsPlayer2.setForeground(Color.BLACK);
 		pointsPlayer2.setBackground(new Color(255 ,255 ,255 ));
 		pointsPlayer2.setOpaque(false);
-		pointsPlayer2.setIconTextGap(30);
+		pointsPlayer2.setIconTextGap(25);
 		pointsPlayer2.setFont(font);
 		clock.setForeground(Color.black);
 		clock.setBackground(new Color(255 ,255 ,255 ));
 		clock.setOpaque(false);
-		clock.setIconTextGap(30);
+		clock.setIconTextGap(25);
 		clock.setFont(font);
 		enemiesLeft.setForeground(Color.BLACK);
 		enemiesLeft.setBackground(new Color(255 ,255 ,255 ));
 		enemiesLeft.setOpaque(false);
-		enemiesLeft.setIconTextGap(30);
+		enemiesLeft.setIconTextGap(25);
 		enemiesLeft.setFont(font);
 		this.add(pointsPlayer1);
 		if(multiplayer)

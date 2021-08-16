@@ -8,12 +8,20 @@ public class Bomb {
 	private int timer;
 	private Player player;
 
-	public Bomb(int x, int y, int radius , Player player) {
+	public Bomb(int x, int y, Player player) {
 		super();
 		this.player = player;
 		this.xCell = x;
 		this.yCell = y;
 		this.timer = Settings.BOMBTIME; 
+	}
+	
+	public Bomb(int x, int y, int timer ,Player player) {
+		super();
+		this.player = player;
+		this.xCell = x;
+		this.yCell = y;
+		this.timer = timer; 
 	}
 
 	public int getXCell() {

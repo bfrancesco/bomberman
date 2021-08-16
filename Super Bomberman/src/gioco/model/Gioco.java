@@ -486,10 +486,10 @@ public class Gioco {
 				}
 
 				if (multiplayer
-						&& ((player2.rightSide() <= enemy.rightSide() && player2.rightSide() >= enemy.getX())
+						&& (((player2.rightSide() <= enemy.rightSide() && player2.rightSide() >= enemy.getX())
 								|| (player2.getX() <= enemy.rightSide() && player2.getX() >= enemy.getX()))
 						&& ((player2.downSide() <= enemy.downSide() && player2.downSide() >= enemy.getY())
-								|| (player2.getY() <= enemy.downSide() && player2.downSide() >= enemy.getY()))|| (enemy.xcenterBlock() == player2.xcenterBlock() && enemy.ycenterBlock() == player2.ycenterBlock()) ) {
+								|| (player2.getY() <= enemy.downSide() && player2.downSide() >= enemy.getY()))|| (enemy.xcenterBlock() == player2.xcenterBlock() && enemy.ycenterBlock() == player2.ycenterBlock()))) {
 					if (!(enemy instanceof Enemy3) || ((Enemy3) enemy).isVisible()) {
 						player2.setState(Player.DYING_ENEMY);
 					}
@@ -673,20 +673,20 @@ public class Gioco {
 		return matrix[y][x];
 	}
 
-	public synchronized void addBomb(String player) {
-		if (player1.getBombs() > 0) {
-			int px = player1.xcenterBlock();
-			int py = player1.ycenterBlock();
+	public synchronized void addBomb(Player player) {
+		if (player.getBombs() > 0) {
+			int px = player.xcenterBlock();
+			int py = player.ycenterBlock();
 
-			if (player1.getState() == Player.WALKING_DOWN)
-				py = player1.upBlock();
-			else if (player1.getState() == Player.WALKING_LEFT) {
-				px = player1.rightBlock();
+			if (player.getState() == Player.WALKING_DOWN)
+				py = player.upBlock();
+			else if (player.getState() == Player.WALKING_LEFT) {
+				px = player.rightBlock();
 			}
-			Bomb b = new Bomb(px, py, player1.getRadius(), player1);
+			Bomb b = new Bomb(px, py, player);
 			if (!bombs.contains(b)) {
 				bombs.add(b);
-				player1.decreaseBombs();
+				player.decreaseBombs();
 			}
 		}
 	}
@@ -704,23 +704,23 @@ public class Gioco {
 	}
 
 	public boolean finishLevel() {
-		if (enemies.size() == 0) {
+		if (!multiplayer && player1.getState() != Player.DYING_ENEMY && player1.getState() != Player.DYING_EXPLOSION && enemies.size() == 0) {
 			player1.setState(Player.WINNING);
 			return true;
 		}
 		if (multiplayer) {
-			boolean isWinning1 = true;
-			boolean isWinning2 = true;
+			boolean DEAD1 = true;
+			boolean DEAD2= true;
 			if (player1.getState() == Player.DYING_ENEMY || player1.getState() == Player.DYING_EXPLOSION)
-				isWinning1 = false;
+				DEAD1 = false;
 			if (player2.getState() == Player.DYING_ENEMY || player2.getState() == Player.DYING_EXPLOSION)
-				isWinning2 = false;
-			if (enemies.size() == 0 || !isWinning1 || !isWinning2) {
-				if (isWinning1 && !isWinning2)
+				DEAD2 = false;
+			if (enemies.size() == 0 || !DEAD1 || !DEAD2) {
+				if (DEAD1 && !DEAD2)
 					player1.setState(Player.WINNING);
-				else if (!isWinning1 && isWinning2) {
+				else if (!DEAD1 && DEAD2) {
 					player2.setState(Player.WINNING);
-				} else if (isWinning1 && isWinning2) {
+				} else if (DEAD1 && DEAD2) {
 					if (player2.getPoints() > player1.getPoints()) {
 						player2.setState(Player.WINNING);
 						player1.setState(Player.IDLE_DOWN);

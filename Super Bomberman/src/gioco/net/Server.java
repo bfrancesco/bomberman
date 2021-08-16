@@ -40,9 +40,9 @@ public class Server implements Runnable{
 	
 	private void resetServer() throws IOException {
 		System.out.println("Waiting for player 1...");
-		Socket player1 = server.accept();
+		player1 = server.accept();
 		System.out.println("Waiting for player 2...");
-		Socket player2 = server.accept();
+		player2 = server.accept();
 		System.out.println("READY TO START!");
 		//se ne volessi avere di più , allora faccio partire con almeno 2 e poi aggiungo una lista di altri giocatori connessi
 		out1 = new PrintWriter(new BufferedOutputStream(player1.getOutputStream()), true);
@@ -90,11 +90,19 @@ public class Server implements Runnable{
 			else 
 				player = gioco.getPlayer2();
 			int state = player.getState();
+			int i = 0;
 			String line = in.readLine();
+			System.out.println(line);
 			String res  [] = line.split(" ");
-			if(res[0].equals(Protocol.STATE)) {
-				state = Integer.parseInt(res[1]);
+			if(res[i].equals(Protocol.BOMBADDED) ) {
+				gioco.addBomb(player);
+				i+=1;
+			}
+				
+			if(res[i].equals(Protocol.STATE)) {
+				state = Integer.parseInt(res[i+1]);
 				 player.setState(state);
+
 			}
 			
 		}
@@ -103,13 +111,12 @@ public class Server implements Runnable{
 	
 	public synchronized void writeInformations() {
 		StringBuffer message = new StringBuffer();
-		message.append(Protocol.player(Settings.PLAYER1  , gioco.getPlayer1().toString())+" ");
-		message.append(Protocol.player(Settings.PLAYER2  , gioco.getPlayer2().toString())+" ");
+		message.append(Protocol.player(gioco.getPlayer1().toString())+" ");
+		message.append(Protocol.player(gioco.getPlayer2().toString())+" ");
 		for(Enemy e : gioco.getEnemies()) {
 			if(e!=null)
 				message.append(Protocol.enemy(e.toString())+ " ");
 		}
-		
 		for(Bomb b : gioco.getBombs()) {
 			message.append(Protocol.bomb(b.toString())+" ");
 		}

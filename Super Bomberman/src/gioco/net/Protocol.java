@@ -8,6 +8,7 @@ public class Protocol {
 	public static final String ENEMY = "en";
 	public static final String EXPLOSION = "ex";
 	public static final String BOMB = "b";
+	public static final String BOMBADDED = "ba";
 	public static final String ENDCOMUNICATION = "END";
 	
 
@@ -17,8 +18,8 @@ public class Protocol {
 	}
 	
 	
-	public static String player(int nplayer ,String p ) {
-		return PLAYER + " " + nplayer + " " + p ;
+	public static String player(String p ) {
+		return PLAYER + " " + p ;
 	}
 	
 	public static String enemy(String e ) {
@@ -29,8 +30,9 @@ public class Protocol {
 		return BOMB + " " + b;
 	}
 	
+	
 	public static String explosion(String ex ) {
-		return BOMB + " "+ex;
+		return EXPLOSION + " "+ex;
 	}
 	
 	/*public static int[] parsePosition(String line) {

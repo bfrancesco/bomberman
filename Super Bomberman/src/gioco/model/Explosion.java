@@ -27,7 +27,6 @@ public class Explosion {
 		this.type = type;
 		this.durata = durata;
 		this.direction = direction;
-		this.durata = Settings.EXPLOSIONTIME;
 		this.player = player ;
 	}
 	
@@ -63,7 +62,7 @@ public class Explosion {
 	@Override
 	public String toString() {
 		// TODO Auto-generated method stub
-		return xCell+" " +yCell+ " " +type+" " +durata+" "+direction+" ";
+		return xCell+" " +yCell+ " " +type+" " +durata+" "+direction;
 	}
 	
 	

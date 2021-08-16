@@ -18,10 +18,10 @@ public class Client {
 	private BufferedReader in;
 	private int orderConnection;
 	private boolean connected;
-	private String action;
+	private boolean bombAdded;
 	
 	public Client() {
-		action = new String(Protocol.state(Player.IDLE_DOWN));
+		bombAdded = false;
 		connect();
 		
 	}
@@ -122,17 +122,19 @@ public class Client {
 		return null;
 	}
 	
+	
 
-
-
-	public String getAction() {
-		return action;
+	public synchronized boolean isBombAdded() {
+		return bombAdded;
 	}
 
 
 
-	public void setAction(String action) {
-		this.action = action;
+	public synchronized void setBombAdded(boolean bombAdded) {
+		this.bombAdded = bombAdded;
 	}
+
+
+
 	
 }

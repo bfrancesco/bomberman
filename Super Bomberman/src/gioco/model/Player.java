@@ -94,7 +94,10 @@ public  class Player extends Entity{
 	}
 
 
-	
+	public void update(int x , int y , int state , int points) {
+		super.update(x, y, state);
+		this.points = points;
+	}
 
 
 	public int getType() {
@@ -121,7 +124,7 @@ public  class Player extends Entity{
 	
 	@Override
 	public String toString() {
-		return x+" " + y+" "+state;
+		return type + " "+x+" " + y+" "+state+" "+points;
 	}
 	
 	
