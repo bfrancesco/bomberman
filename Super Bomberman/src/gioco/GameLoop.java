@@ -54,14 +54,14 @@ public class GameLoop extends Thread {
 				gameOver = true;
 				controller.getGioco().checkExplosions();
 				if(!controller.isMultiplayer()) {
-					if (controller.getGioco().results() == Gioco.VICTORYPLAYER1) {
+					if (controller.getGioco().results() == Gioco.VICTORY) {
 						System.out.println("YOU WIN!!! TOTAL POINTS: " + controller.getGioco().getPlayer1().getPoints() + " !!!");
 					} else
 						System.out.println("OH NO! YOU LOSE!!! ARE YOU BRAVE ENOUGH TO TRY AGAIN?");
 				}
 				else {
 					int res = controller.getGioco().results();
-					if (res== Gioco.VICTORYPLAYER1 && controller.getClient().getOrderConnection()==1) {
+					if (res== Gioco.VICTORY) {
 						System.out.println("YOU WIN!!! TOTAL POINTS: " + controller.getGioco().getPlayer1().getPoints() + " !!!");
 					}
 					else if (res == Gioco.DRAW)
@@ -78,7 +78,7 @@ public class GameLoop extends Thread {
 			try {
 				if(sleepTime>0)
 					Thread.sleep(sleepTime);
-				else Thread.sleep((updateTime) / 1000000);
+				else Thread.sleep(0);
 			} catch (InterruptedException e) {
 				return;
 			}

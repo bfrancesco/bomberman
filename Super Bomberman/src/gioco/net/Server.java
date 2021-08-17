@@ -92,7 +92,6 @@ public class Server implements Runnable{
 			int state = player.getState();
 			int i = 0;
 			String line = in.readLine();
-			System.out.println(line);
 			String res  [] = line.split(" ");
 			if(res[i].equals(Protocol.BOMBADDED) ) {
 				gioco.addBomb(player);

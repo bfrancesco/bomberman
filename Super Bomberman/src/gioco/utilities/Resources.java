@@ -65,6 +65,16 @@ public class Resources {
 	public static Image iconEnemy;
 	public static Image iconClock;
 	
+	
+	public static Image iconWindow;
+	
+	public static void loadWindowIcon()throws IOException{
+		
+			iconWindow = ImageIO
+					.read(Resources.class.getResourceAsStream("/gioco/resources/bombs/bomb_0.png"));
+
+	}
+	
 	public static void loadResources() {
 		try {
 			brick = ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/blocks/brick.jpg"));

@@ -9,10 +9,9 @@ import java.util.Vector;
 import gioco.utilities.Settings;
 
 public class Gioco {
-	public static final int VICTORYPLAYER1 = 0;
-	public static final int VICTORYPLAYER2 = 1;
-	public static final int DRAW = 2;
-	public static final int LOSS = 3;
+	public static final int VICTORY = 0;
+	public static final int DRAW = 1;
+	public static final int LOSS = 2;
 
 	private int time = 150;
 	private Block[][] matrix;
@@ -284,18 +283,35 @@ public class Gioco {
 				switch (collisionType) {
 				case Settings.DOWNCOLLISION:
 					direction = Settings.UP;
+					if(player.getY() -player.downBlock()*Settings.BLOCKSIZEY <= player.getSpeed()/2) {
+						player.setY(player.ycenterBlock()*Settings.BLOCKSIZEY  +Settings.BLOCKSIZEY  - player.getHeight()-1);
+						return;
+					}
 					break;
 				case Settings.UPCOLLISION:
 					direction = Settings.DOWN;
+					if( player.getY()-player.ycenterBlock()*Settings.BLOCKSIZEY <= player.getSpeed()/2) {
+						player.setY(player.ycenterBlock()*Settings.BLOCKSIZEY+1);
+						return;
+					}
 					break;
 				case Settings.RIGHTCOLLISION:
 					direction = Settings.LEFT;
+					if( player.getX()-(player.rightBlock())*Settings.BLOCKSIZEX <= player.getSpeed()/2) {
+						player.setX(player.xcenterBlock()*Settings.BLOCKSIZEX +Settings.BLOCKSIZEX  - player.getWidth()-1);
+						return;
+					}
 					break;
 				case Settings.LEFTCOLLISION:
 					direction = Settings.RIGHT;
+					if( player.getX()-player.xcenterBlock()*Settings.BLOCKSIZEX <= player.getSpeed()/2) {
+						player.setX(player.xcenterBlock()*Settings.BLOCKSIZEX +1);
+						return;
+					}
 					break;
 				}
-				player.move(direction, player.getSpeed() * 2 / 3);
+				player.move(direction, player.getSpeed());
+				
 			}
 		}
 	}
@@ -306,10 +322,10 @@ public class Gioco {
 			if (e.getX() - e.getSpeed() < 0) {
 				return Settings.TOTALCOLLISION;
 			} else if (!matrix[e.ycenterBlock()][(e.getX() - e.getSpeed()) / Settings.BLOCKSIZEX].isWalkable()) {
-				e.setX((e.xcenterBlock()) * Settings.BLOCKSIZEX);
+				e.setX((e.xcenterBlock()) * Settings.BLOCKSIZEX+1);
 				return Settings.TOTALCOLLISION;
 			} else if (!matrix[e.downBlock()][(e.getX() - e.getSpeed()) / Settings.BLOCKSIZEX].isWalkable()) {
-				e.setX((e.xcenterBlock()) * Settings.BLOCKSIZEX);
+				e.setX((e.xcenterBlock()) * Settings.BLOCKSIZEX+1);
 				if (e.downSide() + e.getSpeed() >= Settings.BLOCKSIZEY * height) {
 					return Settings.TOTALCOLLISION;
 				}
@@ -326,9 +342,10 @@ public class Gioco {
 			if (e.rightSide() + e.getSpeed() >= Settings.BLOCKSIZEX * width) {
 				return Settings.TOTALCOLLISION;
 			} else if (!matrix[e.ycenterBlock()][(e.rightSide() + e.getSpeed()) / Settings.BLOCKSIZEX].isWalkable()) {
+				e.setX((e.xcenterBlock()) * Settings.BLOCKSIZEX + Settings.BLOCKSIZEX - e.getWidth()-1);
 				return Settings.TOTALCOLLISION;
 			} else if (!matrix[e.downBlock()][(e.rightSide() + e.getSpeed()) / Settings.BLOCKSIZEX].isWalkable()) {
-				e.setX((e.xcenterBlock()) * Settings.BLOCKSIZEX + Settings.BLOCKSIZEX - e.getWidth());
+				e.setX((e.xcenterBlock()) * Settings.BLOCKSIZEX + Settings.BLOCKSIZEX - e.getWidth()-1);
 				if (e.downSide() + e.getSpeed() >= Settings.BLOCKSIZEY * height) {
 					return Settings.TOTALCOLLISION;
 				}
@@ -344,10 +361,10 @@ public class Gioco {
 		case Settings.UP:
 			if (e.getY() - e.getSpeed() < 0
 					|| !matrix[(e.getY() - e.getSpeed()) / Settings.BLOCKSIZEY][e.xcenterBlock()].isWalkable()) {
-				e.setY((e.ycenterBlock()) * Settings.BLOCKSIZEY);
+				e.setY((e.ycenterBlock()) * Settings.BLOCKSIZEY+1);
 				return Settings.TOTALCOLLISION;
 			} else if (!matrix[(e.getY() - e.getSpeed()) / Settings.BLOCKSIZEY][e.rightBlock()].isWalkable()) {
-				e.setY((e.ycenterBlock()) * Settings.BLOCKSIZEY);
+				e.setY((e.ycenterBlock()) * Settings.BLOCKSIZEY+1);
 				if (e.rightSide() + e.getSpeed() >= Settings.BLOCKSIZEY * height) {
 					return Settings.TOTALCOLLISION;
 				}
@@ -363,9 +380,10 @@ public class Gioco {
 		case Settings.DOWN:
 			if (e.downSide() + e.getSpeed() >= Settings.BLOCKSIZEY * height
 					|| !matrix[(e.downSide() + e.getSpeed()) / Settings.BLOCKSIZEY][e.xcenterBlock()].isWalkable()) {
+				e.setY((e.ycenterBlock()) * Settings.BLOCKSIZEY + Settings.BLOCKSIZEY - e.getHeight()-1);
 				return Settings.TOTALCOLLISION;
 			} else if (!matrix[(e.downSide() + e.getSpeed()) / Settings.BLOCKSIZEY][e.rightBlock()].isWalkable()) {
-				e.setY((e.ycenterBlock()) * Settings.BLOCKSIZEY + Settings.BLOCKSIZEY - e.getHeight());
+				e.setY((e.ycenterBlock()) * Settings.BLOCKSIZEY + Settings.BLOCKSIZEY - e.getHeight()-1);
 				if (e.rightSide() + e.getSpeed() >= Settings.BLOCKSIZEY * height) {
 					return Settings.TOTALCOLLISION;
 				}
@@ -704,10 +722,14 @@ public class Gioco {
 	}
 
 	public boolean finishLevel() {
-		if (!multiplayer && player1.getState() != Player.DYING_ENEMY && player1.getState() != Player.DYING_EXPLOSION && enemies.size() == 0) {
-			player1.setState(Player.WINNING);
-			return true;
-		}
+		if (!multiplayer)
+			if( (player1.getState() != Player.DYING_ENEMY && player1.getState() != Player.DYING_EXPLOSION && enemies.size() == 0)) {
+				player1.setState(Player.WINNING);
+				return true;
+			}
+			else if(player1.getState() == Player.DYING_ENEMY || player1.getState() == Player.DYING_EXPLOSION)
+				return true;
+
 		if (multiplayer) {
 			boolean DEAD1 = true;
 			boolean DEAD2= true;
@@ -753,14 +775,14 @@ public class Gioco {
 		if (multiplayer) {
 			if (player1.getState() == Player.DYING_ENEMY || player1.getState() == Player.DYING_EXPLOSION
 					&& player2.getState() != Player.DYING_ENEMY && player2.getState() != Player.DYING_EXPLOSION)
-				return VICTORYPLAYER2;
+				return LOSS;
 			else if (player2.getState() == Player.DYING_ENEMY || player2.getState() == Player.DYING_EXPLOSION
 					&& player1.getState() != Player.DYING_ENEMY && player1.getState() != Player.DYING_EXPLOSION)
-				return VICTORYPLAYER1;
+				return VICTORY;
 			if (player1.getPoints() > player2.getPoints())
-				return VICTORYPLAYER1;
+				return VICTORY;
 			else if (player1.getPoints() < player2.getPoints())
-				return VICTORYPLAYER2;
+				return LOSS;
 			else
 				return DRAW;
 		} else {
@@ -768,7 +790,7 @@ public class Gioco {
 			if (player1.getState() == Player.DYING_ENEMY || player1.getState() == Player.DYING_EXPLOSION) {
 				return LOSS;
 			} else {
-				return VICTORYPLAYER1;
+				return VICTORY;
 			}
 		}
 	}

@@ -18,7 +18,7 @@ public  class Player extends Entity{
 		bombs = 1;
 		radius = 2;
 		width = Settings.BLOCKSIZEX*8/10;
-		//height = Settings.BLOCKSIZEY*9/110;
+		//height = Settings.BLOCKSIZEY*9/11;
 		points = 0;
 		this.type =type;
 	}

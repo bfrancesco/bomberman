@@ -111,12 +111,9 @@ public class PlayerController extends KeyAdapter {
 					break;
 
 				}
-				gioco.getPlayer1().setState(movements.get(movements.size() - 1));
-				//if(multiplayer) {
-				//	client.setAction(Protocol.state(gioco.getPlayer1().getState()));
-					//System.out.println(Protocol.state(gioco.getPlayer1().getState()));
-					//System.out.println("INVIATO LO STATO");
-				//}
+				if(!gioco.isGameOver())
+					gioco.getPlayer1().setState(movements.get(movements.size() - 1));
+				
 			}
 	}
 

@@ -1,19 +1,34 @@
 package gioco;
 
- import java.util.Random;
+ import java.awt.Dimension;
+import java.awt.Font;
+import java.io.IOException;
+import java.util.Random;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
 import gioco.controller.PlayerController;
 import gioco.gui.GameInterface;
+import gioco.utilities.Resources;
 import gioco.utilities.Settings;
 
 public class Main {
 
 	public static void main(String[] args) {
-		JFrame f = new JFrame("BOMBERMAN PROVA");
-		f.setSize(825 , 750);
-		f.setUndecorated(false);	
+		JFrame f = new JFrame("BOMBERMAN PROVA");	
+		int width = 825;
+		int height = 750;
+		//f.setSize(width , height);
+		f.setUndecorated(false);		
+		f.getContentPane().setPreferredSize(new Dimension(825, 750));
+		f.pack();
+		try {
+			Resources.loadWindowIcon();
+			f.setIconImage(Resources.iconWindow);
+		} catch (IOException e) {
+			
+		}
 		GameInterface panel = new GameInterface(f.getX() , f.getY());
 		Settings.BLOCKSIZEX = 825/15;
 		Settings.BLOCKSIZEY = 715/13;
@@ -22,7 +37,7 @@ public class Main {
 		Random r = new Random();
 		int a = r.nextInt(3)+1;	
 		mapName = "Map"+a;
-		boolean multi = true;
+		boolean multi = false;
 		PlayerController controller = new PlayerController(panel,multi , "Map1");
 		panel.setController(controller);
 		f.setResizable(false);
