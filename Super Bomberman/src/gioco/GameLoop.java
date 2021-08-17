@@ -7,6 +7,7 @@ import gioco.model.Gioco;
 public class GameLoop extends Thread {
 
 	private PlayerController controller;
+	boolean running;
 
 	public GameLoop(PlayerController controller) {
 		this.controller = controller;
@@ -16,10 +17,15 @@ public class GameLoop extends Thread {
 	public void render() {
 		controller.getPanel().getGiocoView().getNotStatics().update();
 	}
+	
+	public synchronized void setRunning(boolean r) {
+		running = r;
+	}
 
 	@Override
 	public void run() {
 		super.run();
+		running = true;
 		boolean gameOver = false;
 		long now = System.nanoTime();
 		long updateTime;
@@ -28,7 +34,7 @@ public class GameLoop extends Thread {
 		long startTime = System.currentTimeMillis();
 		controller.getPanel().paintMap();
 		controller.getGioco().inizia();
-		while (this.isAlive()) {
+		while (running) {
 			now = System.nanoTime();
 			render();
 			if (!controller.getGioco().isGameOver()) { 

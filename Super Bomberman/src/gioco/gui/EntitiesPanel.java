@@ -25,7 +25,7 @@ import gioco.model.Player;
 import gioco.utilities.Resources;
 import gioco.utilities.Settings;
 
-public class ChangeablePanel extends JPanel {
+public class EntitiesPanel extends JPanel {
 
 	private static final long serialVersionUID = 971861536905109107L;
 	private PlayerController controller;
@@ -36,7 +36,7 @@ public class ChangeablePanel extends JPanel {
 	private BombermanView player1;
 	private BombermanView player2;
 
-	public ChangeablePanel(PlayerController controller) {
+	public EntitiesPanel(PlayerController controller) {
 		this.controller = controller;
 		this.setOpaque(false);
 	

@@ -8,31 +8,34 @@ import java.util.Random;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
+
 import gioco.controller.PlayerController;
-import gioco.gui.GameInterface;
+import gioco.gui.GamePanel;
+import gioco.gui.WindowsHandler;
 import gioco.utilities.Resources;
 import gioco.utilities.Settings;
 
 public class Main {
 
 	public static void main(String[] args) {
-		JFrame f = new JFrame("BOMBERMAN PROVA");	
+		/*JFrame f = new JFrame("BOMBERMAN PROVA");	
 		int width = 825;
 		int height = 750;
-		//f.setSize(width , height);
+		
 		f.setUndecorated(false);		
 		f.getContentPane().setPreferredSize(new Dimension(825, 750));
 		f.pack();
 		try {
 			Resources.loadWindowIcon();
 			f.setIconImage(Resources.iconWindow);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			
-		}
-		GameInterface panel = new GameInterface(f.getX() , f.getY());
-		Settings.BLOCKSIZEX = 825/15;
-		Settings.BLOCKSIZEY = 715/13;
-		panel.setFocusable(true);
+		}*/
+		WindowsHandler windowsHandler = WindowsHandler.getWindowsHandler();
+		//GamePanel panel = new GamePanel(f.getX() , f.getY());
+	//	Settings.BLOCKSIZEX = 825/15;
+		//Settings.BLOCKSIZEY = 715/13;
+		/*panel.setFocusable(true);
 		String mapName;
 		Random r = new Random();
 		int a = r.nextInt(3)+1;	
@@ -46,6 +49,6 @@ public class Main {
 		f.setVisible(true);
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		GameLoop gl = new GameLoop(controller);
-		gl.start();	
+		gl.start();	*/
 	}
 }

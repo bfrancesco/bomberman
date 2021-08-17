@@ -6,7 +6,8 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Vector;
 
-import gioco.gui.GameInterface;
+import gioco.gui.GamePanel;
+import gioco.gui.WindowsHandler;
 import gioco.model.Bomb;
 import gioco.model.Enemy;
 import gioco.model.Enemy3;
@@ -19,21 +20,20 @@ import gioco.utilities.Resources;
 import gioco.utilities.Settings;
 
 public class PlayerController extends KeyAdapter {
-	private GameInterface panel;
+	private GamePanel panel;
 	private Gioco gioco;
 	private boolean multiplayer;
 	private ArrayList<Integer> movements;
 	private Client client;
 
-	public PlayerController(GameInterface panel, boolean multi, String map) {
+	public PlayerController(GamePanel panel, boolean multi, String map) {
 		super();
 		Resources.loadResources();
 		multiplayer = multi;
 		gioco = new Gioco(multiplayer, map);
 		if (multiplayer) {
 			client = new Client();
-			while (!client.isConnected())
-				client.connect();
+			client.connect();
 			while (client.readReady()) {
 			}
 		} else
@@ -49,7 +49,7 @@ public class PlayerController extends KeyAdapter {
 		this.client = client;
 	}
 
-	public GameInterface getPanel() {
+	public GamePanel getPanel() {
 		return panel;
 	}
 
@@ -75,8 +75,10 @@ public class PlayerController extends KeyAdapter {
 		// if (!game.isStarted())
 		// return;
 		Integer state;
-		if (e.getKeyCode() == KeyEvent.VK_ESCAPE)
-			System.exit(0);
+		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+			WindowsHandler.getWindowsHandler();
+			WindowsHandler.setMenu();
+		}
 			if (!gioco.isGameOver()) {
 				switch (e.getKeyCode()) {
 				case KeyEvent.VK_SHIFT:
