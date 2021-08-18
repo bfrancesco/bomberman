@@ -32,7 +32,8 @@ public class PlayerController extends KeyAdapter{
 		this.battleRoyale = battleRoyale;
 		gioco = new Gioco(multiplayer, battleRoyale ,map);
 		if (multiplayer) {
-			client = new Client();			
+			client = new Client();	
+			client.sendMessage(Protocol.MULTIPLAYER);
 			client.readReady();
 			if(client.getOrderConnection()<0)
 				WindowsHandler.getWindowsHandler().setMenu();

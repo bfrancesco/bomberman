@@ -31,7 +31,7 @@ public class GamePanel extends JPanel {
 		this.width = width;
 		this.setPreferredSize(new Dimension(width , height));
 		this.setBackground(Color.black);
-		this.setOpaque(false);		
+		this.setOpaque(true);		
 		Border border = BorderFactory.createLineBorder(Color.black , 2 , true);
 		this.setBorder(border);
 	}

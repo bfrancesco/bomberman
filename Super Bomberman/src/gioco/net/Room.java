@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Vector;
 
 import gioco.model.Bomb;
 import gioco.model.Enemy;
@@ -27,12 +28,13 @@ public class Room implements Runnable {
 	private BufferedReader in2;
 	private Gioco gioco;
 	private Thread t;
-	
-	public Room(Socket player1, Socket player2 , String map1) throws IOException {
-		out1 = new PrintWriter(new BufferedOutputStream(player1.getOutputStream()), true);
-		in1 = new BufferedReader(new InputStreamReader(player1.getInputStream()));
-		out2 = new PrintWriter(new BufferedOutputStream(player2.getOutputStream()), true);
-		in2 = new BufferedReader(new InputStreamReader(player2.getInputStream()));
+	private boolean full;
+	public Room(Vector<Socket> players , String map1) throws IOException {
+		full = false;
+		out1 = new PrintWriter(new BufferedOutputStream(players.get(0).getOutputStream()), true);
+		in1 = new BufferedReader(new InputStreamReader(players.get(0).getInputStream()));
+		out2 = new PrintWriter(new BufferedOutputStream(players.get(1).getOutputStream()), true);
+		in2 = new BufferedReader(new InputStreamReader(players.get(1).getInputStream()));
 		gioco = new Gioco(true , false ,  map1);
 		writeMessage(Protocol.READY);
 		out1.println(Settings.PLAYER1);
@@ -42,6 +44,10 @@ public class Room implements Runnable {
 		t.start();
 
 	}
+	
+	 public synchronized boolean isFull() {
+		 return full;
+	 }
 
 	private void writeMessage(String message) {
 		if (out1 != null)

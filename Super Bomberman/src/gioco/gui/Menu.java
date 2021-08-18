@@ -1,20 +1,21 @@
 package gioco.gui;
 
-import java.awt.BorderLayout;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
-import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
@@ -33,7 +34,7 @@ public class Menu extends JPanel {
 		setLayout(layout);
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.gridwidth = GridBagConstraints.REMAINDER;
-		gbc.anchor = GridBagConstraints.CENTER;
+	
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		multiplayer = new JButton("MULTIPLAYER");
 		multiplayer.setPreferredSize(new Dimension(300, 75));
@@ -69,6 +70,10 @@ public class Menu extends JPanel {
 		});
 		multiplayer.setAlignmentX(Component.CENTER_ALIGNMENT);
 		allenamento.setAlignmentX(Component.CENTER_ALIGNMENT);
+		JLabel logo = new JLabel (new ImageIcon(Resources.logo.getScaledInstance(600, 300, Image.SCALE_SMOOTH)));
+		gbc.anchor = GridBagConstraints.NORTH;	
+		add(logo , gbc);
+		gbc.anchor = GridBagConstraints.CENTER;
 		buttons.add(battleRoyale , gbc);
 		buttons.add(Box.createRigidArea(new Dimension(300 , 20)) , gbc);
 		buttons.add(multiplayer , gbc);
@@ -79,7 +84,9 @@ public class Menu extends JPanel {
 		buttons.setAlignmentX(Component.CENTER_ALIGNMENT);
 		buttons.setAlignmentY(Component.BOTTOM_ALIGNMENT);
 		add(buttons , gbc);
+		
 		repaint();
+		
 	}
 	
 	@Override

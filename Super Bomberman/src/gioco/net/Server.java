@@ -1,32 +1,24 @@
 package gioco.net;
 
-import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Vector;
-
-import gioco.model.Bomb;
-import gioco.model.Enemy;
-import gioco.model.Entity;
-import gioco.model.Explosion;
-import gioco.model.Gioco;
-import gioco.model.Player;
-import gioco.utilities.Settings;
-
-
 
 public class Server {
 	private ServerSocket server;
 	private Vector<Room> rooms;
 
+	private Vector<Socket> multiplayerLobby;
+	private Vector<Socket> battleRoyaleLobby;
 	
 	public void startServer(String map) throws IOException {
 		server = new ServerSocket(8000);
 		rooms = new Vector<Room>();
+		multiplayerLobby = new Vector<Socket>();
+		battleRoyaleLobby = new Vector<Socket>();
 		while(!Thread.currentThread().isInterrupted()) {
 			for(int i = 0; i< rooms.size();++i) {
 				if(rooms.get(i).getT().isInterrupted())
@@ -46,15 +38,32 @@ public class Server {
 		}
 		
 		Socket player1;
-		Socket player2;
-		System.out.println("Waiting for player 1...");
 		player1 = server.accept();
-		System.out.println("Waiting for player 2...");
-		player2 = server.accept();
+		BufferedReader in = new BufferedReader(new InputStreamReader(player1.getInputStream())); 
+		String gameMode = in.readLine();
+		if(gameMode == null) {
+			in.close();
+			player1.close();
+			return;
+		}
+		if(gameMode == Protocol.BATTLEROYALE) {
+			battleRoyaleLobby.add(player1);
+			if(battleRoyaleLobby.size() == 5) {
+				//BrRoom room = new Room(battleRoyaleLobby, "MAP1");
+				//rooms.add(room);
+			}
+		}
+		else {
+			multiplayerLobby.add(player1);
+			if(multiplayerLobby.size() == 2) {
+				Room room = new Room(multiplayerLobby, "MAP1");
+				rooms.add(room);
+			}
+		}
 		
-		System.out.println("READY TO START!");
-		Room room = new Room(player1, player2, "MAP1");
-		rooms.add(room);
+		//System.out.println("READY TO START!");
+		//Room room = new Room(player1, player2, "MAP1");
+		//rooms.add(room);
 		
 		//se ne volessi avere di più , allora faccio partire con almeno 2 e poi aggiungo una lista di altri giocatori connessi
 		/*out1 = new PrintWriter(new BufferedOutputStream(player1.getOutputStream()), true);

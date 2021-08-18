@@ -11,6 +11,9 @@ public class Protocol {
 	public static final String BOMBADDED = "ba";
 	public static final String ENDCOMUNICATION = "END";
 	
+	public static final String BATTLEROYALE = "br";
+	public static final String MULTIPLAYER = "mp";
+	
 
 	
 	public static final String state(int entityState) {

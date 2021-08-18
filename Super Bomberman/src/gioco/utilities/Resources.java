@@ -69,7 +69,7 @@ public class Resources {
 	public static Image iconWindow;
 	
 	public static Image wallpaper;
-	
+	public static Image logo;
 	
 	public static void loadWindowIcon()throws IOException{
 		
@@ -82,6 +82,7 @@ public class Resources {
 		try {
 			brick = ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/blocks/brick.jpg"));
 			wallpaper = ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/other/sfondo.jpg"));
+			logo = ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/other/logo.png"));
 			
 		} catch (IOException e) {
 			System.out.println(" RESOURCES ARE UNAVAILABLE");

@@ -85,6 +85,7 @@ public class Client {
 		return connected;
 	}
 	
+	
 	public boolean ready() {
 		try {
 			return in.ready();
