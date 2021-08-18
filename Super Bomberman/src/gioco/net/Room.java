@@ -19,31 +19,28 @@ import gioco.model.Player;
 import gioco.utilities.Settings;
 
 
-public class GameHandler implements Runnable {
+public class Room implements Runnable {
 
 	private PrintWriter out1;
 	private PrintWriter out2;
 	private BufferedReader in1;
 	private BufferedReader in2;
 	private Gioco gioco;
-
-	public GameHandler(Socket player1, Socket player2 , String map1) throws IOException {
-		// RICORDA IL TRUE PER FARE L'AUTOFLUSH PER NON FARLO NOI OGNI VOLTA!
+	private Thread t;
+	
+	public Room(Socket player1, Socket player2 , String map1) throws IOException {
 		out1 = new PrintWriter(new BufferedOutputStream(player1.getOutputStream()), true);
 		in1 = new BufferedReader(new InputStreamReader(player1.getInputStream()));
 		out2 = new PrintWriter(new BufferedOutputStream(player2.getOutputStream()), true);
 		in2 = new BufferedReader(new InputStreamReader(player2.getInputStream()));
-		gioco = new Gioco(true , map1);
-		gioco.inizia();
+		gioco = new Gioco(true , false ,  map1);
 		writeMessage(Protocol.READY);
-		out1.println(1);
-		out2.println(2);
-		/*writeMessage(
-				Protocol.player(gioco.getPlayer1().toString()));
-		writeMessage(
-				Protocol.player(gioco.getPlayer2().toString()));*/
-		Thread t = new Thread(this);
-		t.run();
+		out1.println(Settings.PLAYER1);
+		out2.println(Settings.PLAYER2);
+		gioco.inizia();	
+		t = new Thread(this);
+		t.start();
+
 	}
 
 	private void writeMessage(String message) {
@@ -53,64 +50,72 @@ public class GameHandler implements Runnable {
 			out2.println(message);
 	}
 
+	
+	
+	public Thread getT() {
+		return t;
+	}
+
 	private void read() throws IOException {
-		readMessage(in1);
-		readMessage(in2);
+		boolean read2 = false;
+		boolean read1 = false;
+		long time = System.currentTimeMillis();
+		while(!read1 || !read2) {
+			if(!read1 && in1.ready()) {
+				readMessage(in1);
+				read1 = true;
+			}
+			if(!read2 && in2.ready()) {
+				readMessage(in2);
+				read2 = true;
+			}
+			//il ready implica serve a indicare che non è pronto alcun messaggio -> il client si è disconnesso
+			if(System.currentTimeMillis()-time >=5000  && (!in1.ready() || !in2.ready())) {
+				in1.close();
+				in2.close();
+				out1.close();
+				out2.close();
+				Thread.currentThread().interrupt();
+			}
+		}
 	}
 	
-	/*private int parseLine(String line) {
-		String res  [] = line.split(" ");
-		if(res[0].equals(Protocol.STATE))
-			return Integer.getInteger(res[1]);
-		return -1;
-	}*/
 
 	private void readMessage(BufferedReader in) throws IOException {
-		if (in != null && in.ready()) {
+		
+		if (in != null ) {
 			Player player;
 			if(in==in1) 
-				player = gioco.getPlayer1();
+				player = gioco.getPlayer(Settings.PLAYER1);
 			else 
-				player = gioco.getPlayer2();
+				player = gioco.getPlayer(Settings.PLAYER2);
 			int state = player.getState();
+			int i = 0;
 			String line = in.readLine();
 			String res  [] = line.split(" ");
-			if(res[0].equals(Protocol.STATE))
-				 player.setState(Integer.getInteger(res[1]));
-			
-			int direction = Settings.NONE;
-			switch(state) {
-			case Entity.WALKING_DOWN : 
-				direction = Settings.DOWN;
-				break;
-			case Entity.WALKING_UP : 
-				direction = Settings.UP;
-				break;
-			case Entity.WALKING_RIGHT : 
-				direction = Settings.RIGHT;
-				break;
-			case Entity.WALKING_LEFT : 
-				direction = Settings.LEFT;
-				break;
+			if(res[i].equals(Protocol.BOMBADDED) ) {
+				gioco.addBomb(player);
+				i+=1;
 			}
-			System.out.println("Ricevuto ");
-			//gioco.movePlayer(player , direction);
-		}
-		else {
-			System.out.println("WHAT");
+				
+			if(res[i].equals(Protocol.STATE)) {
+				state = Integer.parseInt(res[i+1]);
+				 player.setState(state);
+
+			}
+			
 		}
 	}
 	
 	
 	public synchronized void writeInformations() {
 		StringBuffer message = new StringBuffer();
-		message.append(Protocol.player(gioco.getPlayer1().toString())+" ");
-		message.append(Protocol.player(gioco.getPlayer2().toString())+" ");
+		message.append(Protocol.player(gioco.getPlayer(Settings.PLAYER1).toString())+" ");
+		message.append(Protocol.player(gioco.getPlayer(Settings.PLAYER2).toString())+" ");
 		for(Enemy e : gioco.getEnemies()) {
 			if(e!=null)
 				message.append(Protocol.enemy(e.toString())+ " ");
 		}
-		
 		for(Bomb b : gioco.getBombs()) {
 			message.append(Protocol.bomb(b.toString())+" ");
 		}
@@ -118,7 +123,6 @@ public class GameHandler implements Runnable {
 			message.append(Protocol.explosion(e.toString())+" ");
 		
 		message.append(Protocol.ENDCOMUNICATION);
-		System.out.println(message.toString());
 		writeMessage(message.toString());
 	}
 	
@@ -127,17 +131,14 @@ public class GameHandler implements Runnable {
 	@Override
 	public void run() {
 		while (!Thread.currentThread().isInterrupted()) {
-			try{		
-				//read();
-				writeInformations();
-				gioco.next();		
+			try{	
+					gioco.next();
+					writeInformations();									
+					read();
+					
 			}catch (Exception e) {
-				out1 = null;
-				out2 = null;
-				return ;
-			}
-			
+				
+			}		
 		}
-
 	}
 }

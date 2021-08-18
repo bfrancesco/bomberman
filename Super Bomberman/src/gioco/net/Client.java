@@ -23,7 +23,7 @@ public class Client {
 	public Client() {
 		bombAdded = false;
 		connect();
-		
+		orderConnection = -1;
 	}
 	
 	
@@ -37,6 +37,8 @@ public class Client {
 	}
 
 	public boolean readReady() {
+		if(!connected)
+			return false;
 		try {
 			String line = in.readLine();
 			if(line.equals(Protocol.READY))
@@ -66,7 +68,7 @@ public class Client {
 
 
 
-	public void connect () {
+	public boolean connect () {
 		try {
 			socket = new Socket("localhost" , 8000);
 			out = new PrintWriter(new BufferedOutputStream(socket.getOutputStream()), true);
@@ -80,6 +82,7 @@ public class Client {
 			in = null;
 			connected = false;
 		} 
+		return connected;
 	}
 	
 	public boolean ready() {

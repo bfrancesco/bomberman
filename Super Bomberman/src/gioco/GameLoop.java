@@ -2,6 +2,7 @@ package gioco;
 
 import gioco.controller.PlayerController;
 import gioco.model.Gioco;
+import gioco.utilities.Settings;
 
 
 public class GameLoop extends Thread {
@@ -61,14 +62,14 @@ public class GameLoop extends Thread {
 				controller.getGioco().checkExplosions();
 				if(!controller.isMultiplayer()) {
 					if (controller.getGioco().results() == Gioco.VICTORY) {
-						System.out.println("YOU WIN!!! TOTAL POINTS: " + controller.getGioco().getPlayer1().getPoints() + " !!!");
+						System.out.println("YOU WIN!!! TOTAL POINTS: " + controller.getGioco().getPlayer(Settings.PLAYER1).getPoints() + " !!!");
 					} else
 						System.out.println("OH NO! YOU LOSE!!! ARE YOU BRAVE ENOUGH TO TRY AGAIN?");
 				}
 				else {
 					int res = controller.getGioco().results();
 					if (res== Gioco.VICTORY) {
-						System.out.println("YOU WIN!!! TOTAL POINTS: " + controller.getGioco().getPlayer1().getPoints() + " !!!");
+						System.out.println("YOU WIN!!! TOTAL POINTS: " + controller.getGioco().getPlayer(Settings.PLAYER1).getPoints() + " !!!");
 					}
 					else if (res == Gioco.DRAW)
 						System.out.println("DRAW! LUCK WAS BY ITS SIDE, WASN'T IT?");

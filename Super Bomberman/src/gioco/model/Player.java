@@ -23,7 +23,9 @@ public  class Player extends Entity{
 		this.type =type;
 	}
 
-	
+	public boolean getDead() {
+		return state == Player.DYING_ENEMY || state == Player.DYING_EXPLOSION;
+	}
 	
 	public int getPoints() {
 		return points;

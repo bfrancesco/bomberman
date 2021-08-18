@@ -1,5 +1,6 @@
 package gioco.gui;
 
+import java.awt.Color;
 import java.awt.Dimension;
 
 import javax.swing.JFrame;
@@ -11,15 +12,14 @@ import gioco.utilities.Settings;
 
 public class WindowsHandler {
 	
-	private static JFrame f;
-	private static Menu menu;
+	private  JFrame f;
+	private  Menu menu;
 	//private static  MapChooser mapChooser;
-	private static GamePanel gamePanel;
-	static boolean  multiplayer ;
-	static String map = "Map1";
-	static int width = 825;
-	static int height = 750;
-	private static GameLoop gl;
+	private  GamePanel gamePanel;
+	private String map = "Map1";
+	private int width = 825;
+	private int height = 750;
+	private  GameLoop gl;
 	
 	private static WindowsHandler windowsHandler = null;
 	public static WindowsHandler getWindowsHandler() {
@@ -30,9 +30,8 @@ public class WindowsHandler {
 	}
 	
 	private WindowsHandler() {
-		
-		multiplayer = false;
-		 f = new JFrame("BOMBERMAN PROVA");	
+		Resources.loadResources();
+		f = new JFrame("BOMBERMAN PROVA");	
 		f.setUndecorated(false);		
 		f.getContentPane().setPreferredSize(new Dimension(825, 750));
 		f.pack();
@@ -51,7 +50,7 @@ public class WindowsHandler {
 		setMenu();
 	}
 	
-	public static void setMenu() {
+	public void setMenu() {
 		interruptGame();
 		menu = new Menu(825,750);
 		f.getContentPane().removeAll();
@@ -63,7 +62,7 @@ public class WindowsHandler {
 		menu.requestFocus();
 	}
 	
-	public static void setGamePanel() {
+	public void setGamePanel(boolean multi , boolean battleRoyale) {
 		gamePanel = new GamePanel(width, height);
 		f.getContentPane().removeAll();
 		f.validate();
@@ -72,31 +71,24 @@ public class WindowsHandler {
 		gamePanel.requestFocus();
 		f.revalidate();
 		f.repaint();
-		PlayerController pc = new PlayerController(gamePanel, multiplayer, map);
+		PlayerController pc = new PlayerController(gamePanel, multi, battleRoyale ,  map);
 		gamePanel.setController(pc);
 		gl = new GameLoop(pc);
 		gl.start();
 	}
 	
-	public static void interruptGame() {
+	public  void interruptGame() {
 		if(gl != null)
 			gl.setRunning (false);
 	}
 
-	public static boolean isMultiplayer() {
-		return multiplayer;
-	}
 
-	public static void setMultiplayer(boolean multiplayer) {
-		WindowsHandler.multiplayer = multiplayer;
-	}
-
-	public static String getMap() {
+	public String getMap() {
 		return map;
 	}
 
-	public static void setMap(String map) {
-		WindowsHandler.map = map;
+	public  void setMap(String map) {
+		this.map = map;
 	}
 	
 	

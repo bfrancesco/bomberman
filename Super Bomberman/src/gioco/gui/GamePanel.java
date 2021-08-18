@@ -12,6 +12,7 @@ import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 
 import gioco.controller.PlayerController;
+import gioco.utilities.Settings;
 
 
 public class GamePanel extends JPanel {
@@ -53,9 +54,9 @@ public class GamePanel extends JPanel {
 	
 	public void setStat(int time) {
 		if(controller.getGioco().isMultiplayer())
-			pointView.setPoints(controller.getGioco().getPlayer1().getPoints(), controller.getGioco().getPlayer2().getPoints(), controller.getGioco().getEnemies().size());
+			pointView.setPoints(controller.getGioco().getPlayer(Settings.PLAYER1).getPoints(), controller.getGioco().getPlayer(Settings.PLAYER2).getPoints(), controller.getGioco().getEnemies().size());
 		else
-			pointView.setPoints(controller.getGioco().getPlayer1().getPoints(),0 ,  controller.getGioco().getEnemies().size());
+			pointView.setPoints(controller.getGioco().getPlayer(Settings.PLAYER1).getPoints(),0 ,  controller.getGioco().getEnemies().size());
 		
 		pointView.setTime(time);
 	}

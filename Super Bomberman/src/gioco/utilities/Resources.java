@@ -68,6 +68,9 @@ public class Resources {
 	
 	public static Image iconWindow;
 	
+	public static Image wallpaper;
+	
+	
 	public static void loadWindowIcon()throws IOException{
 		
 			iconWindow = ImageIO
@@ -78,10 +81,13 @@ public class Resources {
 	public static void loadResources() {
 		try {
 			brick = ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/blocks/brick.jpg"));
+			wallpaper = ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/other/sfondo.jpg"));
+			
 		} catch (IOException e) {
-			System.out.println("BRICK RESOURCES ARE UNAVAILABLE");
+			System.out.println(" RESOURCES ARE UNAVAILABLE");
 			e.printStackTrace();
 		}
+		
 		loadWhiteBombermanImages();
 		loadBlackBombermanImages();
 		loadBombImages();

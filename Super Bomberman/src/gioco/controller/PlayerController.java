@@ -1,6 +1,5 @@
 package gioco.controller;
 
-import java.awt.Desktop.Action;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
@@ -16,26 +15,27 @@ import gioco.model.Gioco;
 import gioco.model.Player;
 import gioco.net.Client;
 import gioco.net.Protocol;
-import gioco.utilities.Resources;
 import gioco.utilities.Settings;
 
-public class PlayerController extends KeyAdapter {
+public class PlayerController extends KeyAdapter{
 	private GamePanel panel;
 	private Gioco gioco;
 	private boolean multiplayer;
+	private boolean battleRoyale;
 	private ArrayList<Integer> movements;
 	private Client client;
 
-	public PlayerController(GamePanel panel, boolean multi, String map) {
+	
+	public PlayerController(GamePanel panel, boolean multi, boolean battleRoyale ,String map) {
 		super();
-		Resources.loadResources();
-		multiplayer = multi;
-		gioco = new Gioco(multiplayer, map);
+		this.multiplayer = multi;
+		this.battleRoyale = battleRoyale;
+		gioco = new Gioco(multiplayer, battleRoyale ,map);
 		if (multiplayer) {
-			client = new Client();
-			client.connect();
-			while (client.readReady()) {
-			}
+			client = new Client();			
+			client.readReady();
+			if(client.getOrderConnection()<0)
+				WindowsHandler.getWindowsHandler().setMenu();
 		} else
 			gioco.inizia();
 
@@ -72,18 +72,19 @@ public class PlayerController extends KeyAdapter {
 	 */
 
 	public void keyReleased(KeyEvent e) {
-		// if (!game.isStarted())
-		// return;
+		 if (!gioco.isStarted())
+		 return;
 		Integer state;
 		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-			WindowsHandler.getWindowsHandler();
-			WindowsHandler.setMenu();
+			if(multiplayer)
+				client.disconnect();
+			WindowsHandler.getWindowsHandler().setMenu();
 		}
 			if (!gioco.isGameOver()) {
 				switch (e.getKeyCode()) {
 				case KeyEvent.VK_SHIFT:
 				case KeyEvent.VK_SPACE:
-					gioco.addBomb(gioco.getPlayer1());
+					gioco.addBomb(gioco.getPlayer(Settings.PLAYER1));
 					if(multiplayer)
 						client.setBombAdded(true);
 					break;
@@ -114,7 +115,7 @@ public class PlayerController extends KeyAdapter {
 
 				}
 				if(!gioco.isGameOver())
-					gioco.getPlayer1().setState(movements.get(movements.size() - 1));
+					gioco.getPlayer(Settings.PLAYER1).setState(movements.get(movements.size() - 1));
 				
 			}
 	}
@@ -151,7 +152,7 @@ public class PlayerController extends KeyAdapter {
 
 			break;
 		}
-		gioco.getPlayer1().setState(state);
+		gioco.getPlayer(Settings.PLAYER1).setState(state);
 		//if(multiplayer)
 			//client.setAction(Protocol.state(gioco.getPlayer1().getState()));
 	}
@@ -188,16 +189,16 @@ public class PlayerController extends KeyAdapter {
 		int i = 0;
 		while (!content[i].equals(Protocol.ENDCOMUNICATION) || i<content.length-1) {
 			if(content[i].equals(Protocol.PLAYER)) {
-				int state = gioco.getPlayer1().getState();
+				int state = gioco.getPlayer(Settings.PLAYER1).getState();
 				if(gioco.isGameOver() || Integer.parseInt(content[i+4]) == Player.DYING_ENEMY || Integer.parseInt(content[i+4]) == Player.DYING_EXPLOSION || Integer.parseInt(content[i+4]) == Player.WINNING) {
 					state = Integer.parseInt(content[i+4]);
 					gioco.setGameOver(true);
 				}
 				if(Integer.parseInt(content[i+1]) == client.getOrderConnection())
-					gioco.getPlayer1().update(Integer.parseInt(content[i+2]), Integer.parseInt(content[i+3]),
+					gioco.getPlayer(Settings.PLAYER1).update(Integer.parseInt(content[i+2]), Integer.parseInt(content[i+3]),
 							state, Integer.parseInt(content[i+5]));
 				else 
-					gioco.getPlayer2().update(Integer.parseInt(content[i+2]), Integer.parseInt(content[i+3]),
+					gioco.getPlayer(Settings.PLAYER2).update(Integer.parseInt(content[i+2]), Integer.parseInt(content[i+3]),
 						Integer.parseInt(content[i+4]),Integer.parseInt(content[i+5]));
 				i+=6;
 			}
@@ -222,12 +223,12 @@ public class PlayerController extends KeyAdapter {
 				
 			}
 			else if (content[i].equals(Protocol.BOMB)) {
-				bombsUpdated.add(new Bomb(Integer.parseInt(content[i+1]) ,Integer.parseInt(content[i+2]), Integer.parseInt(content[i+3]) ,gioco.getPlayer1()));
+				bombsUpdated.add(new Bomb(Integer.parseInt(content[i+1]) ,Integer.parseInt(content[i+2]), Integer.parseInt(content[i+3]) ,gioco.getPlayer(Settings.PLAYER1)));
 				i+=4;
 			}
 			else if (content[i].equals(Protocol.EXPLOSION)) {
 						explosionsUpdated.add(new Explosion(Integer.parseInt(content[i+1]), Integer.parseInt(content[i+2]),
-								Integer.parseInt(content[i+3]) , Integer.parseInt(content[i+4]) , Integer.parseInt(content[i+5]) , gioco.getPlayer1()));
+								Integer.parseInt(content[i+3]) , Integer.parseInt(content[i+4]) , Integer.parseInt(content[i+5]) , gioco.getPlayer(Settings.PLAYER1)));
 						i+=6;
 			}		
 		}
@@ -239,11 +240,11 @@ public class PlayerController extends KeyAdapter {
 	}
 	public void sendAction() {
 		if(client.isBombAdded()) {
-			client.sendMessage(Protocol.BOMBADDED + " " + Protocol.state(gioco.getPlayer1().getState()));
+			client.sendMessage(Protocol.BOMBADDED + " " + Protocol.state(gioco.getPlayer(Settings.PLAYER1).getState()));
 			client.setBombAdded(false);
 		}
 		else 
-			client.sendMessage(Protocol.state(gioco.getPlayer1().getState()));
+			client.sendMessage(Protocol.state(gioco.getPlayer(Settings.PLAYER1).getState()));
 	}
 
 }

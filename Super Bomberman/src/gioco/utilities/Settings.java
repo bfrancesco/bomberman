@@ -16,9 +16,9 @@ public class Settings {
 	
 	public final static int PLAYER1 = 10;
 	public final static int PLAYER2 = 11;
-	public final static int ENEMY1 = 12;
-	public final static int ENEMY2 = 13;
-	public final static int ENEMY3 = 14;
+	public final static int PLAYER3 = 12;
+	public final static int PLAYER4 = 13;
+	public final static int PLAYER5 = 14;
 	
 	public static int BLOCKSIZEX = 825/15;
 	public static int BLOCKSIZEY = 715/13;;

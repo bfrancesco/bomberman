@@ -60,9 +60,9 @@ public class EntitiesPanel extends JPanel {
 	}
 
 	public void update() {
-		player1.update(controller.getGioco().getPlayer1().getState());
+		player1.update(controller.getGioco().getPlayer(Settings.PLAYER1).getState());
 		if(controller.isMultiplayer())
-			player2.update(controller.getGioco().getPlayer2().getState());
+			player2.update(controller.getGioco().getPlayer(Settings.PLAYER2).getState());
 		updateEnemies();
 		repaint();
 	}
@@ -132,11 +132,11 @@ public class EntitiesPanel extends JPanel {
 			}
 		}
 		
-		Player p1 = controller.getGioco().getPlayer1();
+		Player p1 = controller.getGioco().getPlayer(Settings.PLAYER1);
 		g.drawImage(player1.getCurrentImage().getScaledInstance(p1.getWidth(), p1.getHeight(), Image.SCALE_FAST),
 				p1.getX(), p1.getY(), p1.getWidth(),  p1.getHeight(), null);	
 		if(controller.getGioco().isMultiplayer()) {
-			Player p2 = controller.getGioco().getPlayer2();
+			Player p2 = controller.getGioco().getPlayer(Settings.PLAYER2);
 			g.drawImage(player2.getCurrentImage().getScaledInstance(p2.getWidth(), p2.getHeight(), Image.SCALE_FAST),
 					p2.getX(), p2.getY(), p2.getWidth(),  p2.getHeight(), null);	
 		}
