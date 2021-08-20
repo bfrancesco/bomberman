@@ -19,132 +19,150 @@ import gioco.model.Gioco;
 import gioco.model.Player;
 import gioco.utilities.Settings;
 
-
 public class Room implements Runnable {
 
-	private PrintWriter out1;
-	private PrintWriter out2;
-	private BufferedReader in1;
-	private BufferedReader in2;
+	// private PrintWriter out1;
+	// private PrintWriter out2;
+	// private BufferedReader in1;
+	// private BufferedReader in2;
+	private Vector<PrintWriter> out;
+	private Vector<BufferedReader> in;
 	private Gioco gioco;
 	private Thread t;
-	private boolean full;
-	public Room(Vector<Socket> players , String map1) throws IOException {
-		full = false;
-		out1 = new PrintWriter(new BufferedOutputStream(players.get(0).getOutputStream()), true);
-		in1 = new BufferedReader(new InputStreamReader(players.get(0).getInputStream()));
-		out2 = new PrintWriter(new BufferedOutputStream(players.get(1).getOutputStream()), true);
-		in2 = new BufferedReader(new InputStreamReader(players.get(1).getInputStream()));
-		gioco = new Gioco(true , false ,  map1);
+
+	public Room(Vector<Socket> players, String map1) throws IOException {
+		out = new Vector<PrintWriter>();
+		in = new Vector<BufferedReader>();
+		for (Socket player : players) {
+			out.add(new PrintWriter(new BufferedOutputStream(player.getOutputStream()), true));
+			in.add(new BufferedReader(new InputStreamReader(player.getInputStream())));
+		}
+		if(players.size()==2)
+			gioco = new Gioco(true, false, map1);
+		else
+			gioco = new Gioco(true, true, map1);
 		writeMessage(Protocol.READY);
-		out1.println(Settings.PLAYER1);
-		out2.println(Settings.PLAYER2);
-		gioco.inizia();	
+		for (int i = 0; i < out.size(); ++i) {
+			if (out.get(i) != null)
+				out.get(i).println(Settings.PLAYER1 + i);
+		}
+		gioco.inizia();
 		t = new Thread(this);
 		t.start();
 
 	}
-	
-	 public synchronized boolean isFull() {
-		 return full;
-	 }
 
 	private void writeMessage(String message) {
-		if (out1 != null)
-			out1.println(message);
-		if (out2 != null)
-			out2.println(message);
+		for (int i = 0; i < out.size(); ++i) {
+			if (out != null)
+				out.get(i).println(message);
+		}
 	}
 
-	
-	
 	public Thread getT() {
 		return t;
 	}
 
 	private void read() throws IOException {
-		boolean read2 = false;
-		boolean read1 = false;
+		Vector<Boolean> read = new Vector<Boolean>();
+		for(int i= 0 ; i<in.size();++i) {
+			read.add(Boolean.FALSE);
+		}
+		
 		long time = System.currentTimeMillis();
-		while(!read1 || !read2) {
-			if(!read1 && in1.ready()) {
-				readMessage(in1);
-				read1 = true;
-			}
-			if(!read2 && in2.ready()) {
-				readMessage(in2);
-				read2 = true;
-			}
-			//il ready implica serve a indicare che non è pronto alcun messaggio -> il client si è disconnesso
-			if(System.currentTimeMillis()-time >=5000  && (!in1.ready() || !in2.ready())) {
-				in1.close();
-				in2.close();
-				out1.close();
-				out2.close();
-				Thread.currentThread().interrupt();
+		int letti = 0;
+		while(letti<in.size()) {
+			for(int i = 0; i<in.size();++i) {
+				if(read.get(i).equals(Boolean.FALSE) && in.get(i).ready()) {
+					Player player = gioco.getPlayer(Settings.PLAYER1+i);
+					readMessage(i , player);
+					read.set(i, Boolean.TRUE); 
+					letti+=1;
+				}
+				//il ready implica serve a indicare che non è pronto alcun messaggio -> il client si è disconnesso
+				if(System.currentTimeMillis()-time >=5000  && !in.get(i).ready()) {
+					closeAll();
+					Thread.currentThread().interrupt();
+				}
+				
 			}
 		}
 	}
 	
+	
+	private void closeAll() throws IOException {
+		for (int i = 0; i < in.size(); ++i) {
+			if (out.get(i) != null)
+				out.get(i).close();
+			if (in.get(i) != null)
+				in.get(i).close();
+		} 
 
-	private void readMessage(BufferedReader in) throws IOException {
-		
-		if (in != null ) {
-			Player player;
-			if(in==in1) 
-				player = gioco.getPlayer(Settings.PLAYER1);
-			else 
-				player = gioco.getPlayer(Settings.PLAYER2);
+	}
+
+	private void readMessage(int index , Player player) throws IOException {
+			if(player == null || player.isDead())
+				return ;
 			int state = player.getState();
 			int i = 0;
-			String line = in.readLine();
-			String res  [] = line.split(" ");
-			if(res[i].equals(Protocol.BOMBADDED) ) {
+			String line = in.get(index).readLine();
+			String res[] = line.split(" ");
+			if (res[i].equals(Protocol.BOMBADDED)) {
 				gioco.addBomb(player);
-				i+=1;
+				i += 1;
 			}
-				
-			if(res[i].equals(Protocol.STATE)) {
-				state = Integer.parseInt(res[i+1]);
-				 player.setState(state);
+
+			if (res[i].equals(Protocol.STATE)) {
+				state = Integer.parseInt(res[i + 1]);
+				player.setState(state);
 
 			}
-			
+
 		}
-	}
-	
-	
+
 	public synchronized void writeInformations() {
 		StringBuffer message = new StringBuffer();
-		message.append(Protocol.player(gioco.getPlayer(Settings.PLAYER1).toString())+" ");
-		message.append(Protocol.player(gioco.getPlayer(Settings.PLAYER2).toString())+" ");
-		for(Enemy e : gioco.getEnemies()) {
-			if(e!=null)
-				message.append(Protocol.enemy(e.toString())+ " ");
+		for(int i = 0;i<in.size();++i) {
+			Player player = gioco.getPlayer(Settings.PLAYER1+i);
+			if(player == null)
+				System.out.println("COS "+i);
+			else 
+			message.append(Protocol.player(player.toString()) + " ");
 		}
-		for(Bomb b : gioco.getBombs()) {
-			message.append(Protocol.bomb(b.toString())+" ");
-		}
-		for(Explosion e : gioco.getExplosions())
-			message.append(Protocol.explosion(e.toString())+" ");
 		
+		for (Enemy e : gioco.getEnemies()) {
+			if (e != null)
+				message.append(Protocol.enemy(e.toString()) + " ");
+		}
+		for (Bomb b : gioco.getBombs()) {
+			message.append(Protocol.bomb(b.toString()) + " ");
+		}
+		/*for (Explosion e : gioco.getExplosions()) 
+			message.append(Protocol.explosion(e.toString()) + " ");*/
+
 		message.append(Protocol.ENDCOMUNICATION);
 		writeMessage(message.toString());
+		
 	}
-	
-	
 
 	@Override
 	public void run() {
 		while (!Thread.currentThread().isInterrupted()) {
-			try{	
+			try {
+				//if(!gioco.isGameOver()) {
 					gioco.next();
-					writeInformations();									
+					writeInformations();
 					read();
-					
-			}catch (Exception e) {
-				
-			}		
+				//}
+				/*else for(int i = 0;i<80;++i) {
+					gioco.next();
+					writeInformations();
+					t.interrupt();
+				}*/
+
+			} catch (Exception e) {
+
+			}
 		}
 	}
 }

@@ -47,13 +47,15 @@ public class GameLoop extends Thread {
 						controller.getGioco().timeOut();
 					}
 				}
-				else {					
-					controller.readAndUpdate();	
-					controller.sendAction();	
-					controller.getPanel().setStat(200);
+				else {		
 					if(!controller.getClient().isConnected()) {
 						break ;
 					}
+					controller.readAndUpdate();	
+					controller.getGioco().checkBombs();
+					controller.getGioco().checkExplosions();
+					controller.sendAction();	
+					controller.getPanel().setStat(200);					
 				}
 
 			}
@@ -61,24 +63,29 @@ public class GameLoop extends Thread {
 				gameOver = true;
 				controller.getGioco().checkExplosions();
 				if(!controller.isMultiplayer()) {
-					if (controller.getGioco().results() == Gioco.VICTORY) {
+					if (controller.getGioco().results(Settings.PLAYER1) == Gioco.VICTORY) {
 						System.out.println("YOU WIN!!! TOTAL POINTS: " + controller.getGioco().getPlayer(Settings.PLAYER1).getPoints() + " !!!");
 					} else
 						System.out.println("OH NO! YOU LOSE!!! ARE YOU BRAVE ENOUGH TO TRY AGAIN?");
 				}
 				else {
-					int res = controller.getGioco().results();
+					int res = controller.getGioco().results(controller.getClient().getOrderConnection());
 					if (res== Gioco.VICTORY) {
-						System.out.println("YOU WIN!!! TOTAL POINTS: " + controller.getGioco().getPlayer(Settings.PLAYER1).getPoints() + " !!!");
+						System.out.println("YOU WIN!!! TOTAL POINTS: " + controller.getGioco().getPlayer(controller.getClient().getOrderConnection()).getPoints() + " !!!");
 					}
 					else if (res == Gioco.DRAW)
 						System.out.println("DRAW! LUCK WAS BY ITS SIDE, WASN'T IT?");
 					else
 					System.out.println("OH NO! YOU LOSE!!! ARE YOU BRAVE ENOUGH TO TRY AGAIN?");
 				}
-			}
-			else
+			} 
+			else {
 				controller.getGioco().checkExplosions();
+				if(controller.isMultiplayer()) { 
+					controller.getGioco().checkBombs();
+					controller.readAndUpdate();
+				}
+			}
 
 			updateTime = System.nanoTime() - now;
 			sleepTime = (maxTime - updateTime) / 1000000;

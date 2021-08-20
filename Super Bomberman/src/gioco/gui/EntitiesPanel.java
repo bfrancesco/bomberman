@@ -35,6 +35,9 @@ public class EntitiesPanel extends JPanel {
 	private Vector<EnemyView> enemyview;
 	private BombermanView player1;
 	private BombermanView player2;
+	private BombermanView player3;
+	private BombermanView player4;
+	private BombermanView player5;
 
 	public EntitiesPanel(PlayerController controller) {
 		this.controller = controller;
@@ -43,8 +46,14 @@ public class EntitiesPanel extends JPanel {
 		brick = Resources.brick;
 
 		player1 = new BombermanView(Settings.PLAYER1);
-		if(controller.isMultiplayer())
+		if(controller.isMultiplayer()) {
 			player2 = new BombermanView(Settings.PLAYER2);
+			if(controller.getGioco().isBattleRoyale()) {
+				player3 = new BombermanView(Settings.PLAYER3);
+				player4 = new BombermanView(Settings.PLAYER2);
+				player5 = new BombermanView(Settings.PLAYER2);
+			}
+		}
 		explosions = new ExplosionView();
 		bombs = new BombView();
 		enemyview= new Vector<EnemyView>();
@@ -63,6 +72,12 @@ public class EntitiesPanel extends JPanel {
 		player1.update(controller.getGioco().getPlayer(Settings.PLAYER1).getState());
 		if(controller.isMultiplayer())
 			player2.update(controller.getGioco().getPlayer(Settings.PLAYER2).getState());
+		if(controller.getGioco().isBattleRoyale())
+		{
+			player3.update(controller.getGioco().getPlayer(Settings.PLAYER3).getState());
+			player4.update(controller.getGioco().getPlayer(Settings.PLAYER4).getState());
+			player5.update(controller.getGioco().getPlayer(Settings.PLAYER5).getState());
+		}
 		updateEnemies();
 		repaint();
 	}
@@ -135,10 +150,21 @@ public class EntitiesPanel extends JPanel {
 		Player p1 = controller.getGioco().getPlayer(Settings.PLAYER1);
 		g.drawImage(player1.getCurrentImage().getScaledInstance(p1.getWidth(), p1.getHeight(), Image.SCALE_FAST),
 				p1.getX(), p1.getY(), p1.getWidth(),  p1.getHeight(), null);	
-		if(controller.getGioco().isMultiplayer()) {
+		if(controller.isMultiplayer()) {
 			Player p2 = controller.getGioco().getPlayer(Settings.PLAYER2);
 			g.drawImage(player2.getCurrentImage().getScaledInstance(p2.getWidth(), p2.getHeight(), Image.SCALE_FAST),
 					p2.getX(), p2.getY(), p2.getWidth(),  p2.getHeight(), null);	
+			if(controller.getGioco().isBattleRoyale()) {
+				Player p3 = controller.getGioco().getPlayer(Settings.PLAYER3);
+				g.drawImage(player3.getCurrentImage().getScaledInstance(p3.getWidth(), p3.getHeight(), Image.SCALE_FAST),
+						p3.getX(), p3.getY(), p3.getWidth(),  p3.getHeight(), null);
+				Player p4 = controller.getGioco().getPlayer(Settings.PLAYER4);
+				g.drawImage(player4.getCurrentImage().getScaledInstance(p4.getWidth(), p4.getHeight(), Image.SCALE_FAST),
+						p4.getX(), p4.getY(), p4.getWidth(),  p4.getHeight(), null);
+				Player p5 = controller.getGioco().getPlayer(Settings.PLAYER5);
+				g.drawImage(player5.getCurrentImage().getScaledInstance(p5.getWidth(), p5.getHeight(), Image.SCALE_FAST),
+						p5.getX(), p5.getY(), p5.getWidth(),  p5.getHeight(), null);
+			}
 		}
 	}
 

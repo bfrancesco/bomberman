@@ -49,6 +49,7 @@ public class Gioco {
 			e.printStackTrace();
 		}
 		playersAlive = players.size();
+		System.out.println(playersAlive);
 	}
 
 	public void inizia() {
@@ -463,7 +464,7 @@ public class Gioco {
 			}
 
 			for (Player player : players) {
-				if(player.getDead())
+				if(player.isDead())
 					continue;
 				if (elem.getXCell() == player.xcenterBlock() && (elem.getYCell() == player.ycenterBlock())
 						|| ((elem.getXCell() == player.rightBlock() || elem.getXCell() == player.leftBlock())
@@ -483,7 +484,7 @@ public class Gioco {
 		boolean collision = false;
 		for (Enemy enemy : enemies) {
 			for (Player player : players) {
-				if(player.getDead())
+				if(player.isDead())
 					continue;
 				if (enemy.getState() != Entity.DYING_EXPLOSION) {
 					if (((player.rightSide() <= enemy.rightSide() && player.rightSide() >= enemy.getX())
@@ -615,6 +616,8 @@ public class Gioco {
 	}
 
 	public Player getPlayer(int p) {
+		if(p>Settings.PLAYER5 || p<Settings.PLAYER1)
+			System.out.println("NOPE");
 		for (int i = 0; i < players.size(); ++i) {
 			if (players.get(i).getType() == p)
 				return players.get(i);
@@ -661,6 +664,12 @@ public class Gioco {
 	public void setGameOver(boolean gameOver) {
 		this.gameOver = gameOver;
 	}
+	
+	
+
+	public boolean isBattleRoyale() {
+		return battleRoyale;
+	}
 
 	public String getMap() {
 		return map;
@@ -700,17 +709,19 @@ public class Gioco {
 		movePlayers();
 		collisionExplosion();
 		collisionEnemyPlayer();
+		updateEnemy();
 		if (finishLevel())
 			setGameOver(true);
-		updateEnemy();
+		
 
 	}
 
 	public boolean finishLevel() {
+		System.out.println(playersAlive);
 		if(battleRoyale) {
 			if(playersAlive <=1){
 				for(Player player : players )
-					if(!player.getDead()) 
+					if(!player.isDead()) 
 						player.setState(Player.WINNING);
 				return true;
 			}
@@ -726,7 +737,7 @@ public class Gioco {
 			} else if (player1.getState() == Player.DYING_ENEMY || player1.getState() == Player.DYING_EXPLOSION)
 				return true;
 		}
-		if (multiplayer) {
+		else if (multiplayer) {
 			Player player1 = getPlayer(Settings.PLAYER1);
 			Player player2 = getPlayer(Settings.PLAYER2);
 			boolean DEAD1 = true;
@@ -769,14 +780,21 @@ public class Gioco {
 		 */
 	}
 
-	public int results() {
+	public int results(int p) {
 		if (multiplayer) {
 			if (battleRoyale) {
-				System.out.println("WAIT");
+				if(getPlayer(p).getState() == Player.WINNING) {
+					System.out.println("YOU WIN!!!");
+					return VICTORY;
+				}
 				return LOSS;
 			} else {
 				Player player1 = getPlayer(Settings.PLAYER1);
 				Player player2 = getPlayer(Settings.PLAYER2);
+				if( p == Settings.PLAYER2) {
+					player1 = player2;
+					player2 = getPlayer(Settings.PLAYER1);
+				}
 				if (player1.getState() == Player.DYING_ENEMY || player1.getState() == Player.DYING_EXPLOSION
 						&& player2.getState() != Player.DYING_ENEMY && player2.getState() != Player.DYING_EXPLOSION)
 					return LOSS;
@@ -787,7 +805,7 @@ public class Gioco {
 					return VICTORY;
 				else if (player1.getPoints() < player2.getPoints())
 					return LOSS;
-				else
+				else 
 					return DRAW;
 			}
 		} else {

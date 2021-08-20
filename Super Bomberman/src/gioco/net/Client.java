@@ -127,7 +127,7 @@ public class Client {
 	}
 	
 	
-
+ 
 	public synchronized boolean isBombAdded() {
 		return bombAdded;
 	}

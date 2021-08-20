@@ -20,7 +20,7 @@ public class WindowsHandler {
 	private int width = 825;
 	private int height = 750;
 	private  GameLoop gl;
-	
+	 
 	private static WindowsHandler windowsHandler = null;
 	public static WindowsHandler getWindowsHandler() {
 		if (windowsHandler == null) {

@@ -41,23 +41,27 @@ public class Server {
 		player1 = server.accept();
 		BufferedReader in = new BufferedReader(new InputStreamReader(player1.getInputStream())); 
 		String gameMode = in.readLine();
+		System.out.println(gameMode);
 		if(gameMode == null) {
 			in.close();
 			player1.close();
 			return;
 		}
-		if(gameMode == Protocol.BATTLEROYALE) {
+		if(gameMode.equals(Protocol.BATTLEROYALE)) {
 			battleRoyaleLobby.add(player1);
+			System.out.println("Connesso");
 			if(battleRoyaleLobby.size() == 5) {
-				//BrRoom room = new Room(battleRoyaleLobby, "MAP1");
-				//rooms.add(room);
+				Room room = new Room(battleRoyaleLobby, "MAP1");
+				rooms.add(room);
+				battleRoyaleLobby.clear();
 			}
 		}
-		else {
+		else if(gameMode.equals(Protocol.MULTIPLAYER)) {
 			multiplayerLobby.add(player1);
 			if(multiplayerLobby.size() == 2) {
 				Room room = new Room(multiplayerLobby, "MAP1");
 				rooms.add(room);
+				multiplayerLobby.clear();
 			}
 		}
 		

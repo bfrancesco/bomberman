@@ -26,6 +26,13 @@ public class Resources {
 	public static Vector<Image> dyingByEnemyBlackBomberman;
 	
 	
+	public static Vector<Image> leftOrangeBomberman;
+	public static Vector<Image> rightOrangeBomberman;
+	public static Vector<Image> upOrangeBomberman;
+	public static Vector<Image> downOrangeBomberman;
+	public static Vector<Image> victoryOrangeBomberman;
+	public static Vector<Image> dyingExplosionOrangeBomberman;
+	public static Vector<Image> dyingByEnemyOrangeBomberman;
 	
 	public static Vector<Image> center;
 	public static Vector<Image> middle_up;
@@ -91,6 +98,7 @@ public class Resources {
 		
 		loadWhiteBombermanImages();
 		loadBlackBombermanImages();
+		loadOrangeBombermanImages();
 		loadBombImages();
 		loadEnemyImages();
 		loadExplosionImages();
@@ -130,7 +138,7 @@ public class Resources {
 		upEnemy3 = new Vector<Image>();
 		
 		
-		try {
+		try { 
 
 			for (int i = 0; i < 4; ++i) {
 				rightEnemy2.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/enemy2/mummy_right_" + i + ".png")));
@@ -233,6 +241,7 @@ public class Resources {
 				dyingByEnemyWhiteBomberman.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/whiteBomberman/dyingEnemy_" + i + ".png")));
 				dyingExplosionWhiteBomberman.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/whiteBomberman/dying_" + i + ".png")));
 			}
+			dyingExplosionWhiteBomberman.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/whiteBomberman/dying_" + 5 + ".png")));
 			for (int i = 0; i < 2; ++i) {
 				victoryWhiteBomberman.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/whiteBomberman/victory_" + i + ".png")));
 			}
@@ -265,6 +274,7 @@ public class Resources {
 				dyingByEnemyBlackBomberman.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/blackBomberman/dyingEnemy_" + i + ".png")));
 				dyingExplosionBlackBomberman.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/blackBomberman/dying_" + i + ".png")));
 			}
+			dyingExplosionBlackBomberman.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/blackBomberman/dying_" + 5 + ".png")));
 			for (int i = 0; i < 2; ++i) {
 				victoryBlackBomberman.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/blackBomberman/winning_" + i + ".png")));
 			}
@@ -277,53 +287,128 @@ public class Resources {
 		}
 	}
 	
+	
+	public static void loadOrangeBombermanImages() {
+		leftOrangeBomberman = new Vector<Image>();
+		rightOrangeBomberman = new Vector<Image>();
+		upOrangeBomberman = new Vector<Image>();
+		downOrangeBomberman = new Vector<Image>();
+		victoryOrangeBomberman = new Vector<Image>();
+		dyingExplosionOrangeBomberman = new Vector<Image>();
+		dyingByEnemyOrangeBomberman = new Vector<Image>();
+		try {
+			for (int i = 0; i < 4; ++i) {
+				leftOrangeBomberman.add( ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/orangeBomberman/left_" + i + ".png")));
+				rightOrangeBomberman.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/orangeBomberman/right_" + i + ".png")));
+				upOrangeBomberman.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/orangeBomberman/up_" + i + ".png")));
+				downOrangeBomberman.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/orangeBomberman/down_" + i + ".png")));
+			}
+			for (int i = 0; i < 5; ++i) {
+				dyingByEnemyOrangeBomberman.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/orangeBomberman/dyingEnemy_" + i + ".png")));
+				dyingExplosionOrangeBomberman.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/orangeBomberman/dying_" + i + ".png")));
+			}
+			dyingExplosionOrangeBomberman.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/orangeBomberman/dying_" + 5 + ".png")));
+			for (int i = 0; i < 2; ++i) {
+				victoryOrangeBomberman.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/orangeBomberman/Orangewinning_" + i + ".png")));
+			}
+						
+			
+		} catch (IOException e) {
+			/* Aggiungere finestra */
+			System.out.println("ORANGE BOMBERMAN RESOURCES ARE UNAVAILABLE");
+			e.printStackTrace();
+		}
+	}
+	
 	public static Vector<Image> downBomberman(int player){
-		if(player == Settings.PLAYER1)
+		switch(player) {
+		case Settings.PLAYER1:
 			return downWhiteBomberman;
-		else
+		case Settings.PLAYER2:
 			return downBlackBomberman;
+		case Settings.PLAYER3:
+			return downOrangeBomberman;
+		default:
+			return  downBlackBomberman;
+		}
 	}
 	
 	public static Vector<Image> upBomberman(int player){
-		if(player == Settings.PLAYER1)
+		switch(player) {
+		case Settings.PLAYER1:
 			return upWhiteBomberman;
-		else
+		case Settings.PLAYER2:
 			return upBlackBomberman;
+		case Settings.PLAYER3:
+			return upOrangeBomberman;
+		default:
+			return  upBlackBomberman;
+		}
 	}
 	
 	public static Vector<Image> rightBomberman(int player){
-		if(player == Settings.PLAYER1)
+		switch(player) {
+		case Settings.PLAYER1:
 			return rightWhiteBomberman;
-		else
+		case Settings.PLAYER2:
 			return rightBlackBomberman;
+		case Settings.PLAYER3:
+			return rightOrangeBomberman;
+		default:
+			return  rightBlackBomberman;
+		}
 	}
 	
 	public static Vector<Image> leftBomberman(int player){
-		if(player == Settings.PLAYER1)
+		switch(player) {
+		case Settings.PLAYER1:
 			return leftWhiteBomberman;
-		else
+		case Settings.PLAYER2:
 			return leftBlackBomberman;
+		case Settings.PLAYER3:
+			return leftOrangeBomberman;
+		default:
+			return  leftBlackBomberman;
+		}
 	}
 	
 	public static Vector<Image> dyingByEnemyBomberman(int player){
-		if(player == Settings.PLAYER1)
+		switch(player) {
+		case Settings.PLAYER1:
 			return dyingByEnemyWhiteBomberman;
-		else
+		case Settings.PLAYER2:
 			return dyingByEnemyBlackBomberman;
+		case Settings.PLAYER3:
+			return dyingByEnemyOrangeBomberman;
+		default:
+			return  dyingByEnemyBlackBomberman;
+		}
 	}
 	
 	public static Vector<Image> dyingExplosionBomberman(int player){
-		if(player == Settings.PLAYER1)
-			return dyingExplosionWhiteBomberman;
-		else
-			return dyingExplosionWhiteBomberman;
+		switch(player) {
+		case Settings.PLAYER1:
+			return  dyingExplosionWhiteBomberman;
+		case Settings.PLAYER2:
+			return  dyingExplosionBlackBomberman;
+		case Settings.PLAYER3:
+			return  dyingExplosionOrangeBomberman;
+		default:
+			return   dyingExplosionBlackBomberman;
+		}
 	}
 	
 	public static Vector<Image> victoryBomberman(int player){
-		if(player == Settings.PLAYER1)
+		switch(player) {
+		case Settings.PLAYER1:
 			return victoryWhiteBomberman;
-		else
+		case Settings.PLAYER2:
 			return victoryBlackBomberman;
+		case Settings.PLAYER3:
+			return victoryOrangeBomberman;
+		default:
+			return  victoryBlackBomberman;
+		}
 	}
 	
 	

@@ -33,7 +33,9 @@ public class PlayerController extends KeyAdapter{
 		gioco = new Gioco(multiplayer, battleRoyale ,map);
 		if (multiplayer) {
 			client = new Client();	
-			client.sendMessage(Protocol.MULTIPLAYER);
+			if(battleRoyale)
+				client.sendMessage(Protocol.BATTLEROYALE);
+			else client.sendMessage(Protocol.MULTIPLAYER);
 			client.readReady();
 			if(client.getOrderConnection()<0)
 				WindowsHandler.getWindowsHandler().setMenu();
@@ -115,9 +117,11 @@ public class PlayerController extends KeyAdapter{
 					break;
 
 				}
-				if(!gioco.isGameOver())
-					gioco.getPlayer(Settings.PLAYER1).setState(movements.get(movements.size() - 1));
-				
+				if(!gioco.isGameOver()) {
+					if(multiplayer)
+						gioco.getPlayer(client.getOrderConnection()).setState(movements.get(movements.size() - 1));
+					else gioco.getPlayer(Settings.PLAYER1).setState(movements.get(movements.size() - 1));
+				}
 			}
 	}
 
@@ -153,9 +157,11 @@ public class PlayerController extends KeyAdapter{
 
 			break;
 		}
-		gioco.getPlayer(Settings.PLAYER1).setState(state);
-		//if(multiplayer)
-			//client.setAction(Protocol.state(gioco.getPlayer1().getState()));
+		if(!gioco.isGameOver()) {
+			if(multiplayer)
+				gioco.getPlayer(client.getOrderConnection()).setState(state);
+			else gioco.getPlayer(Settings.PLAYER1).setState(state);
+		}
 	}
 
 	public boolean isMultiplayer() {
@@ -187,20 +193,24 @@ public class PlayerController extends KeyAdapter{
 		//if(content[0] == Protocol.CONNECTIONERROR)
 			//show connection error dialog
 				
-		int i = 0;
+		int i = 0; 
 		while (!content[i].equals(Protocol.ENDCOMUNICATION) || i<content.length-1) {
 			if(content[i].equals(Protocol.PLAYER)) {
-				int state = gioco.getPlayer(Settings.PLAYER1).getState();
+				int state = gioco.getPlayer(client.getOrderConnection()).getState();
 				if(gioco.isGameOver() || Integer.parseInt(content[i+4]) == Player.DYING_ENEMY || Integer.parseInt(content[i+4]) == Player.DYING_EXPLOSION || Integer.parseInt(content[i+4]) == Player.WINNING) {
 					state = Integer.parseInt(content[i+4]);
-					gioco.setGameOver(true);
+					if(Integer.parseInt(content[i+1]) == client.getOrderConnection()) {
+						gioco.setGameOver(true);
+					}
+					
 				}
 				if(Integer.parseInt(content[i+1]) == client.getOrderConnection())
-					gioco.getPlayer(Settings.PLAYER1).update(Integer.parseInt(content[i+2]), Integer.parseInt(content[i+3]),
+					gioco.getPlayer( client.getOrderConnection()).update(Integer.parseInt(content[i+2]), Integer.parseInt(content[i+3]),
 							state, Integer.parseInt(content[i+5]));
-				else 
-					gioco.getPlayer(Settings.PLAYER2).update(Integer.parseInt(content[i+2]), Integer.parseInt(content[i+3]),
+				else {
+					gioco.getPlayer(Integer.parseInt(content[i+1])).update(Integer.parseInt(content[i+2]), Integer.parseInt(content[i+3]),
 						Integer.parseInt(content[i+4]),Integer.parseInt(content[i+5]));
+				}
 				i+=6;
 			}
 			else if (content[i].equals(Protocol.ENEMY)) {
@@ -227,25 +237,25 @@ public class PlayerController extends KeyAdapter{
 				bombsUpdated.add(new Bomb(Integer.parseInt(content[i+1]) ,Integer.parseInt(content[i+2]), Integer.parseInt(content[i+3]) ,gioco.getPlayer(Settings.PLAYER1)));
 				i+=4;
 			}
-			else if (content[i].equals(Protocol.EXPLOSION)) {
+		/*	else if (content[i].equals(Protocol.EXPLOSION)) {
 						explosionsUpdated.add(new Explosion(Integer.parseInt(content[i+1]), Integer.parseInt(content[i+2]),
 								Integer.parseInt(content[i+3]) , Integer.parseInt(content[i+4]) , Integer.parseInt(content[i+5]) , gioco.getPlayer(Settings.PLAYER1)));
 						i+=6;
-			}		
+			}	*/	
 		}
 		gioco.setBombs(bombsUpdated);
 		gioco.setEnemies(enemiesUpdated);
-		gioco.setExplosions(explosionsUpdated);
+		//gioco.setExplosions(explosionsUpdated);
 		// leggo tempo
 		// leggo blocchi distruttibili che devono essere rimossi
 	}
 	public void sendAction() {
 		if(client.isBombAdded()) {
-			client.sendMessage(Protocol.BOMBADDED + " " + Protocol.state(gioco.getPlayer(Settings.PLAYER1).getState()));
+			client.sendMessage(Protocol.BOMBADDED + " " + Protocol.state(gioco.getPlayer(client.getOrderConnection()).getState()));
 			client.setBombAdded(false);
 		}
 		else 
-			client.sendMessage(Protocol.state(gioco.getPlayer(Settings.PLAYER1).getState()));
+			client.sendMessage(Protocol.state(gioco.getPlayer(client.getOrderConnection()).getState()));
 	}
 
 }
