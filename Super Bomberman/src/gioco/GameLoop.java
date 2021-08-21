@@ -85,6 +85,8 @@ public class GameLoop extends Thread {
 					controller.getGioco().checkBombs();
 					controller.readAndUpdate();
 				}
+				else
+					controller.getGioco().updateEnemy();
 			}
 
 			updateTime = System.nanoTime() - now;

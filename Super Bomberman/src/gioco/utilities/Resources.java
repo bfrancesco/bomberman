@@ -34,6 +34,22 @@ public class Resources {
 	public static Vector<Image> dyingExplosionOrangeBomberman;
 	public static Vector<Image> dyingByEnemyOrangeBomberman;
 	
+	public static Vector<Image> leftBlueBomberman;
+	public static Vector<Image> rightBlueBomberman;
+	public static Vector<Image> upBlueBomberman;
+	public static Vector<Image> downBlueBomberman;
+	public static Vector<Image> victoryBlueBomberman;
+	public static Vector<Image> dyingExplosionBlueBomberman;
+	public static Vector<Image> dyingByEnemyBlueBomberman;
+	
+	public static Vector<Image> leftGreenBomberman;
+	public static Vector<Image> rightGreenBomberman;
+	public static Vector<Image> upGreenBomberman;
+	public static Vector<Image> downGreenBomberman;
+	public static Vector<Image> victoryGreenBomberman;
+	public static Vector<Image> dyingExplosionGreenBomberman;
+	public static Vector<Image> dyingByEnemyGreenBomberman;
+	
 	public static Vector<Image> center;
 	public static Vector<Image> middle_up;
 	public static Vector<Image> middle_down;
@@ -296,20 +312,54 @@ public class Resources {
 		victoryOrangeBomberman = new Vector<Image>();
 		dyingExplosionOrangeBomberman = new Vector<Image>();
 		dyingByEnemyOrangeBomberman = new Vector<Image>();
+		
+		leftBlueBomberman = new Vector<Image>();
+		rightBlueBomberman = new Vector<Image>();
+		upBlueBomberman = new Vector<Image>();
+		downBlueBomberman = new Vector<Image>();
+		victoryBlueBomberman = new Vector<Image>();
+		dyingExplosionBlueBomberman = new Vector<Image>();
+		dyingByEnemyBlueBomberman = new Vector<Image>();
+		
+		leftGreenBomberman = new Vector<Image>();
+		rightGreenBomberman = new Vector<Image>();
+		upGreenBomberman = new Vector<Image>();
+		downGreenBomberman = new Vector<Image>();
+		victoryGreenBomberman = new Vector<Image>();
+		dyingExplosionGreenBomberman = new Vector<Image>();
+		dyingByEnemyGreenBomberman = new Vector<Image>();
 		try {
 			for (int i = 0; i < 4; ++i) {
 				leftOrangeBomberman.add( ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/orangeBomberman/left_" + i + ".png")));
 				rightOrangeBomberman.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/orangeBomberman/right_" + i + ".png")));
 				upOrangeBomberman.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/orangeBomberman/up_" + i + ".png")));
 				downOrangeBomberman.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/orangeBomberman/down_" + i + ".png")));
+				leftBlueBomberman.add( ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/blueBomberman/left_" + i + ".png")));
+				rightBlueBomberman.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/blueBomberman/right_" + i + ".png")));
+				upBlueBomberman.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/blueBomberman/up_" + i + ".png")));
+				downBlueBomberman.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/blueBomberman/down_" + i + ".png")));
+				leftGreenBomberman.add( ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/greenBomberman/left_" + i + ".png")));
+				rightGreenBomberman.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/greenBomberman/right_" + i + ".png")));
+				upGreenBomberman.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/greenBomberman/up_" + i + ".png")));
+				downGreenBomberman.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/greenBomberman/down_" + i + ".png")));
+			
 			}
 			for (int i = 0; i < 5; ++i) {
 				dyingByEnemyOrangeBomberman.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/orangeBomberman/dyingEnemy_" + i + ".png")));
 				dyingExplosionOrangeBomberman.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/orangeBomberman/dying_" + i + ".png")));
+				dyingByEnemyBlueBomberman.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/blueBomberman/dyingEnemy_" + i + ".png")));
+				dyingExplosionBlueBomberman.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/blueBomberman/dying_" + i + ".png")));
+				dyingByEnemyGreenBomberman.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/greenBomberman/dyingEnemy_" + i + ".png")));
+				dyingExplosionGreenBomberman.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/greenBomberman/dying_" + i + ".png")));
+			
 			}
 			dyingExplosionOrangeBomberman.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/orangeBomberman/dying_" + 5 + ".png")));
+			dyingExplosionBlueBomberman.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/blueBomberman/dying_" + 5 + ".png")));
+			dyingExplosionGreenBomberman.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/greenBomberman/dying_" + 5 + ".png")));
 			for (int i = 0; i < 2; ++i) {
 				victoryOrangeBomberman.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/orangeBomberman/Orangewinning_" + i + ".png")));
+				victoryBlueBomberman.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/blueBomberman/Bluewinning_" + i + ".png")));
+				victoryGreenBomberman.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/greenBomberman/Greenwinning_" + i + ".png")));
 			}
 						
 			
@@ -328,6 +378,10 @@ public class Resources {
 			return downBlackBomberman;
 		case Settings.PLAYER3:
 			return downOrangeBomberman;
+		case Settings.PLAYER4:
+			return downBlueBomberman;
+		case Settings.PLAYER5:
+			return downGreenBomberman;
 		default:
 			return  downBlackBomberman;
 		}
@@ -341,6 +395,10 @@ public class Resources {
 			return upBlackBomberman;
 		case Settings.PLAYER3:
 			return upOrangeBomberman;
+		case Settings.PLAYER4:
+			return upBlueBomberman;
+		case Settings.PLAYER5:
+			return upGreenBomberman;
 		default:
 			return  upBlackBomberman;
 		}
@@ -354,6 +412,10 @@ public class Resources {
 			return rightBlackBomberman;
 		case Settings.PLAYER3:
 			return rightOrangeBomberman;
+		case Settings.PLAYER4:
+			return rightBlueBomberman;
+		case Settings.PLAYER5:
+			return rightGreenBomberman;
 		default:
 			return  rightBlackBomberman;
 		}
@@ -367,6 +429,10 @@ public class Resources {
 			return leftBlackBomberman;
 		case Settings.PLAYER3:
 			return leftOrangeBomberman;
+		case Settings.PLAYER4:
+			return leftBlueBomberman;
+		case Settings.PLAYER5:
+			return leftGreenBomberman;
 		default:
 			return  leftBlackBomberman;
 		}
@@ -380,6 +446,10 @@ public class Resources {
 			return dyingByEnemyBlackBomberman;
 		case Settings.PLAYER3:
 			return dyingByEnemyOrangeBomberman;
+		case Settings.PLAYER4:
+			return dyingByEnemyBlueBomberman;
+		case Settings.PLAYER5:
+			return dyingByEnemyGreenBomberman;
 		default:
 			return  dyingByEnemyBlackBomberman;
 		}
@@ -393,6 +463,10 @@ public class Resources {
 			return  dyingExplosionBlackBomberman;
 		case Settings.PLAYER3:
 			return  dyingExplosionOrangeBomberman;
+		case Settings.PLAYER4:
+			return dyingExplosionBlueBomberman;
+		case Settings.PLAYER5:
+			return dyingExplosionGreenBomberman;
 		default:
 			return   dyingExplosionBlackBomberman;
 		}
@@ -406,6 +480,10 @@ public class Resources {
 			return victoryBlackBomberman;
 		case Settings.PLAYER3:
 			return victoryOrangeBomberman;
+		case Settings.PLAYER4:
+			return victoryBlueBomberman;
+		case Settings.PLAYER5:
+			return victoryGreenBomberman;
 		default:
 			return  victoryBlackBomberman;
 		}

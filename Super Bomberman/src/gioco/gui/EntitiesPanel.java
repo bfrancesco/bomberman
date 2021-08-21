@@ -50,8 +50,8 @@ public class EntitiesPanel extends JPanel {
 			player2 = new BombermanView(Settings.PLAYER2);
 			if(controller.getGioco().isBattleRoyale()) {
 				player3 = new BombermanView(Settings.PLAYER3);
-				player4 = new BombermanView(Settings.PLAYER2);
-				player5 = new BombermanView(Settings.PLAYER2);
+				player4 = new BombermanView(Settings.PLAYER4);
+				player5 = new BombermanView(Settings.PLAYER5);
 			}
 		}
 		explosions = new ExplosionView();

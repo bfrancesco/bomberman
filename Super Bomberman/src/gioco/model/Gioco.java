@@ -49,7 +49,6 @@ public class Gioco {
 			e.printStackTrace();
 		}
 		playersAlive = players.size();
-		System.out.println(playersAlive);
 	}
 
 	public void inizia() {
@@ -717,7 +716,6 @@ public class Gioco {
 	}
 
 	public boolean finishLevel() {
-		System.out.println(playersAlive);
 		if(battleRoyale) {
 			if(playersAlive <=1){
 				for(Player player : players )
