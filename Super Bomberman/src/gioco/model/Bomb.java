@@ -83,7 +83,7 @@ public class Bomb {
 	@Override
 	public String toString() {
 		
-		return xCell+" " +yCell+ " "+timer;
+		return xCell+" " +yCell+ " "+timer+ " "+player.getType();
 	}
 	
 }

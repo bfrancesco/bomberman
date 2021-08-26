@@ -8,24 +8,25 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import gioco.gui.WindowsHandler;
 import gioco.model.Player;
 import gioco.utilities.Settings;
 
 
-public class Client {
+public class Client implements Runnable{
 	private Socket socket ;
 	private PrintWriter out;
 	private BufferedReader in;
 	private int orderConnection;
 	private boolean connected;
 	private boolean bombAdded;
+	private boolean battle;
 	
-	public Client() {
+	public Client(boolean battle) {
 		bombAdded = false;
-		connect();
+		this.battle = battle;
 		orderConnection = -1;
 	}
-	
 	
 	
 	public int getOrderConnection() {
@@ -41,6 +42,8 @@ public class Client {
 			return false;
 		try {
 			String line = in.readLine();
+			if(line == null)
+				return false;
 			if(line.equals(Protocol.READY))
 			{
 				line= in.readLine();
@@ -56,13 +59,13 @@ public class Client {
 	
 
 
-	public boolean isConnected() {
+	public synchronized boolean isConnected() {
 		return connected;
 	}
 
 
 
-	public void setConnected(boolean connected) {
+	public synchronized void  setConnected(boolean connected) {
 		this.connected = connected;
 	}
 
@@ -73,14 +76,14 @@ public class Client {
 			socket = new Socket("localhost" , 8000);
 			out = new PrintWriter(new BufferedOutputStream(socket.getOutputStream()), true);
 			in = new BufferedReader( new InputStreamReader(socket.getInputStream()));
-			connected = true;
+			setConnected(true);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			//System.out.println("Impossibile contattare il server");
 			socket = null;
 			out = null;
 			in = null;
-			connected = false;
+			setConnected(false);
 		} 
 		return connected;
 	}
@@ -96,10 +99,12 @@ public class Client {
 	}
 	
 	public void disconnect() {
+		if(connected)
+			this.sendMessage(Protocol.DISCONNECTION);
 		socket = null;
 		out = null;
 		in = null;
-		connected = false;
+		setConnected(false);
 	}
 	
 	
@@ -133,12 +138,23 @@ public class Client {
 	}
 
 
-
 	public synchronized void setBombAdded(boolean bombAdded) {
 		this.bombAdded = bombAdded;
 	}
 
-
+@Override
+public void run() {
+		connect();
+		if(!connected) {
+			WindowsHandler.getWindowsHandler().setMenu();
+			return;
+		}
+		if(battle)
+			sendMessage(Protocol.BATTLEROYALE);
+		else sendMessage(Protocol.MULTIPLAYER);
+		while(!readReady());
+		WindowsHandler.getWindowsHandler().setGamePanel(true, battle, this);
+}
 
 	
 }

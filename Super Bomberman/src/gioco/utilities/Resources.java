@@ -90,14 +90,24 @@ public class Resources {
 	
 	
 	public static Image iconWindow;
+	public static Image loading;
 	
 	public static Image wallpaper;
+	public static Image wallpaperConnecting;
 	public static Image logo;
+	public static Image key;
 	
 	public static void loadWindowIcon()throws IOException{
 		
 			iconWindow = ImageIO
 					.read(Resources.class.getResourceAsStream("/gioco/resources/bombs/bomb_0.png"));
+			loading = ImageIO
+					.read(Resources.class.getClassLoader().getResource("gioco/resources/other/ajax-loader.gif"));
+			wallpaperConnecting = ImageIO
+					.read(Resources.class.getClassLoader().getResource("gioco/resources/other/wallpaperConnecting.jpg"));
+			key = ImageIO
+					.read(Resources.class.getClassLoader().getResource("gioco/resources/other/key.png"));
+			
 
 	}
 	

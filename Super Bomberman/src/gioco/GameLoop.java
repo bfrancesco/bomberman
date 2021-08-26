@@ -54,7 +54,7 @@ public class GameLoop extends Thread {
 					controller.readAndUpdate();	
 					controller.getGioco().checkBombs();
 					controller.getGioco().checkExplosions();
-					controller.sendAction();	
+					controller.sendInfo();	
 					controller.getPanel().setStat(200);					
 				}
 

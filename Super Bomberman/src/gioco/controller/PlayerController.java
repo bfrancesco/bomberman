@@ -26,20 +26,22 @@ public class PlayerController extends KeyAdapter{
 	private Client client;
 
 	
-	public PlayerController(GamePanel panel, boolean multi, boolean battleRoyale ,String map) {
+	public PlayerController(GamePanel panel, boolean multi, boolean battleRoyale ,String map , Client client ) {
 		super();
 		this.multiplayer = multi;
 		this.battleRoyale = battleRoyale;
+		this.client = client;
 		gioco = new Gioco(multiplayer, battleRoyale ,map);
-		if (multiplayer) {
+		/*if (multiplayer) {
 			client = new Client();	
+			client.connect();
 			if(battleRoyale)
 				client.sendMessage(Protocol.BATTLEROYALE);
 			else client.sendMessage(Protocol.MULTIPLAYER);
-			client.readReady();
+			client.readReady();	
 			if(client.getOrderConnection()<0)
 				WindowsHandler.getWindowsHandler().setMenu();
-		} else
+		} else*/
 			gioco.inizia();
 
 		this.panel = panel;
@@ -58,6 +60,15 @@ public class PlayerController extends KeyAdapter{
 
 	public Gioco getGioco() {
 		return gioco;
+	}
+	
+
+	public boolean isBattleRoyale() {
+		return battleRoyale;
+	}
+
+	public void setBattleRoyale(boolean battleRoyale) {
+		this.battleRoyale = battleRoyale;
 	}
 
 	public void setGioco(Gioco gioco) {
@@ -183,7 +194,6 @@ public class PlayerController extends KeyAdapter{
 		}
 		Vector<Enemy> enemiesUpdated = new Vector<Enemy>();
 		Vector<Bomb> bombsUpdated = new Vector<Bomb>();
-		Vector<Explosion> explosionsUpdated = new Vector<Explosion>();
 		String line = client.read();
 		if(line == null) {
 			System.out.println("ERROR DURING READING");
@@ -234,22 +244,15 @@ public class PlayerController extends KeyAdapter{
 				
 			}
 			else if (content[i].equals(Protocol.BOMB)) {
-				bombsUpdated.add(new Bomb(Integer.parseInt(content[i+1]) ,Integer.parseInt(content[i+2]), Integer.parseInt(content[i+3]) ,gioco.getPlayer(Settings.PLAYER1)));
-				i+=4;
+				bombsUpdated.add(new Bomb(Integer.parseInt(content[i+1]) ,Integer.parseInt(content[i+2]), Integer.parseInt(content[i+3]) ,gioco.getPlayer(Integer.parseInt(content[i+4]))));
+				i+=5;
 			}
-		/*	else if (content[i].equals(Protocol.EXPLOSION)) {
-						explosionsUpdated.add(new Explosion(Integer.parseInt(content[i+1]), Integer.parseInt(content[i+2]),
-								Integer.parseInt(content[i+3]) , Integer.parseInt(content[i+4]) , Integer.parseInt(content[i+5]) , gioco.getPlayer(Settings.PLAYER1)));
-						i+=6;
-			}	*/	
 		}
 		gioco.setBombs(bombsUpdated);
 		gioco.setEnemies(enemiesUpdated);
-		//gioco.setExplosions(explosionsUpdated);
 		// leggo tempo
-		// leggo blocchi distruttibili che devono essere rimossi
 	}
-	public void sendAction() {
+	public void sendInfo() {
 		if(client.isBombAdded()) {
 			client.sendMessage(Protocol.BOMBADDED + " " + Protocol.state(gioco.getPlayer(client.getOrderConnection()).getState()));
 			client.setBombAdded(false);

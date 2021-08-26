@@ -126,7 +126,7 @@ public  class Player extends Entity{
 	
 	@Override
 	public String toString() {
-		return type + " "+x+" " + y+" "+state+" "+points;
+		return type + " " + x + " " + y+" "+state+" "+points;
 	}
 	
 	

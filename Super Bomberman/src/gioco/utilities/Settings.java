@@ -20,6 +20,9 @@ public class Settings {
 	public final static int PLAYER4 = 13;
 	public final static int PLAYER5 = 14;
 	
+	public static int WINDOWHEIGHT = 715;
+	public static int WINDOWWIDTH= 825;
+	
 	public static int BLOCKSIZEX = 825/15;
 	public static int BLOCKSIZEY = 715/13;;
 	public static int NORMALSPEED = BLOCKSIZEY/12;

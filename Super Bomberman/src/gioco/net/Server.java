@@ -24,12 +24,26 @@ public class Server {
 				if(rooms.get(i).getT().isInterrupted())
 					rooms.remove(i);
 			}
-			if(rooms.size()<2)
-				addConnections(); 
+			if(rooms.size()<2) {
+				addConnections();				
+			}
 		}
-		
+				
+	}
 
-		
+
+	private void checkLobby(Vector<Socket> toBeChecked) throws IOException {
+		Vector<Socket> toBeRemoved = new Vector<Socket>();
+		for(Socket s : toBeChecked) {
+			BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream())); 
+			if(in.ready()) {
+				String str = in.readLine();
+				if(str.equals(Protocol.DISCONNECTION)) {
+					toBeRemoved.add(s);
+				}
+			}
+		}
+		toBeChecked.removeAll(toBeRemoved);
 	}
 	
 	private void addConnections() throws IOException {	
@@ -37,19 +51,20 @@ public class Server {
 			System.out.println("CHIUSO");
 		}
 		
-		Socket player1;
-		player1 = server.accept();
-		BufferedReader in = new BufferedReader(new InputStreamReader(player1.getInputStream())); 
+		Socket player;
+		player = server.accept();
+		BufferedReader in = new BufferedReader(new InputStreamReader(player.getInputStream())); 
 		String gameMode = in.readLine();
 		System.out.println(gameMode);
 		if(gameMode == null) {
 			in.close();
-			player1.close();
+			player.close();
 			return;
 		}
 		if(gameMode.equals(Protocol.BATTLEROYALE)) {
-			battleRoyaleLobby.add(player1);
+			battleRoyaleLobby.add(player);
 			System.out.println("Connesso");
+			checkLobby(battleRoyaleLobby);
 			if(battleRoyaleLobby.size() == 5) {
 				Room room = new Room(battleRoyaleLobby, "MAP1");
 				rooms.add(room);
@@ -57,7 +72,8 @@ public class Server {
 			}
 		}
 		else if(gameMode.equals(Protocol.MULTIPLAYER)) {
-			multiplayerLobby.add(player1);
+			multiplayerLobby.add(player);
+			checkLobby(multiplayerLobby);
 			if(multiplayerLobby.size() == 2) {
 				Room room = new Room(multiplayerLobby, "MAP1");
 				rooms.add(room);

@@ -42,7 +42,7 @@ public class Menu extends JPanel {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				WindowsHandler windowshandler = WindowsHandler.getWindowsHandler();
-				windowshandler.setGamePanel(true , false);
+				windowshandler.setConnectingView(false);
 				super.mouseClicked(e);
 			}
 		
@@ -53,7 +53,7 @@ public class Menu extends JPanel {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				WindowsHandler windowshandler = WindowsHandler.getWindowsHandler();
-				windowshandler.setGamePanel(true , true);
+				windowshandler.setConnectingView(true);
 				super.mouseClicked(e);
 			}
 		
@@ -63,7 +63,7 @@ public class Menu extends JPanel {
 		allenamento.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				WindowsHandler.getWindowsHandler().setGamePanel(false , false);
+				WindowsHandler.getWindowsHandler().setGamePanel(false , false , null );
 				super.mouseClicked(e);
 			}
 		

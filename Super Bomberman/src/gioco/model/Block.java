@@ -3,7 +3,7 @@ package gioco.model;
 public class Block {
 	public final static int BRICK = 4;
 	public final static int IRON = 5 ;
-	public final static int GRASS = 6;
+	public final static int BOMB = 6;
 	public final static int FLOOR = 7;
 	
 	int type;
@@ -55,7 +55,7 @@ public class Block {
 	}
 	
 	public boolean isWalkable() {
-		if(type == Block.FLOOR || type == Block.GRASS)
+		if(type == Block.FLOOR)
 			return true;
 		return false;
 	}

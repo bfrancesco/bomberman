@@ -26,9 +26,9 @@ public class GamePanel extends JPanel {
 	private GameView giocoView;
 	private pointsPanel pointView;
 	
-	public GamePanel(int width , int height) {
-		this.height = height;
-		this.width = width;
+	public GamePanel() {
+		this.height = Settings.WINDOWHEIGHT;
+		this.width = Settings.WINDOWWIDTH;
 		this.setPreferredSize(new Dimension(width , height));
 		this.setBackground(Color.black);
 		this.setOpaque(true);		

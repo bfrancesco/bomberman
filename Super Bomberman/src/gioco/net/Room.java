@@ -21,10 +21,6 @@ import gioco.utilities.Settings;
 
 public class Room implements Runnable {
 
-	// private PrintWriter out1;
-	// private PrintWriter out2;
-	// private BufferedReader in1;
-	// private BufferedReader in2;
 	private Vector<PrintWriter> out;
 	private Vector<BufferedReader> in;
 	private Gioco gioco;
@@ -137,8 +133,6 @@ public class Room implements Runnable {
 		for (Bomb b : gioco.getBombs()) {
 			message.append(Protocol.bomb(b.toString()) + " ");
 		}
-		/*for (Explosion e : gioco.getExplosions()) 
-			message.append(Protocol.explosion(e.toString()) + " ");*/
 
 		message.append(Protocol.ENDCOMUNICATION);
 		writeMessage(message.toString());
