@@ -20,7 +20,7 @@ public class Enemy extends Entity{
 		r.setSeed(System.currentTimeMillis()+x);
 		int dir = r.nextInt(4);
 		this.direction = dir;
-		this.setSpeed(Settings.NORMALSPEED/3*2);
+		this.setSpeed(Settings.LOGICNORMALSPEED/3*2);
 	}
 
 	public void changeDirection(ArrayList<Integer> directions) {

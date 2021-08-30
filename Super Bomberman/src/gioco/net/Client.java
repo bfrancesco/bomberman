@@ -21,34 +21,63 @@ public class Client implements Runnable{
 	private boolean connected;
 	private boolean bombAdded;
 	private boolean battle;
+	private static Client client;
+	private String map;
 	
-	public Client(boolean battle) {
+	private Client() {
 		bombAdded = false;
-		this.battle = battle;
+		this.battle = false;
 		orderConnection = -1;
 	}
 	
+	public static Client getClient() {
+		if(client == null)
+			client = new Client();
+		return client;
+	}
+	
+	
+	public String getMap() {
+		return map;
+	}
+
+	public static void reset() {
+		if(client != null)
+			client.disconnect();
+		client = null;
+	}
 	
 	public int getOrderConnection() {
 		return orderConnection;
 	}
 
-	public void  settOrderConnection( int i ) {
+	public void  setOrderConnection( int i ) {
 		 orderConnection = i;
 	}
 
+	//keep alive / heartbeat
 	public boolean readReady() {
 		if(!connected)
 			return false;
 		try {
+			if(in == null)
+				return false;
 			String line = in.readLine();
 			if(line == null)
 				return false;
 			if(line.equals(Protocol.READY))
 			{
+				if(in==null)
+					return false;
 				line= in.readLine();
-				orderConnection = Integer.parseInt(line);
+				String info[] = line.split(" "); 
+				orderConnection = Integer.parseInt(info[0]);
+				map = info[1];
 				return true;
+				
+			}
+			if(line.equals(Protocol.KEEPALIVE)) {
+				sendMessage(Protocol.KEEPALIVE);
 			}
 		} catch (IOException e) {
 		}
@@ -56,7 +85,9 @@ public class Client implements Runnable{
 		
 	}
 	
-	
+	public void setBattleRoyale(boolean battleRoyale) {
+		this.battle = battleRoyale;
+	}
 
 
 	public synchronized boolean isConnected() {
@@ -99,8 +130,9 @@ public class Client implements Runnable{
 	}
 	
 	public void disconnect() {
-		if(connected)
+		if(connected) {
 			this.sendMessage(Protocol.DISCONNECTION);
+		}
 		socket = null;
 		out = null;
 		in = null;
@@ -111,16 +143,14 @@ public class Client implements Runnable{
 	public void sendMessage(String message) {
 		if(out != null) {
 			out.println(message);
-		}
-		
-		else
-			System.out.println("OUT IS NULL");
+		}		
 	}
 		
 	public String read() {
 		try {
 			if(in != null && in.ready()) {
 				String line = in.readLine();
+				//System.out.println(line);
 				return line;
 			}
 		} catch (IOException e) {
@@ -146,7 +176,7 @@ public class Client implements Runnable{
 public void run() {
 		connect();
 		if(!connected) {
-			WindowsHandler.getWindowsHandler().setMenu();
+			WindowsHandler.getWindowsHandler().setMenu();			
 			return;
 		}
 		if(battle)

@@ -34,8 +34,8 @@ public class pointsPanel extends JPanel {
 		this.setLayout(f);
 		Border border = BorderFactory.createLineBorder(Color.BLACK , 3);
 		this.setBorder(border);
-		ImageIcon white =  new ImageIcon( Resources.iconWhite.getScaledInstance(40, 40 ,Image.SCALE_SMOOTH));
-		ImageIcon black =  new ImageIcon( Resources.iconBlack.getScaledInstance(40, 40 ,Image.SCALE_SMOOTH));
+		ImageIcon white =  new ImageIcon( Resources.bombermanIcons.get(0).getScaledInstance(40, 40 ,Image.SCALE_SMOOTH));
+		ImageIcon black =  new ImageIcon( Resources.bombermanIcons.get(1).getScaledInstance(40, 40 ,Image.SCALE_SMOOTH));
 		ImageIcon time =  new ImageIcon( Resources.iconClock.getScaledInstance(40, 40 ,Image.SCALE_SMOOTH));
 		ImageIcon enemy =  new ImageIcon( Resources.iconEnemy.getScaledInstance(40, 40 ,Image.SCALE_SMOOTH));
 		pointsPlayer1 = new JLabel("0" , white , JLabel.LEFT);

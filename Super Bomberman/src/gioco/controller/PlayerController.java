@@ -30,24 +30,17 @@ public class PlayerController extends KeyAdapter{
 		super();
 		this.multiplayer = multi;
 		this.battleRoyale = battleRoyale;
+		//il client ha già stabilito una connessione e ha già letto una mappa , altrimenti non potrei avere il controller
 		this.client = client;
+		if(multiplayer)
+			map = client.getMap();
 		gioco = new Gioco(multiplayer, battleRoyale ,map);
-		/*if (multiplayer) {
-			client = new Client();	
-			client.connect();
-			if(battleRoyale)
-				client.sendMessage(Protocol.BATTLEROYALE);
-			else client.sendMessage(Protocol.MULTIPLAYER);
-			client.readReady();	
-			if(client.getOrderConnection()<0)
-				WindowsHandler.getWindowsHandler().setMenu();
-		} else*/
-			gioco.inizia();
+		
+		gioco.inizia();
 
 		this.panel = panel;
 		this.movements = new ArrayList<Integer>();
 		movements.add(Player.IDLE_DOWN);
-
 	}
 
 	public void setClient(Client client) {
@@ -91,8 +84,9 @@ public class PlayerController extends KeyAdapter{
 		Integer state;
 		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 			if(multiplayer)
-				client.disconnect();
-			WindowsHandler.getWindowsHandler().setMenu();
+					WindowsHandler.getWindowsHandler().setMenu();
+			else 
+				WindowsHandler.getWindowsHandler().setMapChooser();
 		}
 			if (!gioco.isGameOver()) {
 				switch (e.getKeyCode()) {

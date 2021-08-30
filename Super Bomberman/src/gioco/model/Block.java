@@ -23,7 +23,7 @@ public class Block {
 		else breakable = true;
 	}
 	
-	public void exploded(){
+	public void explode(){
 		if(type == Block.BRICK ) {
 			type = Block.FLOOR;
 		}

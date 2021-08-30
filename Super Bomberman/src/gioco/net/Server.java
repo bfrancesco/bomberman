@@ -1,8 +1,10 @@
 package gioco.net;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Vector;
@@ -14,7 +16,9 @@ public class Server {
 	private Vector<Socket> multiplayerLobby;
 	private Vector<Socket> battleRoyaleLobby;
 	
-	public void startServer(String map) throws IOException {
+	private int n_players_br= 5;
+	
+	public void startServer() throws IOException {
 		server = new ServerSocket(8000);
 		rooms = new Vector<Room>();
 		multiplayerLobby = new Vector<Socket>();
@@ -33,8 +37,22 @@ public class Server {
 
 
 	private void checkLobby(Vector<Socket> toBeChecked) throws IOException {
-		Vector<Socket> toBeRemoved = new Vector<Socket>();
+		Vector<Socket> toBeRemoved = new Vector<Socket>(toBeChecked);
 		for(Socket s : toBeChecked) {
+			BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream())); 
+			PrintWriter out = new PrintWriter(new BufferedOutputStream(s.getOutputStream()), true);
+			long time = System.currentTimeMillis();
+			out.println(Protocol.KEEPALIVE);
+			while(System.currentTimeMillis()-time<=1000) {
+				if(in.ready()) {
+					String str = in.readLine();
+					if(str.equals(Protocol.KEEPALIVE)) {
+						toBeRemoved.remove(s);
+					}
+				}
+			}
+		}
+		/*for(Socket s : toBeChecked) {
 			BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream())); 
 			if(in.ready()) {
 				String str = in.readLine();
@@ -42,7 +60,7 @@ public class Server {
 					toBeRemoved.add(s);
 				}
 			}
-		}
+		}*/
 		toBeChecked.removeAll(toBeRemoved);
 	}
 	
@@ -65,8 +83,8 @@ public class Server {
 			battleRoyaleLobby.add(player);
 			System.out.println("Connesso");
 			checkLobby(battleRoyaleLobby);
-			if(battleRoyaleLobby.size() == 5) {
-				Room room = new Room(battleRoyaleLobby, "MAP1");
+			if(battleRoyaleLobby.size() == n_players_br) {
+				Room room = new Room(battleRoyaleLobby);
 				rooms.add(room);
 				battleRoyaleLobby.clear();
 			}
@@ -75,7 +93,7 @@ public class Server {
 			multiplayerLobby.add(player);
 			checkLobby(multiplayerLobby);
 			if(multiplayerLobby.size() == 2) {
-				Room room = new Room(multiplayerLobby, "MAP1");
+				Room room = new Room(multiplayerLobby);
 				rooms.add(room);
 				multiplayerLobby.clear();
 			}
@@ -194,7 +212,7 @@ public class Server {
 		Server s = new Server();
 		try {
 			System.out.println("Starting server...");
-			s.startServer("Map1");
+			s.startServer();
 			//Thread t = new Thread(s);
 			//t.run();
 		} catch (IOException e) {

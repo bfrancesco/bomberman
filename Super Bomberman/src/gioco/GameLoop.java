@@ -2,6 +2,8 @@ package gioco;
 
 import gioco.controller.PlayerController;
 import gioco.model.Gioco;
+import gioco.net.Client;
+import gioco.net.Protocol;
 import gioco.utilities.Settings;
 
 
@@ -33,7 +35,6 @@ public class GameLoop extends Thread {
 		long sleepTime;
 		long maxTime = 1000000000 / 40;
 		long startTime = System.currentTimeMillis();
-		controller.getPanel().paintMap();
 		controller.getGioco().inizia();
 		while (running) {
 			now = System.nanoTime();
@@ -48,9 +49,9 @@ public class GameLoop extends Thread {
 					}
 				}
 				else {		
-					if(!controller.getClient().isConnected()) {
+					/*if(!controller.getClient().isConnected()) {
 						break ;
-					}
+					}*/
 					controller.readAndUpdate();	
 					controller.getGioco().checkBombs();
 					controller.getGioco().checkExplosions();
@@ -99,6 +100,6 @@ public class GameLoop extends Thread {
 				return;
 			}
 		}
-
+				
 	}
 }

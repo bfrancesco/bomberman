@@ -17,15 +17,13 @@ public  class Player extends Entity{
 		lifes = 1;
 		bombs = 1;
 		radius = 2;
-		width = Settings.BLOCKSIZEX*8/10;
+		width = Settings.LOGICBLOCKSIZEX*8/10;
 		//height = Settings.BLOCKSIZEY*9/11;
 		points = 0;
 		this.type =type;
 	}
 
-	public boolean isDead() {
-		return state == Player.DYING_ENEMY || state == Player.DYING_EXPLOSION;
-	} 
+	
 	
 	public int getPoints() {
 		return points;

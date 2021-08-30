@@ -41,13 +41,15 @@ public class GamePanel extends JPanel {
 		this.controller = controller;
 		addKeyListener(controller);	
 		requestFocus();
-		giocoView = new GameView(controller , 715 , 715);
+		giocoView = new GameView(controller , Settings.WINDOWHEIGHT , Settings.WINDOWWIDTH);
 		pointView = new pointsPanel(controller.isMultiplayer());
 		BoxLayout b = new BoxLayout(this, BoxLayout.Y_AXIS);
 		this.setLayout( b );
 		this.add(pointView , b);
+		pointView.setPreferredSize(new Dimension(Settings.WINDOWWIDTH ,45));
 		this.add(giocoView , b);
-		
+	
+
 		
 //giocoView.setPreferredSize(new Dimension(715,715));	
 	}
@@ -61,15 +63,15 @@ public class GamePanel extends JPanel {
 		pointView.setTime(time);
 	}
 	
-	@Override
+	/*@Override
 	public void paintComponents(Graphics g) {
 		// TODO Auto-generated method stub
 		super.paintComponents(g);
-	}
+	}*/
 	
-	public void paintMap() {
+/*	public void paintMap() {
 		repaint();
-	}
+	}*/
 	
 
 	public GameView getGiocoView() {

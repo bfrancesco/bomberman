@@ -49,7 +49,7 @@ public class GameView extends JPanel {
 	@Override
 	protected void paintComponent(Graphics g) {
 		//Block matrix[][] = controller.getGioco().getMatrix();
-		g.drawImage(map.getScaledInstance(Settings.BLOCKSIZEX*controller.getGioco().getWidth(), Settings.BLOCKSIZEY*controller.getGioco().getHeight(), Image.SCALE_SMOOTH),0,0, null);
+		g.drawImage(map.getScaledInstance(Settings.BLOCKSIZEX*Settings.LOGICWIDTH, Settings.BLOCKSIZEY*Settings.LOGICHEIGHT, Image.SCALE_SMOOTH),0,0, null);
 		/*for(int i = 0;i<matrix.length;++i) {
 			for(int j = 0;j<matrix[0].length;++j) {
 				if(matrix[i][j].getType() == Block.IRON)

@@ -17,6 +17,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
 
 import gioco.utilities.Resources;
@@ -37,6 +38,7 @@ public class Menu extends JPanel {
 	
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		multiplayer = new JButton("MULTIPLAYER");
+		multiplayer.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED , Color.BLACK , Color.DARK_GRAY));
 		multiplayer.setPreferredSize(new Dimension(300, 75));
 		multiplayer.addMouseListener(new MouseAdapter() {
 			@Override
@@ -48,6 +50,7 @@ public class Menu extends JPanel {
 		
 		});
 		battleRoyale = new JButton("BATTLE ROYALE");
+		battleRoyale.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED, Color.BLACK , Color.DARK_GRAY));
 		battleRoyale.setPreferredSize(new Dimension(300, 75));
 		battleRoyale.addMouseListener(new MouseAdapter() {
 			@Override
@@ -59,11 +62,12 @@ public class Menu extends JPanel {
 		
 		});
 		allenamento = new JButton("ALLENAMENTO");
+		allenamento.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED, Color.BLACK , Color.DARK_GRAY));
 		allenamento.setPreferredSize(new Dimension(300, 75));
 		allenamento.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				WindowsHandler.getWindowsHandler().setGamePanel(false , false , null );
+				WindowsHandler.getWindowsHandler().setMapChooser();
 				super.mouseClicked(e);
 			}
 		

@@ -92,12 +92,16 @@ public class Entity {
 		this.direction = direction;
 	}
 	
+	public boolean isDead() {
+		return state == Player.DYING_ENEMY || state == Player.DYING_EXPLOSION;
+	} 
+	
 	public Entity(int x , int y) {
 		this.x = x;
 		this.y = y;
-		this.speed = Settings.NORMALSPEED;
-		this.height = Settings.BLOCKSIZEY-3;
-		this.width = Settings.BLOCKSIZEX-3;
+		this.speed = Settings.LOGICNORMALSPEED;
+		this.height = Settings.LOGICBLOCKSIZEY-3;
+		this.width = Settings.LOGICBLOCKSIZEX-3;
 		direction = Settings.DOWN;
 	}
 
@@ -153,25 +157,25 @@ public class Entity {
 	}
 	
 	public int leftBlock() {
-		return (x)/Settings.BLOCKSIZEX;
+		return (x)/Settings.LOGICBLOCKSIZEX;
 	}
 	public int rightBlock() {
-		return rightSide()/Settings.BLOCKSIZEX;
+		return rightSide()/Settings.LOGICBLOCKSIZEX;
 	}
 	
 	public int upBlock() {
-		return (y)/Settings.BLOCKSIZEY;
+		return (y)/Settings.LOGICBLOCKSIZEY;
 	}
 	public int downBlock() {
-		return downSide()/Settings.BLOCKSIZEY;
+		return downSide()/Settings.LOGICBLOCKSIZEY;
 	}
 	
 	public int xcenterBlock() {
-		return (x + rightSide()) / (2*Settings.BLOCKSIZEX);
+		return (x + rightSide()) / (2*Settings.LOGICBLOCKSIZEX);
 	}
     
 	public int ycenterBlock() {
-		return (y + downSide()) / (2*Settings.BLOCKSIZEY);
+		return (y + downSide()) / (2*Settings.LOGICBLOCKSIZEY);
 	}
 	
 }

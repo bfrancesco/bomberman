@@ -81,10 +81,12 @@ public class Resources {
 	public static Vector<Image> leftEnemy3;
 	public static Vector<Image> dyingExplosionEnemy3 ;
 	
-	public static Image brick;
+	public static Vector<Image> maps;
+	public static Image createGameMenu;
 	
-	public static Image iconWhite;
-	public static Image iconBlack;
+	public static Image brick;
+	//Player1 - Player2 - Player3 ...
+	public static Vector<Image> bombermanIcons;
 	public static Image iconEnemy;
 	public static Image iconClock;
 	
@@ -101,8 +103,7 @@ public class Resources {
 		
 			iconWindow = ImageIO
 					.read(Resources.class.getResourceAsStream("/gioco/resources/bombs/bomb_0.png"));
-			loading = ImageIO
-					.read(Resources.class.getClassLoader().getResource("gioco/resources/other/ajax-loader.gif"));
+			loading = (new ImageIcon(Resources.class.getClassLoader().getResource("gioco/resources/other/ajax-loader.gif"))).getImage();
 			wallpaperConnecting = ImageIO
 					.read(Resources.class.getClassLoader().getResource("gioco/resources/other/wallpaperConnecting.jpg"));
 			key = ImageIO
@@ -114,8 +115,9 @@ public class Resources {
 	public static void loadResources() {
 		try {
 			brick = ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/blocks/brick.jpg"));
-			wallpaper = ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/other/sfondo.jpg"));
+			wallpaper = ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/other/sfondo4.jpg"));
 			logo = ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/other/logo.png"));
+			createGameMenu = ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/other/createGameMenu.jpg"));
 			
 		} catch (IOException e) {
 			System.out.println(" RESOURCES ARE UNAVAILABLE");
@@ -129,14 +131,16 @@ public class Resources {
 		loadEnemyImages();
 		loadExplosionImages();
 		loadIcons();
+		loadMaps();
 	}
 	
 	public static void loadIcons() {
 		try {
+			bombermanIcons = new Vector<Image>();
 			iconEnemy =  ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/icons/enemiesIcon.png")).getScaledInstance(30 , 30, 0);
-			iconWhite = ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/icons/whiteBombermanIcon.png")).getScaledInstance(30 , 30, 0);
 			iconClock =  ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/icons/clock.png")).getScaledInstance(30 , 30, 0);
-			iconBlack =  ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/icons/blackBombermanIcon.png")).getScaledInstance(30 , 30, 0);
+			bombermanIcons.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/icons/whiteBombermanIcon.png")).getScaledInstance(30 , 30, 0));
+			bombermanIcons.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/icons/blackBombermanIcon.png")).getScaledInstance(30 , 30, 0));
 		} catch (IOException e) {
 			System.out.println("ICONS RESOURCES ARE UNAVAILABLE");
 			e.printStackTrace();
@@ -213,6 +217,16 @@ public class Resources {
 		}
 	}
 	
+	public static void loadMaps() {
+		maps = new Vector<Image>();
+		try {
+			for(int i = 1;i<=Settings.MAPSNUMBER;++i) {
+				maps.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/maps/Map" + i + ".png")));
+			}
+		} catch (Exception e) {
+			System.out.println("IMPOSSIBILE CARICARE I TERRENI DI GIOCO");
+		}
+	}
 	
 	public static void loadExplosionImages() {
 		center = new Vector<Image>();

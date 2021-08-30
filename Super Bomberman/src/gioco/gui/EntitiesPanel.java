@@ -67,6 +67,13 @@ public class EntitiesPanel extends JPanel {
 		}
 		
 	}
+	
+	private int scaleByX(int a) {
+		return a*Settings.BLOCKSIZEX/Settings.LOGICBLOCKSIZEX;
+	}
+	private int scaleByY(int a) {
+		return a*Settings.BLOCKSIZEY/Settings.LOGICBLOCKSIZEY;
+	}
 
 	public void update() {
 		player1.update(controller.getGioco().getPlayer(Settings.PLAYER1).getState());
@@ -122,42 +129,39 @@ public class EntitiesPanel extends JPanel {
 					b.getXCell() * Settings.BLOCKSIZEX, b.getYCell() * Settings.BLOCKSIZEY, null);
 		}
 		Player p1 = controller.getGioco().getPlayer(Settings.PLAYER1);
-		g.drawImage(player1.getCurrentImage().getScaledInstance(p1.getWidth(), p1.getHeight(), Image.SCALE_FAST),
-				p1.getX(), p1.getY(), p1.getWidth(),  p1.getHeight(), null);	
+		g.drawImage(player1.getCurrentImage().getScaledInstance(scaleByX(p1.getWidth()),scaleByY(p1.getHeight()), Image.SCALE_FAST),
+				scaleByX(p1.getX()), scaleByY(p1.getY()) , null);	
 		if(controller.isMultiplayer()) {
 			Player p2 = controller.getGioco().getPlayer(Settings.PLAYER2);
-			g.drawImage(player2.getCurrentImage().getScaledInstance(p2.getWidth(), p2.getHeight(), Image.SCALE_FAST),
-					p2.getX(), p2.getY(), p2.getWidth(),  p2.getHeight(), null);	
+			g.drawImage(player2.getCurrentImage().getScaledInstance(scaleByX(p2.getWidth()),scaleByY(p2.getHeight()), Image.SCALE_FAST),
+					scaleByX(p2.getX()), scaleByY(p2.getY()) , null);	
 			if(controller.getGioco().isBattleRoyale()) {
 				Player p3 = controller.getGioco().getPlayer(Settings.PLAYER3);
-				g.drawImage(player3.getCurrentImage().getScaledInstance(p3.getWidth(), p3.getHeight(), Image.SCALE_FAST),
-						p3.getX(), p3.getY(), p3.getWidth(),  p3.getHeight(), null);
+				g.drawImage(player3.getCurrentImage().getScaledInstance(scaleByX(p1.getWidth()),scaleByY(p1.getHeight()), Image.SCALE_FAST),
+						scaleByX(p3.getX()), scaleByY(p3.getY()) , null);	
 				Player p4 = controller.getGioco().getPlayer(Settings.PLAYER4);
-				g.drawImage(player4.getCurrentImage().getScaledInstance(p4.getWidth(), p4.getHeight(), Image.SCALE_FAST),
-						p4.getX(), p4.getY(), p4.getWidth(),  p4.getHeight(), null);
+				g.drawImage(player4.getCurrentImage().getScaledInstance(scaleByX(p4.getWidth()),scaleByY(p4.getHeight()), Image.SCALE_FAST),
+						scaleByX(p4.getX()), scaleByY(p4.getY()) , null);	
 				Player p5 = controller.getGioco().getPlayer(Settings.PLAYER5);
-				g.drawImage(player5.getCurrentImage().getScaledInstance(p5.getWidth(), p5.getHeight(), Image.SCALE_FAST),
-						p5.getX(), p5.getY(), p5.getWidth(),  p5.getHeight(), null);
+				g.drawImage(player5.getCurrentImage().getScaledInstance(scaleByX(p5.getWidth()),scaleByY(p5.getHeight()), Image.SCALE_FAST),
+						scaleByX(p5.getX()), scaleByY(p5.getY()) , null);	
 			}
 		}	
 		
 		for (int i = 0;i<controller.getGioco().getEnemies().size();++i) {
 			Enemy b = controller.getGioco().getEnemies().get(i);
-			if (b instanceof Enemy1) {
-				g.drawImage(enemyview.get(i).getCurrentImage().getScaledInstance(b.getWidth(), b.getHeight(), Image.SCALE_FAST),
-						b.getX(), b.getY() , null);	
-			} else if (b instanceof Enemy2) {
-				g.drawImage(enemyview.get(i).getCurrentImage().getScaledInstance(b.getWidth(), b.getHeight(), Image.SCALE_FAST),
-						b.getX(), b.getY() , null);
+			if (b instanceof Enemy1 || b instanceof Enemy2) {
+				g.drawImage(enemyview.get(i).getCurrentImage().getScaledInstance(scaleByX(b.getWidth()),scaleByY(b.getHeight()), Image.SCALE_FAST),
+						scaleByX(b.getX()),scaleByY(b.getY()) , null);	
 			} else if (b instanceof Enemy3) {
 				if (((Enemy3) b).isVisible()) {
-					g.drawImage(enemyview.get(i).getCurrentImage().getScaledInstance(b.getWidth(), b.getHeight(), Image.SCALE_FAST),
-							b.getX(), b.getY() , null);
+					g.drawImage(enemyview.get(i).getCurrentImage().getScaledInstance(scaleByX(b.getWidth()),scaleByY(b.getHeight()), Image.SCALE_FAST),
+							scaleByX(b.getX()),scaleByY(b.getY()), null);
 				} else {
 					if (((Enemy3) b).getUnseenTime() < 80 && ((Enemy3) b).getUnseenTime() % 20 >= 0
 							&& ((Enemy3) b).getUnseenTime() % 20 < 5)
-						g.drawImage(enemyview.get(i).getCurrentImage().getScaledInstance(b.getWidth(), b.getHeight(), Image.SCALE_FAST),
-								b.getX(), b.getY() , null);
+						g.drawImage(enemyview.get(i).getCurrentImage().getScaledInstance(scaleByX(b.getWidth()),scaleByY(b.getHeight()), Image.SCALE_FAST),
+								scaleByX(b.getX()),scaleByY(b.getY()) , null);
 				}
 			}
 		}

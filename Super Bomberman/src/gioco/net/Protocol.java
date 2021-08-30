@@ -11,6 +11,7 @@ public class Protocol {
 	public static final String BOMBADDED = "ba";
 	public static final String ENDCOMUNICATION = "END";
 	public static final String DISCONNECTION = "D";
+	public static final String KEEPALIVE = "K";
 	
 	public static final String BATTLEROYALE = "br";
 	public static final String MULTIPLAYER = "mp";
@@ -39,6 +40,9 @@ public class Protocol {
 		return EXPLOSION + " "+ex;
 	}
 	
+	public static String startingInfo(int player , String map ) {
+		return Integer.toString(player)+" "+map;
+	}
 	/*public static int[] parsePosition(String line) {
 		String[] res = line.split(" ");
 		if(res.length != 3 || !res[0].equals(POSITION))

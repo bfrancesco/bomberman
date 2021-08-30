@@ -20,11 +20,22 @@ public class Settings {
 	public final static int PLAYER4 = 13;
 	public final static int PLAYER5 = 14;
 	
-	public static int WINDOWHEIGHT = 715;
+	public static int LOGICWIDTH = 15;
+	public static int LOGICHEIGHT = 13;
+	public static int LOGICBLOCKSIZEX = 1800/ LOGICWIDTH;
+	public static int LOGICBLOCKSIZEY = 1560/ LOGICHEIGHT;
+	public static int LOGICNORMALSPEED = LOGICBLOCKSIZEY/12; 
+	
+	
+	public static int MAPSNUMBER = 3;
+	
+	//public static int WINDOWHEIGHT = 810;
+	//public static int WINDOWWIDTH= 900;
+	public static int WINDOWHEIGHT = 750;
 	public static int WINDOWWIDTH= 825;
 	
-	public static int BLOCKSIZEX = 825/15;
-	public static int BLOCKSIZEY = 715/13;;
+	public static int BLOCKSIZEX = WINDOWWIDTH/15;
+	public static int BLOCKSIZEY = (WINDOWHEIGHT-40)/13;
 	public static int NORMALSPEED = BLOCKSIZEY/12;
 	
 	public static int EXPLOSIONTIME = 12;

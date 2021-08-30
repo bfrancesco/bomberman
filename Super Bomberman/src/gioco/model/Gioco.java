@@ -15,8 +15,8 @@ public class Gioco {
 
 	private int time = 150;
 	private Block[][] matrix;
-	private int height = 13;
-	private int width = 15;
+	private int height =  Settings.LOGICHEIGHT;
+	private int width = Settings.LOGICWIDTH;
 	Vector<Player> players;
 	private Vector<Enemy> enemies;
 	private Vector<Bomb> bombs;
@@ -87,34 +87,33 @@ public class Gioco {
 			while (!(s.equals("END"))) {
 				String[] elements = s.split(" ");
 				if (elements[0].equals("player1")) {
-					players.add(new Player(Integer.valueOf(elements[1]) * Settings.BLOCKSIZEX,
-							Integer.valueOf(elements[2]) * Settings.BLOCKSIZEY, Settings.PLAYER1));
-				}
-				else if (multiplayer && elements[0].equals("player2")) {				 
-					players.add(new Player(Integer.valueOf(elements[1]) * Settings.BLOCKSIZEX,
-							Integer.valueOf(elements[2]) * Settings.BLOCKSIZEY, Settings.PLAYER2));
+					players.add(new Player(Integer.valueOf(elements[1]) * Settings.LOGICBLOCKSIZEX,
+							Integer.valueOf(elements[2]) * Settings.LOGICBLOCKSIZEY, Settings.PLAYER1));
+				} else if (multiplayer && elements[0].equals("player2")) {
+					players.add(new Player(Integer.valueOf(elements[1]) * Settings.LOGICBLOCKSIZEX,
+							Integer.valueOf(elements[2]) * Settings.LOGICBLOCKSIZEY, Settings.PLAYER2));
 				} else if (battleRoyale && elements[0].equals("player3")) {
-					players.add(new Player(Integer.valueOf(elements[1]) * Settings.BLOCKSIZEX,
-							Integer.valueOf(elements[2]) * Settings.BLOCKSIZEY, Settings.PLAYER3));
+					players.add(new Player(Integer.valueOf(elements[1]) * Settings.LOGICBLOCKSIZEX,
+							Integer.valueOf(elements[2]) * Settings.LOGICBLOCKSIZEY, Settings.PLAYER3));
 				} else if (battleRoyale && elements[0].equals("player4")) {
-					players.add(new Player(Integer.valueOf(elements[1]) * Settings.BLOCKSIZEX,
-							Integer.valueOf(elements[2]) * Settings.BLOCKSIZEY, Settings.PLAYER4));
+					players.add(new Player(Integer.valueOf(elements[1]) * Settings.LOGICBLOCKSIZEX,
+							Integer.valueOf(elements[2]) * Settings.LOGICBLOCKSIZEY, Settings.PLAYER4));
 				} else if (battleRoyale && elements[0].equals("player5")) {
-					players.add(new Player(Integer.valueOf(elements[1]) * Settings.BLOCKSIZEX,
-							Integer.valueOf(elements[2]) * Settings.BLOCKSIZEY, Settings.PLAYER5));
+					players.add(new Player(Integer.valueOf(elements[1]) * Settings.LOGICBLOCKSIZEX,
+							Integer.valueOf(elements[2]) * Settings.LOGICBLOCKSIZEY, Settings.PLAYER5));
 				} else if (elements[0].equals("enemy1")) {
-					Enemy1 e = new Enemy1(Integer.valueOf(elements[1]) * Settings.BLOCKSIZEX,
-							Integer.valueOf(elements[2]) * Settings.BLOCKSIZEY, enemyID);
+					Enemy1 e = new Enemy1(Integer.valueOf(elements[1]) * Settings.LOGICBLOCKSIZEX,
+							Integer.valueOf(elements[2]) * Settings.LOGICBLOCKSIZEY, enemyID);
 					enemyID += 1;
 					enemies.add(e);
 				} else if (elements[0].equals("enemy2")) {
-					Enemy2 e = new Enemy2(Integer.valueOf(elements[1]) * Settings.BLOCKSIZEX,
-							Integer.valueOf(elements[2]) * Settings.BLOCKSIZEY, enemyID);
+					Enemy2 e = new Enemy2(Integer.valueOf(elements[1]) * Settings.LOGICBLOCKSIZEX,
+							Integer.valueOf(elements[2]) * Settings.LOGICBLOCKSIZEY, enemyID);
 					enemyID += 1;
 					enemies.add(e);
 				} else if (elements[0].equals("enemy3")) {
-					Enemy3 e = new Enemy3(Integer.valueOf(elements[1]) * Settings.BLOCKSIZEX,
-							Integer.valueOf(elements[2]) * Settings.BLOCKSIZEY, enemyID);
+					Enemy3 e = new Enemy3(Integer.valueOf(elements[1]) * Settings.LOGICBLOCKSIZEX,
+							Integer.valueOf(elements[2]) * Settings.LOGICBLOCKSIZEY, enemyID);
 					enemyID += 1;
 					enemies.add(e);
 				}
@@ -198,7 +197,7 @@ public class Gioco {
 								e3.Teleport(players.get(0).xcenterBlock(), players.get(0).ycenterBlock());
 					}
 					if (collisionBlock(e, e.getDirection()) != Settings.TOTALCOLLISION
-							/*&& !collisionBombs(e, e.getDirection()) */&& e.getState() != Entity.IDLE_DOWN) {
+							/* && !collisionBombs(e, e.getDirection()) */ && e.getState() != Entity.IDLE_DOWN) {
 						e.move();
 					} else {
 						ArrayList<Integer> directions = new ArrayList<Integer>();
@@ -226,6 +225,7 @@ public class Gioco {
 			enemies.removeAll(enemiesToBeRemoved);
 		} else {
 			for (Enemy e : enemies)
+				if(!e.isDead())
 				e.setState(Entity.IDLE_DOWN);
 		}
 	}
@@ -260,38 +260,38 @@ public class Gioco {
 			return;
 		}
 		int collisionType = collisionBlock(player, direction);
-		if (collisionType != Settings.TOTALCOLLISION /*&& !collisionBombs(player, direction)*/) {
+		if (collisionType != Settings.TOTALCOLLISION ) {
 			if (collisionType == Settings.NOCOLLISION)
 				player.move(direction);
 			else {
 				switch (collisionType) {
 				case Settings.DOWNCOLLISION:
 					direction = Settings.UP;
-					if (player.getY() - player.downBlock() * Settings.BLOCKSIZEY <= player.getSpeed() / 2) {
-						player.setY(player.ycenterBlock() * Settings.BLOCKSIZEY + Settings.BLOCKSIZEY
+					if (player.getY() - player.downBlock() * Settings.LOGICBLOCKSIZEY <= player.getSpeed() / 2) {
+						player.setY(player.ycenterBlock() * Settings.LOGICBLOCKSIZEY + Settings.LOGICBLOCKSIZEY
 								- player.getHeight() - 1);
 						return;
 					}
 					break;
 				case Settings.UPCOLLISION:
 					direction = Settings.DOWN;
-					if (player.getY() - player.ycenterBlock() * Settings.BLOCKSIZEY <= player.getSpeed() / 2) {
-						player.setY(player.ycenterBlock() * Settings.BLOCKSIZEY + 1);
+					if (player.getY() - player.ycenterBlock() * Settings.LOGICBLOCKSIZEY <= player.getSpeed() / 2) {
+						player.setY(player.ycenterBlock() * Settings.LOGICBLOCKSIZEY + 1);
 						return;
 					}
 					break;
 				case Settings.RIGHTCOLLISION:
 					direction = Settings.LEFT;
-					if (player.getX() - (player.rightBlock()) * Settings.BLOCKSIZEX <= player.getSpeed() / 2) {
-						player.setX(player.xcenterBlock() * Settings.BLOCKSIZEX + Settings.BLOCKSIZEX
+					if (player.getX() - (player.rightBlock()) * Settings.LOGICBLOCKSIZEX <= player.getSpeed() / 2) {
+						player.setX(player.xcenterBlock() * Settings.LOGICBLOCKSIZEX + Settings.LOGICBLOCKSIZEX
 								- player.getWidth() - 1);
 						return;
 					}
 					break;
 				case Settings.LEFTCOLLISION:
 					direction = Settings.RIGHT;
-					if (player.getX() - player.xcenterBlock() * Settings.BLOCKSIZEX <= player.getSpeed() / 2) {
-						player.setX(player.xcenterBlock() * Settings.BLOCKSIZEX + 1);
+					if (player.getX() - player.xcenterBlock() * Settings.LOGICBLOCKSIZEX <= player.getSpeed() / 2) {
+						player.setX(player.xcenterBlock() * Settings.LOGICBLOCKSIZEX + 1);
 						return;
 					}
 					break;
@@ -306,20 +306,20 @@ public class Gioco {
 		switch (dir) {
 		case Settings.LEFT:
 			if (e.getX() - e.getSpeed() < 0) {
-				if(matrix[e.ycenterBlock()][width-1].isWalkable())
-					e.setX((width-1)*Settings.BLOCKSIZEX+Settings.BLOCKSIZEX-e.getWidth());
+				if (matrix[e.ycenterBlock()][width - 1].isWalkable())
+					e.setX((width - 1) * Settings.LOGICBLOCKSIZEX + Settings.LOGICBLOCKSIZEX - e.getWidth());
 				return Settings.TOTALCOLLISION;
-			} else if (!matrix[e.ycenterBlock()][(e.getX() - e.getSpeed()) / Settings.BLOCKSIZEX].isWalkable()) {
-				e.setX((e.xcenterBlock()) * Settings.BLOCKSIZEX + 1);
+			} else if (!matrix[e.ycenterBlock()][(e.getX() - e.getSpeed()) / Settings.LOGICBLOCKSIZEX].isWalkable()) {
+				e.setX((e.xcenterBlock()) * Settings.LOGICBLOCKSIZEX + 1);
 				return Settings.TOTALCOLLISION;
-			} else if (!matrix[e.downBlock()][(e.getX() - e.getSpeed()) / Settings.BLOCKSIZEX].isWalkable()) {
-				e.setX((e.xcenterBlock()) * Settings.BLOCKSIZEX + 1);
-				if (e.downSide() + e.getSpeed() >= Settings.BLOCKSIZEY * height) {
+			} else if (!matrix[e.downBlock()][(e.getX() - e.getSpeed()) / Settings.LOGICBLOCKSIZEX].isWalkable()) {
+				e.setX((e.xcenterBlock()) * Settings.LOGICBLOCKSIZEX + 1);
+				if (e.downSide() + e.getSpeed() >= Settings.LOGICBLOCKSIZEY * height) {
 					return Settings.TOTALCOLLISION;
 				}
 				return Settings.DOWNCOLLISION;
-			} else if (!matrix[e.upBlock()][(e.getX() - e.getSpeed()) / Settings.BLOCKSIZEX].isWalkable()) {
-				e.setX((e.xcenterBlock()) * Settings.BLOCKSIZEX);
+			} else if (!matrix[e.upBlock()][(e.getX() - e.getSpeed()) / Settings.LOGICBLOCKSIZEX].isWalkable()) {
+				e.setX((e.xcenterBlock()) * Settings.LOGICBLOCKSIZEX);
 				if (e.getY() - e.getSpeed() < 0) {
 					return Settings.TOTALCOLLISION;
 				}
@@ -327,21 +327,21 @@ public class Gioco {
 			}
 			break;
 		case Settings.RIGHT:
-			if (e.rightSide() + e.getSpeed() >= Settings.BLOCKSIZEX * width) {
-				if(matrix[e.ycenterBlock()][0].isWalkable())
+			if (e.rightSide() + e.getSpeed() >= Settings.LOGICBLOCKSIZEX * width) {
+				if (matrix[e.ycenterBlock()][0].isWalkable())
 					e.setX(0);
 				return Settings.TOTALCOLLISION;
-			} else if (!matrix[e.ycenterBlock()][(e.rightSide() + e.getSpeed()) / Settings.BLOCKSIZEX].isWalkable()) {
-				e.setX((e.xcenterBlock()) * Settings.BLOCKSIZEX + Settings.BLOCKSIZEX - e.getWidth() - 1);
+			} else if (!matrix[e.ycenterBlock()][(e.rightSide() + e.getSpeed()) / Settings.LOGICBLOCKSIZEX].isWalkable()) {
+				e.setX((e.xcenterBlock()) * Settings.LOGICBLOCKSIZEX + Settings.LOGICBLOCKSIZEX - e.getWidth() - 1);
 				return Settings.TOTALCOLLISION;
-			} else if (!matrix[e.downBlock()][(e.rightSide() + e.getSpeed()) / Settings.BLOCKSIZEX].isWalkable()) {
-				e.setX((e.xcenterBlock()) * Settings.BLOCKSIZEX + Settings.BLOCKSIZEX - e.getWidth() - 1);
-				if (e.downSide() + e.getSpeed() >= Settings.BLOCKSIZEY * height) {
+			} else if (!matrix[e.downBlock()][(e.rightSide() + e.getSpeed()) / Settings.LOGICBLOCKSIZEX].isWalkable()) {
+				e.setX((e.xcenterBlock()) * Settings.LOGICBLOCKSIZEX + Settings.LOGICBLOCKSIZEX - e.getWidth() - 1);
+				if (e.downSide() + e.getSpeed() >= Settings.LOGICBLOCKSIZEY * height) {
 					return Settings.TOTALCOLLISION;
 				}
 				return Settings.DOWNCOLLISION;
-			} else if (!matrix[e.upBlock()][(e.rightSide() + e.getSpeed()) / Settings.BLOCKSIZEX].isWalkable()) {
-				e.setX((e.xcenterBlock()) * Settings.BLOCKSIZEX + Settings.BLOCKSIZEX - e.getWidth());
+			} else if (!matrix[e.upBlock()][(e.rightSide() + e.getSpeed()) / Settings.LOGICBLOCKSIZEX].isWalkable()) {
+				e.setX((e.xcenterBlock()) * Settings.LOGICBLOCKSIZEX + Settings.LOGICBLOCKSIZEX - e.getWidth());
 				if (e.getY() - e.getSpeed() < 0) {
 					return Settings.TOTALCOLLISION;
 				}
@@ -350,21 +350,20 @@ public class Gioco {
 			break;
 		case Settings.UP:
 			if (e.getY() - e.getSpeed() < 0) {
-				if(matrix[height-1][e.xcenterBlock()].isWalkable())
-					e.setY((height-1)*Settings.BLOCKSIZEY+Settings.BLOCKSIZEY-e.getHeight());
+				if (matrix[height - 1][e.xcenterBlock()].isWalkable())
+					e.setY((height - 1) * Settings.LOGICBLOCKSIZEY + Settings.LOGICBLOCKSIZEY - e.getHeight());
 				return Settings.TOTALCOLLISION;
-			}			
-			else if(!matrix[(e.getY() - e.getSpeed()) / Settings.BLOCKSIZEY][e.xcenterBlock()].isWalkable()) {
-				e.setY((e.ycenterBlock()) * Settings.BLOCKSIZEY + Settings.BLOCKSIZEY - e.getHeight() - 1);
+			} else if (!matrix[(e.getY() - e.getSpeed()) / Settings.LOGICBLOCKSIZEY][e.xcenterBlock()].isWalkable()) {
+				e.setY((e.ycenterBlock()) * Settings.LOGICBLOCKSIZEY + Settings.LOGICBLOCKSIZEY - e.getHeight() - 1);
 				return Settings.TOTALCOLLISION;
-			} else if (!matrix[(e.getY() - e.getSpeed()) / Settings.BLOCKSIZEY][e.rightBlock()].isWalkable()) {
-				e.setY((e.ycenterBlock()) * Settings.BLOCKSIZEY + 1);
-				if (e.rightSide() + e.getSpeed() >= Settings.BLOCKSIZEY * height) {
+			} else if (!matrix[(e.getY() - e.getSpeed()) / Settings.LOGICBLOCKSIZEY][e.rightBlock()].isWalkable()) {
+				e.setY((e.ycenterBlock()) * Settings.LOGICBLOCKSIZEY + 1);
+				if (e.rightSide() + e.getSpeed() >= Settings.LOGICBLOCKSIZEY * height) {
 					return Settings.TOTALCOLLISION;
 				}
 				return Settings.RIGHTCOLLISION;
-			} else if (!matrix[(e.getY() - e.getSpeed()) / Settings.BLOCKSIZEY][e.leftBlock()].isWalkable()) {
-				e.setY((e.ycenterBlock()) * Settings.BLOCKSIZEY);
+			} else if (!matrix[(e.getY() - e.getSpeed()) / Settings.LOGICBLOCKSIZEY][e.leftBlock()].isWalkable()) {
+				e.setY((e.ycenterBlock()) * Settings.LOGICBLOCKSIZEY);
 				if (e.getX() - e.getSpeed() < 0) {
 					return Settings.TOTALCOLLISION;
 				}
@@ -372,22 +371,21 @@ public class Gioco {
 			}
 			break;
 		case Settings.DOWN:
-			if (e.downSide() + e.getSpeed() >= Settings.BLOCKSIZEY * height) {
-				if(matrix[0][e.xcenterBlock()].isWalkable())
+			if (e.downSide() + e.getSpeed() >= Settings.LOGICBLOCKSIZEY * height) {
+				if (matrix[0][e.xcenterBlock()].isWalkable())
 					e.setY(0);
 				return Settings.TOTALCOLLISION;
-			}
-			else if(!matrix[(e.downSide() + e.getSpeed()) / Settings.BLOCKSIZEY][e.xcenterBlock()].isWalkable()) {	
-				e.setY((e.ycenterBlock()) * Settings.BLOCKSIZEY + Settings.BLOCKSIZEY - e.getHeight() - 1);
+			} else if (!matrix[(e.downSide() + e.getSpeed()) / Settings.LOGICBLOCKSIZEY][e.xcenterBlock()].isWalkable()) {
+				e.setY((e.ycenterBlock()) * Settings.LOGICBLOCKSIZEY + Settings.LOGICBLOCKSIZEY - e.getHeight() - 1);
 				return Settings.TOTALCOLLISION;
-			} else if (!matrix[(e.downSide() + e.getSpeed()) / Settings.BLOCKSIZEY][e.rightBlock()].isWalkable()) {
-				e.setY((e.ycenterBlock()) * Settings.BLOCKSIZEY + Settings.BLOCKSIZEY - e.getHeight() - 1);
-				if (e.rightSide() + e.getSpeed() >= Settings.BLOCKSIZEY * height) {
+			} else if (!matrix[(e.downSide() + e.getSpeed()) / Settings.LOGICBLOCKSIZEY][e.rightBlock()].isWalkable()) {
+				e.setY((e.ycenterBlock()) * Settings.LOGICBLOCKSIZEY + Settings.LOGICBLOCKSIZEY - e.getHeight() - 1);
+				if (e.rightSide() + e.getSpeed() >= Settings.LOGICBLOCKSIZEY * height) {
 					return Settings.TOTALCOLLISION;
 				}
 				return Settings.RIGHTCOLLISION;
-			} else if (!matrix[(e.downSide() + e.getSpeed()) / Settings.BLOCKSIZEY][e.leftBlock()].isWalkable()) {
-				e.setY((e.ycenterBlock()) * Settings.BLOCKSIZEY + Settings.BLOCKSIZEY - e.getHeight());
+			} else if (!matrix[(e.downSide() + e.getSpeed()) / Settings.LOGICBLOCKSIZEY][e.leftBlock()].isWalkable()) {
+				e.setY((e.ycenterBlock()) * Settings.LOGICBLOCKSIZEY + Settings.LOGICBLOCKSIZEY - e.getHeight());
 				if (e.getX() - e.getSpeed() < 0) {
 					return Settings.TOTALCOLLISION;
 
@@ -403,7 +401,7 @@ public class Gioco {
 		switch (dir) {
 		case Settings.LEFT:
 			for (Bomb elem : bombs) {
-				if (elem.getXCell() == (e.getX() - e.getSpeed()) / Settings.BLOCKSIZEX
+				if (elem.getXCell() == (e.getX() - e.getSpeed()) / Settings.LOGICBLOCKSIZEX
 						&& (elem.getYCell() == e.upBlock() || elem.getYCell() == e.downBlock())
 						&& elem.getXCell() != e.xcenterBlock())
 					return true;
@@ -411,7 +409,7 @@ public class Gioco {
 			break;
 		case Settings.RIGHT:
 			for (Bomb elem : bombs) {
-				if (elem.getXCell() == (e.rightSide() + e.getSpeed()) / Settings.BLOCKSIZEX
+				if (elem.getXCell() == (e.rightSide() + e.getSpeed()) / Settings.LOGICBLOCKSIZEX
 						&& (elem.getYCell() == e.upBlock() || elem.getYCell() == e.downBlock())
 						&& elem.getXCell() != e.xcenterBlock())
 					return true;
@@ -419,7 +417,7 @@ public class Gioco {
 			break;
 		case Settings.UP:
 			for (Bomb elem : bombs) {
-				if (elem.getYCell() == (e.getY() - e.getSpeed()) / Settings.BLOCKSIZEY
+				if (elem.getYCell() == (e.getY() - e.getSpeed()) / Settings.LOGICBLOCKSIZEY
 						&& (elem.getXCell() == e.leftBlock() || elem.getXCell() == e.rightBlock())
 						&& elem.getYCell() != e.ycenterBlock())
 					return true;
@@ -427,7 +425,7 @@ public class Gioco {
 			break;
 		case Settings.DOWN:
 			for (Bomb elem : bombs) {
-				if (elem.getYCell() == (e.downSide() + e.getSpeed()) / Settings.BLOCKSIZEY
+				if (elem.getYCell() == (e.downSide() + e.getSpeed()) / Settings.LOGICBLOCKSIZEY
 						&& (elem.getXCell() == e.leftBlock() || elem.getXCell() == e.rightBlock())
 						&& elem.getYCell() != e.ycenterBlock())
 					return true;
@@ -472,14 +470,14 @@ public class Gioco {
 			}
 
 			for (Player player : players) {
-				if(player.isDead())
+				if (player.isDead())
 					continue;
 				if (elem.getXCell() == player.xcenterBlock() && (elem.getYCell() == player.ycenterBlock())
 						|| ((elem.getXCell() == player.rightBlock() || elem.getXCell() == player.leftBlock())
 								&& (elem.getYCell() == player.upBlock() || elem.getYCell() == player.downBlock()))) {
 					playerCollision = true;
 					player.setState(Player.DYING_EXPLOSION);
-					playersAlive-=1;
+					playersAlive -= 1;
 				}
 			}
 		}
@@ -492,7 +490,7 @@ public class Gioco {
 		boolean collision = false;
 		for (Enemy enemy : enemies) {
 			for (Player player : players) {
-				if(player.isDead())
+				if (player.isDead())
 					continue;
 				if (enemy.getState() != Entity.DYING_EXPLOSION) {
 					if (((player.rightSide() <= enemy.rightSide() && player.rightSide() >= enemy.getX())
@@ -503,7 +501,7 @@ public class Gioco {
 									&& enemy.ycenterBlock() == player.ycenterBlock())) {
 						if (!(enemy instanceof Enemy3) || ((Enemy3) enemy).isVisible()) {
 							player.setState(Player.DYING_ENEMY);
-							playersAlive-=1;
+							playersAlive -= 1;
 							collision = true;
 						}
 					}
@@ -535,56 +533,85 @@ public class Gioco {
 					// CONTROLLO L'ESPLOSIONE DI SOPRA
 					if (i == bombs.get(k).getPlayer().getRadius())
 						type = Explosion.LAST;
-					if (!stopDown && bombs.get(k).getYCell() + i < height) {
-						if (matrix[bombs.get(k).getYCell() + i][bombs.get(k).getXCell()].isWalkable()) {
-							Explosion tmp = new Explosion(bombs.get(k).getXCell(), bombs.get(k).getYCell() + i, type,
-									Settings.DOWN, bombs.get(k).getPlayer());
+					if (!stopDown) {
+						if (matrix[(bombs.get(k).getYCell() + i) % height][bombs.get(k).getXCell()].isWalkable()) {
+							Explosion tmp = new Explosion(bombs.get(k).getXCell(),
+									(bombs.get(k).getYCell() + i) % height, type, Settings.DOWN,
+									bombs.get(k).getPlayer());
 
 							explosions.add(tmp);
 						} else {
-							if (matrix[bombs.get(k).getYCell() + i][bombs.get(k).getXCell()].isBreakable())
-								matrix[bombs.get(k).getYCell() + i][bombs.get(k).getXCell()].exploded();
+							if (matrix[(bombs.get(k).getYCell() + i) % height][bombs.get(k).getXCell()].isBreakable())
+								matrix[(bombs.get(k).getYCell() + i) % height][bombs.get(k).getXCell()].explode();
 							stopDown = true;
 						}
 					}
 
-					if (!stopUp && bombs.get(k).getYCell() - i >= 0) {
-						if (matrix[bombs.get(k).getYCell() - i][bombs.get(k).getXCell()].isWalkable()) {
-							Explosion tmp = new Explosion(bombs.get(k).getXCell(), bombs.get(k).getYCell() - i, type,
-									Settings.UP, bombs.get(k).getPlayer());
-							explosions.add(tmp);
+					if (!stopUp) {
+						if (bombs.get(k).getYCell() - i >= 0) {
+							if (matrix[bombs.get(k).getYCell() - i][bombs.get(k).getXCell()].isWalkable()) {
+								Explosion tmp = new Explosion(bombs.get(k).getXCell(), bombs.get(k).getYCell() - i,
+										type, Settings.UP, bombs.get(k).getPlayer());
+								explosions.add(tmp);
 
-						} else {
-							if (matrix[bombs.get(k).getYCell() - i][bombs.get(k).getXCell()].isBreakable())
-								matrix[bombs.get(k).getYCell() - i][bombs.get(k).getXCell()].exploded();
-							stopUp = true;
+							} else {
+								if (matrix[bombs.get(k).getYCell() - i][bombs.get(k).getXCell()].isBreakable())
+									matrix[bombs.get(k).getYCell() - i][bombs.get(k).getXCell()].explode();
+								stopUp = true;
+							}
+						}
+						if(bombs.get(k).getYCell() - i < 0) {
+							if (matrix[height+bombs.get(k).getYCell() - i][bombs.get(k).getXCell()].isWalkable()) {
+								Explosion tmp = new Explosion(bombs.get(k).getXCell(),height + bombs.get(k).getYCell() - i,
+										type, Settings.UP, bombs.get(k).getPlayer());
+								explosions.add(tmp);
+
+							} else {
+								if (matrix[height+bombs.get(k).getYCell() - i][bombs.get(k).getXCell()].isBreakable())
+									matrix[height+bombs.get(k).getYCell() - i][bombs.get(k).getXCell()].explode();
+								stopUp = true;
+							}
 						}
 					}
 
-					if (!stopRight && bombs.get(k).getXCell() + i < width) {
-						if (matrix[bombs.get(k).getYCell()][bombs.get(k).getXCell() + i].isWalkable()) {
-							Explosion tmp = new Explosion(bombs.get(k).getXCell() + i, bombs.get(k).getYCell(), type,
-									Settings.RIGHT, bombs.get(k).getPlayer());
+					if (!stopRight) {
+						if (matrix[bombs.get(k).getYCell()][(bombs.get(k).getXCell() + i) % width].isWalkable()) {
+							Explosion tmp = new Explosion((bombs.get(k).getXCell() + i) % width,
+									bombs.get(k).getYCell(), type, Settings.RIGHT, bombs.get(k).getPlayer());
 
 							explosions.add(tmp);
 						} else {
-							if (matrix[bombs.get(k).getYCell()][bombs.get(k).getXCell() + i].isBreakable())
-								matrix[bombs.get(k).getYCell()][bombs.get(k).getXCell() + i].exploded();
+							if (matrix[bombs.get(k).getYCell()][(bombs.get(k).getXCell() + i) % width].isBreakable())
+								matrix[bombs.get(k).getYCell()][(bombs.get(k).getXCell() + i) % width].explode();
 							stopRight = true;
 
 						}
 					}
 
-					if (!stopLeft && bombs.get(k).getXCell() - i >= 0) {
-						if (matrix[bombs.get(k).getYCell()][bombs.get(k).getXCell() - i].isWalkable()) {
-							Explosion tmp = new Explosion(bombs.get(k).getXCell() - i, bombs.get(k).getYCell(), type,
-									Settings.LEFT, bombs.get(k).getPlayer());
+					if (!stopLeft) {
+						if (bombs.get(k).getXCell() - i >= 0) {
+							if (matrix[bombs.get(k).getYCell()][bombs.get(k).getXCell() - i].isWalkable()) {
+								Explosion tmp = new Explosion(bombs.get(k).getXCell() - i, bombs.get(k).getYCell(),
+										type, Settings.LEFT, bombs.get(k).getPlayer());
 
-							explosions.add(tmp);
-						} else {
-							stopLeft = true;
-							if (matrix[bombs.get(k).getYCell()][bombs.get(k).getXCell() - i].isBreakable())
-								matrix[bombs.get(k).getYCell()][bombs.get(k).getXCell() - i].exploded();
+								explosions.add(tmp);
+							} else {
+								stopLeft = true;
+								if (matrix[bombs.get(k).getYCell()][bombs.get(k).getXCell() - i].isBreakable())
+									matrix[bombs.get(k).getYCell()][bombs.get(k).getXCell() - i].explode();
+							}
+						}
+						if (bombs.get(k).getXCell() - i < 0) {
+							if (matrix[bombs.get(k).getYCell()][width + bombs.get(k).getXCell() - i].isWalkable()) {
+								Explosion tmp = new Explosion(width + bombs.get(k).getXCell() - i,
+										bombs.get(k).getYCell(), type, Settings.LEFT, bombs.get(k).getPlayer());
+
+								explosions.add(tmp);
+							} else {
+								stopLeft = true;
+								if (matrix[bombs.get(k).getYCell()][width + bombs.get(k).getXCell() - i].isBreakable())
+									matrix[bombs.get(k).getYCell()][width + bombs.get(k).getXCell() - i].explode();
+							}
 						}
 					}
 				}
@@ -625,11 +652,11 @@ public class Gioco {
 	}
 
 	public Player getPlayer(int p) {
-		if(p>Settings.PLAYER5 || p<Settings.PLAYER1 || p-Settings.PLAYER1>=players.size()) {
+		if (p > Settings.PLAYER5 || p < Settings.PLAYER1 || p - Settings.PLAYER1 >= players.size()) {
 			System.out.println("Player non valido");
 			return null;
 		}
-		return players.get(p-Settings.PLAYER1);
+		return players.get(p - Settings.PLAYER1);
 	}
 
 	public synchronized Vector<Enemy> getEnemies() {
@@ -671,8 +698,6 @@ public class Gioco {
 	public void setGameOver(boolean gameOver) {
 		this.gameOver = gameOver;
 	}
-	
-	
 
 	public boolean isBattleRoyale() {
 		return battleRoyale;
@@ -720,22 +745,19 @@ public class Gioco {
 		updateEnemy();
 		if (finishLevel())
 			setGameOver(true);
-		
 
 	}
 
 	public boolean finishLevel() {
-		if(battleRoyale) {
-			if(playersAlive <=1){
-				for(Player player : players )
-					if(!player.isDead()) 
+		if (battleRoyale) {
+			if (playersAlive <= 1) {
+				for (Player player : players)
+					if (!player.isDead())
 						player.setState(Player.WINNING);
 				return true;
 			}
 			return false;
-		}
-		else 
-		if (!multiplayer) {
+		} else if (!multiplayer) {
 			Player player1 = getPlayer(Settings.PLAYER1);
 			if ((player1.getState() != Player.DYING_ENEMY && player1.getState() != Player.DYING_EXPLOSION
 					&& enemies.size() == 0)) {
@@ -743,8 +765,7 @@ public class Gioco {
 				return true;
 			} else if (player1.getState() == Player.DYING_ENEMY || player1.getState() == Player.DYING_EXPLOSION)
 				return true;
-		}
-		else if (multiplayer) {
+		} else if (multiplayer) {
 			Player player1 = getPlayer(Settings.PLAYER1);
 			Player player2 = getPlayer(Settings.PLAYER2);
 			boolean DEAD1 = true;
@@ -790,7 +811,7 @@ public class Gioco {
 	public int results(int p) {
 		if (multiplayer) {
 			if (battleRoyale) {
-				if(getPlayer(p).getState() == Player.WINNING) {
+				if (getPlayer(p).getState() == Player.WINNING) {
 					System.out.println("YOU WIN!!!");
 					return VICTORY;
 				}
@@ -798,7 +819,7 @@ public class Gioco {
 			} else {
 				Player player1 = getPlayer(Settings.PLAYER1);
 				Player player2 = getPlayer(Settings.PLAYER2);
-				if( p == Settings.PLAYER2) {
+				if (p == Settings.PLAYER2) {
 					player1 = player2;
 					player2 = getPlayer(Settings.PLAYER1);
 				}
@@ -812,7 +833,7 @@ public class Gioco {
 					return VICTORY;
 				else if (player1.getPoints() < player2.getPoints())
 					return LOSS;
-				else 
+				else
 					return DRAW;
 			}
 		} else {

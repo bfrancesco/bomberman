@@ -31,9 +31,7 @@ public ConnectingView(Client client) {
 	this.setOpaque(true);
 	this.setBackground(Color.BLACK);
 	this.setPreferredSize(new Dimension( Settings.WINDOWWIDTH,Settings.WINDOWHEIGHT));
-	ImageIcon loading = new ImageIcon(getClass().getClassLoader().getResource("gioco/resources/other/ajax-loader.gif"));
-	loading.setImage(loading.getImage().getScaledInstance(50, 50,Image.SCALE_DEFAULT));
-//	Icon loading = new ImageIcon(Resources.loading.getScaledInstance(40, 40, Image.SCALE_DEFAULT));
+	ImageIcon loading = new ImageIcon(Resources.loading.getScaledInstance(50, 50, Image.SCALE_DEFAULT));
 	JLabel label= new JLabel(loading );
 	label.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 25));
 	label.setIconTextGap(20);
@@ -53,7 +51,7 @@ public ConnectingView(Client client) {
 	exitText.setAlignmentY(CENTER_ALIGNMENT);
 	this.add(exitText, BorderLayout.SOUTH);
 	this.addKeyListener(new KeyListener() {
-		
+		 
 		@Override
 		public void keyTyped(KeyEvent e) {
 			// TODO Auto-generated method stub
@@ -75,9 +73,23 @@ public ConnectingView(Client client) {
 	});
 }
 
+
+
+public Client getClient() {
+	return client;
+}
+
+
+
+public void setClient(Client client) {
+	this.client = client;
+}
+
+
+
 @Override
 protected void paintComponent(Graphics g) {
 	super.paintComponent(g);
-	g.drawImage(Resources.wallpaperConnecting.getScaledInstance(300, 300, Image.SCALE_SMOOTH) , 600 , 500 , null);
+	g.drawImage(Resources.wallpaperConnecting.getScaledInstance(330, 300, Image.SCALE_SMOOTH) , 600 , 475 , null);
 }
 }

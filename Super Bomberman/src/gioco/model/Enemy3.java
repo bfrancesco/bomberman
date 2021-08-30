@@ -21,18 +21,18 @@ public class Enemy3 extends Enemy {
 	}
 
 	public void Teleport(int px1, int py1, int px2, int py2) {
-		x = px1*Settings.BLOCKSIZEX;
-		y = py1*Settings.BLOCKSIZEY;
+		x = px1*Settings.LOGICBLOCKSIZEX;
+		y = py1*Settings.LOGICBLOCKSIZEY;
 		Random r = new Random();
 		if (r.nextBoolean()) {
-			x = px2*Settings.BLOCKSIZEX;
-			y = py2*Settings.BLOCKSIZEY;
+			x = px2*Settings.LOGICBLOCKSIZEX;
+			y = py2*Settings.LOGICBLOCKSIZEY;
 		}
 	}
 	
 	public void Teleport(int bloccox, int bloccoy) {
-		x = bloccox*Settings.BLOCKSIZEX;
-		y = bloccoy*Settings.BLOCKSIZEY;
+		x = bloccox*Settings.LOGICBLOCKSIZEX;
+		y = bloccoy*Settings.LOGICBLOCKSIZEY;
 	}
 	
 
