@@ -19,6 +19,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import gioco.WindowsHandler;
 import gioco.net.Client;
 import gioco.utilities.Resources;
 import gioco.utilities.Settings;

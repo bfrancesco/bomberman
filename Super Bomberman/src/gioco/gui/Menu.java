@@ -20,6 +20,7 @@ import javax.swing.JPanel;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
 
+import gioco.WindowsHandler;
 import gioco.utilities.Resources;
 
 public class Menu extends JPanel {

@@ -10,6 +10,7 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -23,7 +24,8 @@ import javax.swing.JSplitPane;
 import javax.swing.JViewport;
 import javax.swing.border.BevelBorder;
 
-
+import gioco.WindowsHandler;
+import gioco.controller.BombermanButtonController;
 import gioco.utilities.Resources;
 import gioco.utilities.Settings;
 
@@ -33,7 +35,7 @@ public class MapChooser extends JPanel{
 	private JPanel playersPanel;
 	private JButton cancel;
 	private JButton continua;
-
+	private ArrayList<ToChoose> bombermanColors;
 	
 	public MapChooser() {
 		this.setPreferredSize(new Dimension( Settings.WINDOWWIDTH,Settings.WINDOWHEIGHT));
@@ -62,11 +64,12 @@ public class MapChooser extends JPanel{
 	
 		JPanel buttons = new JPanel();
 		buttons.setOpaque(false);
-		BoxLayout bl = new BoxLayout(buttons, BoxLayout.LINE_AXIS);
+		FlowLayout bl = new FlowLayout();
 		buttons.setLayout(bl);
 		
 		
 		cancel.setPreferredSize(new Dimension(200, 40));
+		cancel.setOpaque(true);
 		buttons.add(cancel);
 		buttons.add(Box.createHorizontalGlue());
 		continua.setPreferredSize(new Dimension(200, 40));
@@ -80,17 +83,18 @@ public class MapChooser extends JPanel{
 		FlowLayout fl = new FlowLayout();
 		fl.setAlignment(FlowLayout.CENTER);
 		playersPanel.setLayout(fl);
-		for(Image i : Resources.bombermanIcons) {
-			JLabel label = new JLabel(new ImageIcon(i.getScaledInstance(140, 140, Image.SCALE_SMOOTH)));
-			label.setOpaque(false);
-			label.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED, Color.WHITE , Color.DARK_GRAY));
-			playersPanel.add(label);
-		}
-		for(Image i : Resources.bombermanIcons) {
-			JLabel label = new JLabel(new ImageIcon(i.getScaledInstance(140, 140, Image.SCALE_SMOOTH)));
-			label.setOpaque(false);
-			label.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED, Color.WHITE , Color.DARK_GRAY));
-			playersPanel.add(label);
+		bombermanColors = new ArrayList<ToChoose>();
+		for(int i = 0 ; i < Resources.bombermanIcons.size();++i) {
+			ToChoose button = new ToChoose();
+			BombermanButtonController controller = new BombermanButtonController(button , bombermanColors , Settings.WHITE+i );
+			button.setIcon(new ImageIcon(Resources.bombermanIcons.get(i).getScaledInstance(120, 120, Image.SCALE_SMOOTH)));
+			button.setOpaque(false);
+			button.setController(controller);
+			bombermanColors.add(button);
+			playersPanel.add(button);
+			if(i+Settings.WHITE == Settings.selectedbomberman) {
+				controller.mouseClicked(new MouseEvent(button ,MouseEvent.MOUSE_CLICKED , 100 , 0 , 0 , 1 ,1 , false));
+			}
 		}
 		
 		JViewport viewPort = new JViewport();
@@ -106,7 +110,7 @@ public class MapChooser extends JPanel{
 		//scrollPane.setPreferredSize(new Dimension(Settings.WINDOWWIDTH, Settings.WINDOWHEIGHT/4));
 		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
 		scrollPane.getVerticalScrollBar().setUnitIncrement(16);
-		scrollPane.setBorder(BorderFactory.createTitledBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED , Color.DARK_GRAY , Color.LIGHT_GRAY) , "Bomberman"));
+		scrollPane.setBorder(BorderFactory.createTitledBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED , Color.DARK_GRAY , Color.LIGHT_GRAY) , "Bombermen"));
 		splitPane.add(mapPanel);
 		splitPane.add(scrollPane);
 		//splitPane.setDividerSize(0);
@@ -127,9 +131,60 @@ public class MapChooser extends JPanel{
 		this.add(titlePanel , BorderLayout.NORTH);
 		this.add(splitPane , BorderLayout.CENTER);
 		this.add(buttons , BorderLayout.SOUTH);
+		mapPanel.reposition();
 		repaint();
 	}
 	
+	
+	
+	public ChooserView getMapPanel() {
+		return mapPanel;
+	}
+	
+	
+
+	public void setMapPanel(ChooserView mapPanel) {
+		this.mapPanel = mapPanel;
+	}
+
+
+
+	public JButton getCancel() {
+		return cancel;
+	}
+
+
+
+	public void setCancel(JButton cancel) {
+		this.cancel = cancel;
+	}
+
+
+
+	public JButton getContinua() {
+		return continua;
+	}
+
+
+
+	public void setContinua(JButton continua) {
+		this.continua = continua;
+	}
+
+
+
+	public ArrayList<ToChoose> getBombermanColors() {
+		return bombermanColors;
+	}
+
+
+
+	public void setBombermanColors(ArrayList<ToChoose> bombermanColors) {
+		this.bombermanColors = bombermanColors;
+	}
+
+
+
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);

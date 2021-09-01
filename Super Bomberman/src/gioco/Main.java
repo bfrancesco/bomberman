@@ -11,7 +11,6 @@ import javax.swing.JFrame;
 
 import gioco.controller.PlayerController;
 import gioco.gui.GamePanel;
-import gioco.gui.WindowsHandler;
 import gioco.utilities.Resources;
 import gioco.utilities.Settings;
 

@@ -40,7 +40,7 @@ public class Protocol {
 		return EXPLOSION + " "+ex;
 	}
 	
-	public static String startingInfo(int player , String map ) {
+	public static String startingInfo(int player , int map ) {
 		return Integer.toString(player)+" "+map;
 	}
 	/*public static int[] parsePosition(String line) {

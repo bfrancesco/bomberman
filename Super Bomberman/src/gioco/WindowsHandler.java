@@ -1,16 +1,17 @@
-package gioco.gui;
+package gioco;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
 
-
-import gioco.GameLoop;
+import gioco.controller.CustomizePanelController;
 import gioco.controller.PlayerController;
+import gioco.gui.ConnectingView;
+import gioco.gui.GamePanel;
+import gioco.gui.MapChooser;
+import gioco.gui.Menu;
 import gioco.net.Client;
 import gioco.utilities.Resources;
 import gioco.utilities.Settings;
@@ -19,12 +20,12 @@ public class WindowsHandler {
 
 	private JFrame f;
 	private Menu menu;
-	 private static MapChooser mapChooser;
+	private MapChooser mapChooser;
 	private GamePanel gamePanel;
 	private ConnectingView connecting;
 	private GameLoop gl;
-	private String map;
-	private int selectedBomberman;
+//	private String mapSinglePlayer;
+//	private int colorBombermanSinglePlayer;
 
 	private static WindowsHandler windowsHandler = null;
 
@@ -50,7 +51,7 @@ public class WindowsHandler {
 
 		}
 		
-		f.setResizable(false);
+		f.setResizable(true);
 		f.setLocationRelativeTo(null);
 		f.setVisible(true);
 		f.addWindowListener(new WindowAdapter() {
@@ -65,19 +66,24 @@ public class WindowsHandler {
 		setMenu();
 	}
 	
-	public synchronized void setMapChooser() {
+	public synchronized void setMapChooser() {	
 		mapChooser = new MapChooser();
+		CustomizePanelController controller = new CustomizePanelController(mapChooser);
+		mapChooser.addKeyListener(controller);		
 		f.getContentPane().removeAll();
 		f.revalidate();
 		f.setContentPane(mapChooser);
 		f.revalidate();
 		f.pack();
+		mapChooser.setFocusable(true);
+		mapChooser.requestFocus();
 	}
 
 	public synchronized void setMenu() {
-		map = "Map1";
 		interruptGame();
 		Client.reset();	
+		Settings.selectedbomberman = Settings.WHITE;
+		Settings.selectedMap = 1;
 		menu = new Menu(Settings.WINDOWWIDTH, Settings.WINDOWHEIGHT);
 		f.getContentPane().removeAll();
 		f.revalidate();
@@ -110,7 +116,7 @@ public class WindowsHandler {
 		gamePanel = new GamePanel();	
 		f.setContentPane(gamePanel);
 		f.revalidate();
-		PlayerController pc = new PlayerController(gamePanel, multi, battleRoyale, map, client );
+		PlayerController pc = new PlayerController(gamePanel, multi, battleRoyale, Settings.selectedMap, client );
 		gamePanel.setController(pc);
 		gl = new GameLoop(pc);
 		gl.start();
@@ -126,14 +132,6 @@ public class WindowsHandler {
 		}
 	}
 
-	public String getMap() {
-		return map;
-	}
-
-	public void setMap(int map) {
-		this.map = "Map"+map;
-	}
-	
 	
 
 

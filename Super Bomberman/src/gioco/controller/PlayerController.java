@@ -5,8 +5,8 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Vector;
 
+import gioco.WindowsHandler;
 import gioco.gui.GamePanel;
-import gioco.gui.WindowsHandler;
 import gioco.model.Bomb;
 import gioco.model.Enemy;
 import gioco.model.Enemy3;
@@ -26,7 +26,7 @@ public class PlayerController extends KeyAdapter{
 	private Client client;
 
 	
-	public PlayerController(GamePanel panel, boolean multi, boolean battleRoyale ,String map , Client client ) {
+	public PlayerController(GamePanel panel, boolean multi, boolean battleRoyale ,int map , Client client ) {
 		super();
 		this.multiplayer = multi;
 		this.battleRoyale = battleRoyale;

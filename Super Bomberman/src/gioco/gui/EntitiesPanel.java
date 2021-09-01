@@ -13,6 +13,7 @@ import java.util.Vector;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
+import gioco.WindowsHandler;
 import gioco.controller.PlayerController;
 import gioco.model.Block;
 import gioco.model.Bomb;
@@ -44,14 +45,14 @@ public class EntitiesPanel extends JPanel {
 		this.setOpaque(false);
 	
 		brick = Resources.brick;
-
-		player1 = new BombermanView(Settings.PLAYER1);
+		player1 = new BombermanView(Settings.selectedbomberman);
 		if(controller.isMultiplayer()) {
-			player2 = new BombermanView(Settings.PLAYER2);
+			player1.setColor(Settings.WHITE);
+			player2 = new BombermanView(Settings.BLACK);
 			if(controller.getGioco().isBattleRoyale()) {
-				player3 = new BombermanView(Settings.PLAYER3);
-				player4 = new BombermanView(Settings.PLAYER4);
-				player5 = new BombermanView(Settings.PLAYER5);
+				player3 = new BombermanView(Settings.ORANGE);
+				player4 = new BombermanView(Settings.BLUE);
+				player5 = new BombermanView(Settings.GREEN);
 			}
 		}
 		explosions = new ExplosionView();
@@ -123,11 +124,7 @@ public class EntitiesPanel extends JPanel {
 					b.getXCell() * Settings.BLOCKSIZEX, b.getYCell() * Settings.BLOCKSIZEY, null);
 		}
 		
-		Vector<Explosion> tmpE= new Vector<Explosion>(controller.getGioco().getExplosions());
-		for (Explosion b : tmpE) {
-			g.drawImage( explosions.get(b.getType(),b.getDurata() , b.getDirection()).getScaledInstance(Settings.BLOCKSIZEX, Settings.BLOCKSIZEY, Image.SCALE_SMOOTH),
-					b.getXCell() * Settings.BLOCKSIZEX, b.getYCell() * Settings.BLOCKSIZEY, null);
-		}
+		
 		Player p1 = controller.getGioco().getPlayer(Settings.PLAYER1);
 		g.drawImage(player1.getCurrentImage().getScaledInstance(scaleByX(p1.getWidth()),scaleByY(p1.getHeight()), Image.SCALE_FAST),
 				scaleByX(p1.getX()), scaleByY(p1.getY()) , null);	
@@ -164,6 +161,11 @@ public class EntitiesPanel extends JPanel {
 								scaleByX(b.getX()),scaleByY(b.getY()) , null);
 				}
 			}
+		}
+		Vector<Explosion> tmpE= new Vector<Explosion>(controller.getGioco().getExplosions());
+		for (Explosion b : tmpE) {
+			g.drawImage( explosions.get(b.getType(),b.getDurata() , b.getDirection()).getScaledInstance(Settings.BLOCKSIZEX, Settings.BLOCKSIZEY, Image.SCALE_SMOOTH),
+					b.getXCell() * Settings.BLOCKSIZEX, b.getYCell() * Settings.BLOCKSIZEY, null);
 		}
 		
 		

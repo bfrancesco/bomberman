@@ -8,41 +8,47 @@ import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
+import gioco.WindowsHandler;
 import gioco.gui.ToChoose;
-import gioco.gui.WindowsHandler;
+import gioco.utilities.Settings;
 
-public class ToChooseController implements MouseListener {
+public class MapButtonController implements MouseListener {
 	
 	ArrayList<ToChoose> toChoose;
 	JLabel selected ;
-	ToChoose label; 
+	ToChoose button; 
+	int index;
 	
-	public ToChooseController(ToChoose label , ArrayList<ToChoose> toChoose , JLabel selected ) {
-		this.label = label;
+	//nota che le mappe vanno da 1 mapsnumber, l'indice deve andare da 1 a mapsnumber
+	public MapButtonController(ToChoose button , ArrayList<ToChoose> toChoose , JLabel selected , int index ) {
+		this.button = button;
 		this.selected = selected;
 		this.toChoose = toChoose;
-		
+		this.index = index;
+		button.setTitle("Mappa N. " + index);
+		button.setTitleVisibile(true);
 	}
+	
 	
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		for(ToChoose t : toChoose) {
 			t.setChoosen(false);
 		}
-		label.setChoosen( true );
-		WindowsHandler.getWindowsHandler().setMap(label.getIndex());
-		selected.setIcon(new ImageIcon(((ImageIcon) label.getIcon()).getImage().getScaledInstance(250 , 250 , Image.SCALE_SMOOTH)));
+		button.setChoosen( true );
+		Settings.selectedMap = index;
+		selected.setIcon(new ImageIcon(((ImageIcon) button.getIcon()).getImage().getScaledInstance(300 , 300 , Image.SCALE_SMOOTH)));
 		
 	}
 	
 	
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		
+		button.setHighlighted(true);
 		
 	}@Override
 	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
+		button.setHighlighted(false);
 		
 	}
 	@Override

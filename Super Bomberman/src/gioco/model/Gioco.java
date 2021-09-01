@@ -28,7 +28,7 @@ public class Gioco {
 	private int playersAlive;
 	private String map;
 
-	public Gioco(boolean multiplayer, boolean battleRoyale, String mapName) {
+	public Gioco(boolean multiplayer, boolean battleRoyale, int map) {
 		this.multiplayer = multiplayer;
 		enemies = new Vector<Enemy>();
 		bombs = new Vector<Bomb>();
@@ -42,10 +42,11 @@ public class Gioco {
 		else
 			this.battleRoyale = false;
 		try {
-			loadMap(mapName);
-			map = mapName;
+			this.map = "Map" + map;
+			loadMap(this.map);
+			
 		} catch (IOException e) {
-			System.out.println("IL FILE NON ESISTE PER IL PERCORSO SPECIFICATO:" + mapName);
+			System.out.println("IL FILE NON ESISTE PER IL PERCORSO SPECIFICATO:" + this.map);
 			e.printStackTrace();
 		}
 		playersAlive = players.size();
@@ -135,6 +136,24 @@ public class Gioco {
 						break;
 					case 'B':
 						matrix[k][i] = new Block(Block.BRICK);
+						break;
+					case 'V':
+						matrix[k][i] = new Block(Block.FLOOR);									
+						enemies.add( new Enemy1(i * Settings.LOGICBLOCKSIZEX,
+								k * Settings.LOGICBLOCKSIZEY, enemyID));
+						enemyID += 1;
+						break;
+					case 'M':
+						matrix[k][i] = new Block(Block.FLOOR);
+						enemies.add( new Enemy2(i * Settings.LOGICBLOCKSIZEX,
+								k * Settings.LOGICBLOCKSIZEY, enemyID));
+						enemyID += 1;
+						break;
+					case 'G':
+						matrix[k][i] = new Block(Block.FLOOR);
+						enemies.add(new Enemy3(i * Settings.LOGICBLOCKSIZEX,
+								k * Settings.LOGICBLOCKSIZEY, enemyID));
+						enemyID += 1;
 						break;
 					default:
 						matrix[k][i] = new Block(Block.FLOOR);
@@ -312,7 +331,7 @@ public class Gioco {
 			} else if (!matrix[e.ycenterBlock()][(e.getX() - e.getSpeed()) / Settings.LOGICBLOCKSIZEX].isWalkable()) {
 				e.setX((e.xcenterBlock()) * Settings.LOGICBLOCKSIZEX + 1);
 				return Settings.TOTALCOLLISION;
-			} else if (!matrix[e.downBlock()][(e.getX() - e.getSpeed()) / Settings.LOGICBLOCKSIZEX].isWalkable()) {
+			} else if (e.downBlock()<height && !matrix[e.downBlock()][(e.getX() - e.getSpeed()) / Settings.LOGICBLOCKSIZEX].isWalkable()) {
 				e.setX((e.xcenterBlock()) * Settings.LOGICBLOCKSIZEX + 1);
 				if (e.downSide() + e.getSpeed() >= Settings.LOGICBLOCKSIZEY * height) {
 					return Settings.TOTALCOLLISION;
@@ -334,13 +353,13 @@ public class Gioco {
 			} else if (!matrix[e.ycenterBlock()][(e.rightSide() + e.getSpeed()) / Settings.LOGICBLOCKSIZEX].isWalkable()) {
 				e.setX((e.xcenterBlock()) * Settings.LOGICBLOCKSIZEX + Settings.LOGICBLOCKSIZEX - e.getWidth() - 1);
 				return Settings.TOTALCOLLISION;
-			} else if (!matrix[e.downBlock()][(e.rightSide() + e.getSpeed()) / Settings.LOGICBLOCKSIZEX].isWalkable()) {
+			} else if (e.downBlock() <height && !matrix[e.downBlock()][(e.rightSide() + e.getSpeed()) / Settings.LOGICBLOCKSIZEX].isWalkable()) {
 				e.setX((e.xcenterBlock()) * Settings.LOGICBLOCKSIZEX + Settings.LOGICBLOCKSIZEX - e.getWidth() - 1);
 				if (e.downSide() + e.getSpeed() >= Settings.LOGICBLOCKSIZEY * height) {
 					return Settings.TOTALCOLLISION;
 				}
 				return Settings.DOWNCOLLISION;
-			} else if (!matrix[e.upBlock()][(e.rightSide() + e.getSpeed()) / Settings.LOGICBLOCKSIZEX].isWalkable()) {
+			} else if (e.upBlock() >= 0 && !matrix[e.upBlock()][(e.rightSide() + e.getSpeed()) / Settings.LOGICBLOCKSIZEX].isWalkable()) {
 				e.setX((e.xcenterBlock()) * Settings.LOGICBLOCKSIZEX + Settings.LOGICBLOCKSIZEX - e.getWidth());
 				if (e.getY() - e.getSpeed() < 0) {
 					return Settings.TOTALCOLLISION;
@@ -367,7 +386,7 @@ public class Gioco {
 				if (e.getX() - e.getSpeed() < 0) {
 					return Settings.TOTALCOLLISION;
 				}
-				return Settings.LEFTCOLLISION;
+					return Settings.LEFTCOLLISION;
 			}
 			break;
 		case Settings.DOWN:
@@ -397,7 +416,7 @@ public class Gioco {
 		return Settings.NOCOLLISION;
 	}
 
-	public boolean collisionBombs(Entity e, int dir) {
+	/*public boolean collisionBombs(Entity e, int dir) {
 		switch (dir) {
 		case Settings.LEFT:
 			for (Bomb elem : bombs) {
@@ -433,7 +452,7 @@ public class Gioco {
 			break;
 		}
 		return false;
-	}
+	}*/
 
 	public synchronized void checkExplosions() {
 		Vector<Explosion> toBeRemoved = new Vector<Explosion>();
@@ -802,10 +821,11 @@ public class Gioco {
 		for (Enemy e : enemies) {
 			e.setState(Entity.IDLE_DOWN);
 		}
-		/*
-		 * player1.setState(Player.DYING_ENEMY); if(multiplayer)
-		 * player2.setState(Player.DYING_ENEMY); gameOver = true;
-		 */
+		gameOver = true;
+		for(Player player : players) {
+			if(!player.isDead())
+				player.setState(Player.DYING_ENEMY);
+		}
 	}
 
 	public int results(int p) {

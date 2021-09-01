@@ -8,7 +8,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-import gioco.gui.WindowsHandler;
+import gioco.WindowsHandler;
 import gioco.model.Player;
 import gioco.utilities.Settings;
 
@@ -22,7 +22,7 @@ public class Client implements Runnable{
 	private boolean bombAdded;
 	private boolean battle;
 	private static Client client;
-	private String map;
+	private int map;
 	
 	private Client() {
 		bombAdded = false;
@@ -37,7 +37,7 @@ public class Client implements Runnable{
 	}
 	
 	
-	public String getMap() {
+	public int getMap() {
 		return map;
 	}
 
@@ -72,7 +72,7 @@ public class Client implements Runnable{
 				line= in.readLine();
 				String info[] = line.split(" "); 
 				orderConnection = Integer.parseInt(info[0]);
-				map = info[1];
+				map = Integer.parseInt(info[1]);
 				return true;
 				
 			}
@@ -176,7 +176,8 @@ public class Client implements Runnable{
 public void run() {
 		connect();
 		if(!connected) {
-			WindowsHandler.getWindowsHandler().setMenu();			
+			WindowsHandler.getWindowsHandler().setMenu();	
+			//attenzione 
 			return;
 		}
 		if(battle)

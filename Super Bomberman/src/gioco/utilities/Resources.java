@@ -86,6 +86,8 @@ public class Resources {
 	
 	public static Image brick;
 	//Player1 - Player2 - Player3 ...
+	
+	//l'ordine dei colori deve essere rispettato per avere corrispondenza fra il colore scelto e quello visualizzato
 	public static Vector<Image> bombermanIcons;
 	public static Image iconEnemy;
 	public static Image iconClock;
@@ -141,6 +143,9 @@ public class Resources {
 			iconClock =  ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/icons/clock.png")).getScaledInstance(30 , 30, 0);
 			bombermanIcons.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/icons/whiteBombermanIcon.png")).getScaledInstance(30 , 30, 0));
 			bombermanIcons.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/icons/blackBombermanIcon.png")).getScaledInstance(30 , 30, 0));
+			bombermanIcons.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/icons/orangeBombermanIcon.png")).getScaledInstance(30 , 30, 0));
+			bombermanIcons.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/icons/blueBombermanIcon.png")).getScaledInstance(30 , 30, 0));
+			bombermanIcons.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/icons/greenBombermanIcon.png")).getScaledInstance(30 , 30, 0));
 		} catch (IOException e) {
 			System.out.println("ICONS RESOURCES ARE UNAVAILABLE");
 			e.printStackTrace();
@@ -394,7 +399,7 @@ public class Resources {
 		}
 	}
 	
-	public static Vector<Image> downBomberman(int player){
+	/*public static Vector<Image> downBomberman(int player){
 		switch(player) {
 		case Settings.PLAYER1:
 			return downWhiteBomberman;
@@ -507,6 +512,124 @@ public class Resources {
 		case Settings.PLAYER4:
 			return victoryBlueBomberman;
 		case Settings.PLAYER5:
+			return victoryGreenBomberman;
+		default:
+			return  victoryBlackBomberman;
+		}
+	}*/
+	public static Vector<Image> downBomberman(int player){
+		switch(player) {
+		case Settings.WHITE:
+			return downWhiteBomberman;
+		case Settings.BLACK:
+			return downBlackBomberman;
+		case Settings.ORANGE:
+			return downOrangeBomberman;
+		case Settings.BLUE:
+			return downBlueBomberman;
+		case Settings.GREEN:
+			return downGreenBomberman;
+		default:
+			return  downBlackBomberman;
+		}
+	}
+	
+	public static Vector<Image> upBomberman(int player){
+		switch(player) {
+		case Settings.WHITE:
+			return upWhiteBomberman;
+		case Settings.BLACK:
+			return upBlackBomberman;
+		case Settings.ORANGE:
+			return upOrangeBomberman;
+		case Settings.BLUE:
+			return upBlueBomberman;
+		case Settings.GREEN:
+			return upGreenBomberman;
+		default:
+			return  upBlackBomberman;
+		}
+	}
+	
+	public static Vector<Image> rightBomberman(int player){
+		switch(player) {
+		case Settings.WHITE:
+			return rightWhiteBomberman;
+		case Settings.BLACK:
+			return rightBlackBomberman;
+		case Settings.ORANGE:
+			return rightOrangeBomberman;
+		case Settings.BLUE:
+			return rightBlueBomberman;
+		case Settings.GREEN:
+			return rightGreenBomberman;
+		default:
+			return  rightBlackBomberman;
+		}
+	}
+	
+	public static Vector<Image> leftBomberman(int player){
+		switch(player) {
+		case Settings.WHITE:
+			return leftWhiteBomberman;
+		case Settings.BLACK:
+			return leftBlackBomberman;
+		case Settings.ORANGE:
+			return leftOrangeBomberman;
+		case Settings.BLUE:
+			return leftBlueBomberman;
+		case Settings.GREEN:
+			return leftGreenBomberman;
+		default:
+			return  leftBlackBomberman;
+		}
+	}
+	
+	public static Vector<Image> dyingByEnemyBomberman(int player){
+		switch(player) {
+		case Settings.WHITE:
+			return dyingByEnemyWhiteBomberman;
+		case Settings.BLACK:
+			return dyingByEnemyBlackBomberman;
+		case Settings.ORANGE:
+			return dyingByEnemyOrangeBomberman;
+		case Settings.BLUE:
+			return dyingByEnemyBlueBomberman;
+		case Settings.GREEN:
+			return dyingByEnemyGreenBomberman;
+		default:
+			return  dyingByEnemyBlackBomberman;
+		}
+	}
+	
+	public static Vector<Image> dyingExplosionBomberman(int player){
+		switch(player) {
+		case Settings.WHITE:
+			return  dyingExplosionWhiteBomberman;
+		case Settings.BLACK:
+			return  dyingExplosionBlackBomberman;
+		case Settings.ORANGE:
+			return  dyingExplosionOrangeBomberman;
+		case Settings.BLUE:
+			return dyingExplosionBlueBomberman;
+		case Settings.GREEN:
+			return dyingExplosionGreenBomberman;
+		default:
+			return   dyingExplosionBlackBomberman;
+		}
+	}
+	
+	public static Vector<Image> victoryBomberman(int player){
+		switch(player) {
+		case Settings.WHITE:
+			return victoryWhiteBomberman;
+		case Settings.BLACK:
+			return victoryBlackBomberman;
+		case Settings.ORANGE:
+			return victoryOrangeBomberman;
+		case Settings.BLUE:
+			return victoryBlueBomberman;
+		case Settings.GREEN:
 			return victoryGreenBomberman;
 		default:
 			return  victoryBlackBomberman;

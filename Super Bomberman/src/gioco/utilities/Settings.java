@@ -20,6 +20,15 @@ public class Settings {
 	public final static int PLAYER4 = 13;
 	public final static int PLAYER5 = 14;
 	
+	public final static int COLORS = 5;
+	public final static int WHITE = 15;
+	public final static int BLACK = 16;
+	public final static int ORANGE = 17;
+	public final static int BLUE = 18;
+	public final static int GREEN = 19;
+	
+	
+	
 	public static int LOGICWIDTH = 15;
 	public static int LOGICHEIGHT = 13;
 	public static int LOGICBLOCKSIZEX = 1800/ LOGICWIDTH;
@@ -27,7 +36,7 @@ public class Settings {
 	public static int LOGICNORMALSPEED = LOGICBLOCKSIZEY/12; 
 	
 	
-	public static int MAPSNUMBER = 3;
+	public static int MAPSNUMBER = 8;
 	
 	//public static int WINDOWHEIGHT = 810;
 	//public static int WINDOWWIDTH= 900;
@@ -36,11 +45,15 @@ public class Settings {
 	
 	public static int BLOCKSIZEX = WINDOWWIDTH/15;
 	public static int BLOCKSIZEY = (WINDOWHEIGHT-40)/13;
-	public static int NORMALSPEED = BLOCKSIZEY/12;
+	//public static int NORMALSPEED = BLOCKSIZEY/12;
 	
 	public static int EXPLOSIONTIME = 12;
 	public static int BOMBTIME = 80;
 	public static final int ENEMYDYINGTIME = 20;
+	
+	
+	public static int selectedMap;
+	public static int selectedbomberman;
 	
 	
 	

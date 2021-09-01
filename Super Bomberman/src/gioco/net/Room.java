@@ -38,7 +38,7 @@ public class Room implements Runnable {
 			out.add(new PrintWriter(new BufferedOutputStream(player.getOutputStream()), true));
 		}
 		
-		String map = "Map"+(new Random().nextInt(3)+1);
+		int map = new Random().nextInt(8)+1;
 		
 		if (players.size() == 2)
 			gioco = new Gioco(true, false, map);
@@ -126,7 +126,6 @@ public class Room implements Runnable {
 		int state = player.getState();
 		int i = 0;
 		String line = in.get(index).readLine();
-		System.out.println(line + " " + i);
 		String res[] = line.split(" ");
 		if (res[i] == Protocol.DISCONNECTION) {
 			player.setState(Player.DYING_ENEMY);
