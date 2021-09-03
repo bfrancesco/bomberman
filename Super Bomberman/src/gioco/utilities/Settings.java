@@ -48,12 +48,13 @@ public class Settings {
 	//public static int NORMALSPEED = BLOCKSIZEY/12;
 	
 	public static int EXPLOSIONTIME = 12;
+	public static int BRICKEXPLOSIONTIME = 8;
 	public static int BOMBTIME = 80;
-	public static final int ENEMYDYINGTIME = 20;
+	public static  int ENEMYDYINGTIME = 20;
 	
 	
 	public static int selectedMap;
-	public static int selectedbomberman;
+	public static int selectedbomberman = Settings.WHITE;
 	
 	
 	

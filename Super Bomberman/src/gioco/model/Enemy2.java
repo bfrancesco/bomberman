@@ -16,11 +16,11 @@ public class Enemy2 extends Enemy {
 	private void changeSpeed(){
 		if(changement==150) {
 			if(increasing) {
-				speed++;
+				speed*=2;
 				increasing = false;
 			}
 			else {
-				speed--;
+				speed/=2;
 				increasing = true;
 			}
 			changement = 0;

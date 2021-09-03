@@ -18,9 +18,17 @@ public class CustomizePanelController extends KeyAdapter{
 	public void keyReleased(KeyEvent e) {
 		switch(e.getKeyCode()){
 		case KeyEvent.VK_DOWN:
-			
+			ToChoose downbutton = mapChooser.getMapPanel().getToChoose().get(((Settings.selectedMap-1)+1)%Settings.MAPSNUMBER);
+			downbutton.getController().mouseClicked(new MouseEvent(downbutton, MouseEvent.MOUSE_CLICKED, 100, 0, 0, 1, 1, false));	
+			mapChooser.getMapPanel().reposition();
 			break;
 		case KeyEvent.VK_UP:
+			int i= Settings.selectedMap-2;
+			if(i<0)
+				i = Settings.MAPSNUMBER-1;
+			ToChoose upbutton = mapChooser.getMapPanel().getToChoose().get(i);
+			upbutton.getController().mouseClicked(new MouseEvent(upbutton, MouseEvent.MOUSE_CLICKED, 100, 0, 0, 1, 1, false));	
+			mapChooser.getMapPanel().reposition();
 			break;
 		case KeyEvent.VK_RIGHT:
 			ToChoose rightbutton = mapChooser.getBombermanColors().get((Settings.selectedbomberman-Settings.WHITE+1)%Settings.COLORS);

@@ -12,6 +12,7 @@ import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 
 import gioco.controller.PlayerController;
+import gioco.net.Client;
 import gioco.utilities.Settings;
 
 
@@ -42,7 +43,7 @@ public class GamePanel extends JPanel {
 		addKeyListener(controller);	
 		requestFocus();
 		giocoView = new GameView(controller , Settings.WINDOWHEIGHT , Settings.WINDOWWIDTH);
-		pointView = new pointsPanel(controller.isMultiplayer());
+		pointView = new pointsPanel(controller.isMultiplayer() , controller.isBattleRoyale());
 		BoxLayout b = new BoxLayout(this, BoxLayout.Y_AXIS);
 		this.setLayout( b );
 		this.add(pointView , b);
@@ -50,12 +51,15 @@ public class GamePanel extends JPanel {
 		this.add(giocoView , b);
 	
 
-		
+		 
 //giocoView.setPreferredSize(new Dimension(715,715));	
 	}
 	
 	public void setStat(int time) {
-		if(controller.getGioco().isMultiplayer())
+		if(controller.isBattleRoyale()) {
+			pointView.setPoints(controller.getGioco().getPlayer(Client.getClient().getOrderConnection()).getPoints(),0, controller.getGioco().getEnemies().size());
+		}
+		else if(controller.isMultiplayer())
 			pointView.setPoints(controller.getGioco().getPlayer(Settings.PLAYER1).getPoints(), controller.getGioco().getPlayer(Settings.PLAYER2).getPoints(), controller.getGioco().getEnemies().size());
 		else
 			pointView.setPoints(controller.getGioco().getPlayer(Settings.PLAYER1).getPoints(),0 ,  controller.getGioco().getEnemies().size());

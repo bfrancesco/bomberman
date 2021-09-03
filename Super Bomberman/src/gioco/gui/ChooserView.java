@@ -107,10 +107,23 @@ public class ChooserView extends JPanel {
 		this.setOpaque(false);
 		this.add(completePanel);
 	}
+	
+	
+
+	public ArrayList<ToChoose> getToChoose() {
+		return toChoose;
+	}
+
+
+
+	public void setToChoose(ArrayList<ToChoose> toChoose) {
+		this.toChoose = toChoose;
+	}
+
+
 
 	public void reposition() {
-		//evita il movimento per il primo elemento, lasciando la scrollbar in posizione iniziale
-		for (int i = 1; i < choosePanel.getComponents().length; ++i) {
+		for (int i = 0; i < choosePanel.getComponents().length; ++i) {
 			ToChoose tc = (ToChoose) choosePanel.getComponents()[i];
 			if (tc.isChoosen()) {
 				SwingUtilities.invokeLater(new Runnable() {

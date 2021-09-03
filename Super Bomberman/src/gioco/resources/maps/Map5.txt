@@ -1,5 +1,8 @@
 player1 1 3
 player2 13 3
+player3 1 11
+player4 5 5 
+player5 11 11
 END
 IIIIIIFFFIIIIII
 IIIIIIFFFIIIIII

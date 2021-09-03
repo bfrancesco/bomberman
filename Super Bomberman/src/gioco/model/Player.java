@@ -4,7 +4,6 @@ import gioco.utilities.Settings;
 
 public  class Player extends Entity{
 	
-	private int lifes;
 	private int bombs;
 	private int radius;
 	private int points;
@@ -14,7 +13,6 @@ public  class Player extends Entity{
 		super(x,y);
 		direction = Settings.RIGHT;
 		state = Player.IDLE_DOWN;
-		lifes = 1;
 		bombs = 1;
 		radius = 2;
 		width = Settings.LOGICBLOCKSIZEX*8/10;
@@ -78,16 +76,6 @@ public  class Player extends Entity{
 		this.direction = direction;
 	}
 
-	public int getLifes() {
-		return lifes;
-	}
-
-	
-	public void decreaseLifes() {
-		--lifes;
-	}
-
-
 
 	public int getRadius() {
 		return radius;
@@ -116,11 +104,6 @@ public  class Player extends Entity{
 		this.radius = radius;
 	}
 
-
-
-	public void setLifes(int lifes) {
-		this.lifes = lifes;
-	}
 	
 	@Override
 	public String toString() {

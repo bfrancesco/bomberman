@@ -15,7 +15,7 @@ public class Enemy extends Entity{
 		super(x ,y);
 		dyingTime = Settings.ENEMYDYINGTIME;
 		state = Entity.IDLE_DOWN;
-		this.ID= id;
+		this.ID = id;
 		Random r = new Random();
 		r.setSeed(System.currentTimeMillis()+x);
 		int dir = r.nextInt(4);

@@ -25,7 +25,7 @@ import gioco.utilities.Resources;
 
 public class Menu extends JPanel {
 	private JButton multiplayer;
-	private JButton allenamento;
+	private JButton singleplayer;
 	private JButton battleRoyale;
 	
 	public Menu(int w , int h ) {
@@ -62,10 +62,10 @@ public class Menu extends JPanel {
 			}
 		
 		});
-		allenamento = new JButton("ALLENAMENTO");
-		allenamento.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED, Color.BLACK , Color.DARK_GRAY));
-		allenamento.setPreferredSize(new Dimension(300, 75));
-		allenamento.addMouseListener(new MouseAdapter() {
+		singleplayer = new JButton("SINGLEPLAYER");
+		singleplayer.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED, Color.BLACK , Color.DARK_GRAY));
+		singleplayer.setPreferredSize(new Dimension(300, 75));
+		singleplayer.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				WindowsHandler.getWindowsHandler().setMapChooser();
@@ -74,22 +74,21 @@ public class Menu extends JPanel {
 		
 		});
 		multiplayer.setAlignmentX(Component.CENTER_ALIGNMENT);
-		allenamento.setAlignmentX(Component.CENTER_ALIGNMENT);
+		singleplayer.setAlignmentX(Component.CENTER_ALIGNMENT);
 		JLabel logo = new JLabel (new ImageIcon(Resources.logo.getScaledInstance(600, 300, Image.SCALE_SMOOTH)));
 		gbc.anchor = GridBagConstraints.NORTH;	
 		add(logo , gbc);
 		gbc.anchor = GridBagConstraints.CENTER;
-		buttons.add(battleRoyale , gbc);
+		buttons.add(singleplayer , gbc);
 		buttons.add(Box.createRigidArea(new Dimension(300 , 20)) , gbc);
 		buttons.add(multiplayer , gbc);
 		buttons.add(Box.createRigidArea(new Dimension(300 , 20)) , gbc);
-		buttons.add(allenamento , gbc);
+		buttons.add(battleRoyale , gbc);
 		gbc.weighty = 1;
 		buttons.setOpaque(false);
 		buttons.setAlignmentX(Component.CENTER_ALIGNMENT);
 		buttons.setAlignmentY(Component.BOTTOM_ALIGNMENT);
 		add(buttons , gbc);
-		
 		repaint();
 		
 	}

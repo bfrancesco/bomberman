@@ -1,5 +1,6 @@
 package gioco.net;
 
+import java.awt.datatransfer.SystemFlavorMap;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -47,7 +48,7 @@ public class Room implements Runnable {
 		writeMessage(Protocol.READY);
 		for (int i = 0; i < out.size(); ++i) {
 			if (out.get(i) != null)
-				out.get(i).println(Protocol.startingInfo(Settings.PLAYER1 + i , map));
+				out.get(i).println(Protocol.startingInfo(Settings.PLAYER1 + i , map, System.currentTimeMillis()));
 		}
 		gioco.inizia();
 		t = new Thread(this);
@@ -179,9 +180,16 @@ public class Room implements Runnable {
 
 	@Override
 	public void run() {
+		long startTime = System.currentTimeMillis();
+		int remainingTime = gioco.getTime();
 		while (!Thread.currentThread().isInterrupted()) {
 			try {
 				gioco.next();
+				int walltime = ((Long) (System.currentTimeMillis() - startTime)).intValue() / 1000;
+				remainingTime = gioco.getTime() - walltime;
+				if (remainingTime <= 0 && gioco.isMultiplayer()) {
+					gioco.timeOut();
+				}
 				writeInformations();
 				read();
 			} catch (Exception e) {

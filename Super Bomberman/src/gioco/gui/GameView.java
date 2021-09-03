@@ -12,6 +12,7 @@ import javax.swing.JPanel;
 
 import gioco.controller.PlayerController;
 import gioco.model.Block;
+import gioco.utilities.Resources;
 import gioco.utilities.Settings;
 
 public class GameView extends JPanel {
@@ -21,20 +22,12 @@ public class GameView extends JPanel {
 	private PlayerController controller;
 	private Image map;
 	private EntitiesPanel notStatics;
-	private Image floor;
-	private Image iron;
 
 	public GameView(PlayerController controller , int h , int w) {
 		this.controller = controller;
 		this.setPreferredSize(new Dimension(w, h));
-		try {
-			map = ImageIO.read(getClass().getResourceAsStream("/gioco/resources/maps/" + controller.getGioco().getMap()+".png"));
-			floor = ImageIO.read(getClass().getResourceAsStream("/gioco/resources/blocks/floor.png"));
-			iron = ImageIO.read(getClass().getResourceAsStream("/gioco/resources/blocks/iron.png"));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
+		map = Resources.maps.get(controller.getGioco().getMap()-1);
 		this.setOpaque(false);
 		notStatics = new EntitiesPanel(controller);
 		this.add(notStatics);

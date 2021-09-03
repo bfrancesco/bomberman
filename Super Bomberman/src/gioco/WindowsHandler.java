@@ -1,6 +1,11 @@
 package gioco;
 
 import java.awt.Dimension;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -67,6 +72,7 @@ public class WindowsHandler {
 	}
 	
 	public synchronized void setMapChooser() {	
+		interruptGame();
 		mapChooser = new MapChooser();
 		CustomizePanelController controller = new CustomizePanelController(mapChooser);
 		mapChooser.addKeyListener(controller);		
@@ -77,6 +83,14 @@ public class WindowsHandler {
 		f.pack();
 		mapChooser.setFocusable(true);
 		mapChooser.requestFocus();
+		mapChooser.addFocusListener(new FocusAdapter() {
+			
+			@Override
+			public void focusLost(FocusEvent e) {
+				mapChooser.requestFocus();
+				
+			}
+		});
 	}
 
 	public synchronized void setMenu() {
@@ -85,6 +99,17 @@ public class WindowsHandler {
 		Settings.selectedbomberman = Settings.WHITE;
 		Settings.selectedMap = 1;
 		menu = new Menu(Settings.WINDOWWIDTH, Settings.WINDOWHEIGHT);
+		menu.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+					if(Client.getClient().isConnected())
+						Client.getClient().disconnect();
+					System.exit(0);
+				}
+				super.keyReleased(e);
+			}
+		});
 		f.getContentPane().removeAll();
 		f.revalidate();
 		f.setContentPane(menu);
@@ -131,7 +156,14 @@ public class WindowsHandler {
 			gl.setRunning(false);
 		}
 	}
+	
+	public JFrame getFrame() {
+		return f;
+	}
 
+	public void showGlassPane(boolean visibile) {
+		f.getGlassPane().setVisible(visibile);
+	}
 	
 
 

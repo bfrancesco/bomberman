@@ -7,6 +7,8 @@ import java.util.Vector;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
+import gioco.model.Brick;
+
 public class Resources {
 	
 	public static Vector<Image> leftWhiteBomberman;
@@ -82,9 +84,10 @@ public class Resources {
 	public static Vector<Image> dyingExplosionEnemy3 ;
 	
 	public static Vector<Image> maps;
+	public static Vector<Image> bricks;
 	public static Image createGameMenu;
 	
-	public static Image brick;
+
 	//Player1 - Player2 - Player3 ...
 	
 	//l'ordine dei colori deve essere rispettato per avere corrispondenza fra il colore scelto e quello visualizzato
@@ -97,6 +100,7 @@ public class Resources {
 	public static Image loading;
 	
 	public static Image wallpaper;
+	public static Image pauseWallpaper;
 	public static Image wallpaperConnecting;
 	public static Image logo;
 	public static Image key;
@@ -106,8 +110,7 @@ public class Resources {
 			iconWindow = ImageIO
 					.read(Resources.class.getResourceAsStream("/gioco/resources/bombs/bomb_0.png"));
 			loading = (new ImageIcon(Resources.class.getClassLoader().getResource("gioco/resources/other/ajax-loader.gif"))).getImage();
-			wallpaperConnecting = ImageIO
-					.read(Resources.class.getClassLoader().getResource("gioco/resources/other/wallpaperConnecting.jpg"));
+			
 			key = ImageIO
 					.read(Resources.class.getClassLoader().getResource("gioco/resources/other/key.png"));
 			
@@ -116,8 +119,12 @@ public class Resources {
 	
 	public static void loadResources() {
 		try {
-			brick = ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/blocks/brick.jpg"));
+			//brick = ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/blocks/brick_0.png"));
 			wallpaper = ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/other/sfondo4.jpg"));
+			wallpaperConnecting = ImageIO
+					.read(Resources.class.getClassLoader().getResource("gioco/resources/other/wallpaperConnecting.jpg"));
+			pauseWallpaper = ImageIO
+					.read(Resources.class.getClassLoader().getResource("gioco/resources/other/pauseWallpaper.jpg"));
 			logo = ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/other/logo.png"));
 			createGameMenu = ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/other/createGameMenu.jpg"));
 			
@@ -125,7 +132,7 @@ public class Resources {
 			System.out.println(" RESOURCES ARE UNAVAILABLE");
 			e.printStackTrace();
 		}
-		
+		loadBricks();
 		loadWhiteBombermanImages();
 		loadBlackBombermanImages();
 		loadOrangeBombermanImages();
@@ -134,6 +141,17 @@ public class Resources {
 		loadExplosionImages();
 		loadIcons();
 		loadMaps();
+	}
+	
+	public static void loadBricks() {
+		bricks = new Vector<Image>();
+		for(int i = 0 ; i<5; i++)
+			try {
+				bricks.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/bricks/brick_"+i+".png")));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	}
 	
 	public static void loadIcons() {

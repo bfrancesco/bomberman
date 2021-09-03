@@ -1,5 +1,8 @@
 player1 1 1
 player2 11 11
+player3 1 11
+player4 5 5 
+player5 8 11
 END
 IIIIBFFFFBBIIII
 IFFFBBFFFFFFFFI

@@ -62,6 +62,7 @@ public ConnectingView(Client client) {
 		@Override
 		public void keyReleased(KeyEvent e) {
 			WindowsHandler.getWindowsHandler().setMenu();
+			client.setExited(true);
 			client.disconnect();
 			
 		}

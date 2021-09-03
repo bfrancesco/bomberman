@@ -19,15 +19,18 @@ public class Client implements Runnable{
 	private BufferedReader in;
 	private int orderConnection;
 	private boolean connected;
+	private boolean exited;
 	private boolean bombAdded;
 	private boolean battle;
 	private static Client client;
 	private int map;
+	private long startingTime;
 	
 	private Client() {
 		bombAdded = false;
 		this.battle = false;
 		orderConnection = -1;
+		exited = false;
 	}
 	
 	public static Client getClient() {
@@ -73,6 +76,9 @@ public class Client implements Runnable{
 				String info[] = line.split(" "); 
 				orderConnection = Integer.parseInt(info[0]);
 				map = Integer.parseInt(info[1]);
+				startingTime = Long.parseLong(info[2]);
+				if(battle)
+					Settings.selectedbomberman = Settings.WHITE+(orderConnection-Settings.PLAYER1);
 				return true;
 				
 			}
@@ -87,6 +93,13 @@ public class Client implements Runnable{
 	
 	public void setBattleRoyale(boolean battleRoyale) {
 		this.battle = battleRoyale;
+	}
+
+
+	
+	
+	public synchronized long getStartingTime() {
+		return startingTime;
 	}
 
 
@@ -171,10 +184,22 @@ public class Client implements Runnable{
 	public synchronized void setBombAdded(boolean bombAdded) {
 		this.bombAdded = bombAdded;
 	}
+	
+	
+
+public synchronized boolean isExited() {
+		return exited;
+	}
+
+	public  synchronized void setExited(boolean exited) {
+		this.exited = exited;
+	}
 
 @Override
 public void run() {
 		connect();
+		if(exited)
+			return;
 		if(!connected) {
 			WindowsHandler.getWindowsHandler().setMenu();	
 			//attenzione 

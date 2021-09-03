@@ -12,9 +12,14 @@ public class Gioco {
 	public static final int VICTORY = 0;
 	public static final int DRAW = 1;
 	public static final int LOSS = 2;
-
+	
+	private int pointsEnemy1 = 1000;
+	private int pointsEnemy2 = 1500;
+	private int pointsEnemy3 = 3000;
+	private int pointsPlayer = 5000;
 	private int time = 150;
 	private Block[][] matrix;
+	private Vector<Brick> bricks; 
 	private int height =  Settings.LOGICHEIGHT;
 	private int width = Settings.LOGICWIDTH;
 	Vector<Player> players;
@@ -26,7 +31,7 @@ public class Gioco {
 	private boolean started;
 	private boolean battleRoyale;
 	private int playersAlive;
-	private String map;
+	private int map;
 
 	public Gioco(boolean multiplayer, boolean battleRoyale, int map) {
 		this.multiplayer = multiplayer;
@@ -37,16 +42,18 @@ public class Gioco {
 		gameOver = false;
 		started = false;
 		players = new Vector<Player>();
+		bricks = new Vector<Brick>();
 		if (multiplayer)
 			this.battleRoyale = battleRoyale;
 		else
 			this.battleRoyale = false;
 		try {
-			this.map = "Map" + map;
-			loadMap(this.map);
+			
+			this.map =  map;
+			String mapname = "Map"+map;
+			loadMap(mapname);
 			
 		} catch (IOException e) {
-			System.out.println("IL FILE NON ESISTE PER IL PERCORSO SPECIFICATO:" + this.map);
 			e.printStackTrace();
 		}
 		playersAlive = players.size();
@@ -122,6 +129,9 @@ public class Gioco {
 			}
 
 			// Lettura della mappa
+			boolean speed = false;
+			boolean nbombs = false;
+			boolean radius = false;
 			int k = 0;
 			while (reader.ready()) {
 				String line = reader.readLine();
@@ -136,6 +146,7 @@ public class Gioco {
 						break;
 					case 'B':
 						matrix[k][i] = new Block(Block.BRICK);
+						bricks.add(new Brick(i, k));
 						break;
 					case 'V':
 						matrix[k][i] = new Block(Block.FLOOR);									
@@ -478,11 +489,11 @@ public class Gioco {
 					if (!(enemy instanceof Enemy3) || ((Enemy3) enemy).isVisible()) {
 						enemy.setState(Entity.DYING_EXPLOSION);
 						if (enemy instanceof Enemy1) {
-							elem.getPlayer().increasePoints(1000);
+							elem.getPlayer().increasePoints(pointsEnemy1);
 						} else if (enemy instanceof Enemy2) {
-							elem.getPlayer().increasePoints(1500);
+							elem.getPlayer().increasePoints(pointsEnemy2);
 						} else if (enemy instanceof Enemy3) {
-							elem.getPlayer().increasePoints(3000);
+							elem.getPlayer().increasePoints(pointsEnemy3);
 						}
 					}
 				}
@@ -496,6 +507,8 @@ public class Gioco {
 								&& (elem.getYCell() == player.upBlock() || elem.getYCell() == player.downBlock()))) {
 					playerCollision = true;
 					player.setState(Player.DYING_EXPLOSION);
+					if(elem.getPlayer() != player)
+						elem.getPlayer().increasePoints(pointsPlayer);
 					playersAlive -= 1;
 				}
 			}
@@ -538,7 +551,7 @@ public class Gioco {
 		Vector<Bomb> toBeRemoved = new Vector<Bomb>();
 		for (int k = 0; k < bombs.size(); ++k) {
 			// matrix[bomb.getY()+1 ][bomb.getX()] = Settings.EXPLOSION;
-			stopUp = false;
+			stopUp = false; 
 			stopDown = false;
 			stopLeft = false;
 			stopRight = false;
@@ -561,7 +574,7 @@ public class Gioco {
 							explosions.add(tmp);
 						} else {
 							if (matrix[(bombs.get(k).getYCell() + i) % height][bombs.get(k).getXCell()].isBreakable())
-								matrix[(bombs.get(k).getYCell() + i) % height][bombs.get(k).getXCell()].explode();
+								getBrick(bombs.get(k).getXCell(),(bombs.get(k).getYCell() + i) % height).decreaseExplosionTime();
 							stopDown = true;
 						}
 					}
@@ -575,7 +588,7 @@ public class Gioco {
 
 							} else {
 								if (matrix[bombs.get(k).getYCell() - i][bombs.get(k).getXCell()].isBreakable())
-									matrix[bombs.get(k).getYCell() - i][bombs.get(k).getXCell()].explode();
+									getBrick(bombs.get(k).getXCell(),bombs.get(k).getYCell() - i).decreaseExplosionTime();
 								stopUp = true;
 							}
 						}
@@ -587,7 +600,7 @@ public class Gioco {
 
 							} else {
 								if (matrix[height+bombs.get(k).getYCell() - i][bombs.get(k).getXCell()].isBreakable())
-									matrix[height+bombs.get(k).getYCell() - i][bombs.get(k).getXCell()].explode();
+									getBrick(bombs.get(k).getXCell(),height+bombs.get(k).getYCell() - i).decreaseExplosionTime();
 								stopUp = true;
 							}
 						}
@@ -601,7 +614,7 @@ public class Gioco {
 							explosions.add(tmp);
 						} else {
 							if (matrix[bombs.get(k).getYCell()][(bombs.get(k).getXCell() + i) % width].isBreakable())
-								matrix[bombs.get(k).getYCell()][(bombs.get(k).getXCell() + i) % width].explode();
+								getBrick((bombs.get(k).getXCell() + i) % width,bombs.get(k).getYCell()).decreaseExplosionTime();
 							stopRight = true;
 
 						}
@@ -617,7 +630,7 @@ public class Gioco {
 							} else {
 								stopLeft = true;
 								if (matrix[bombs.get(k).getYCell()][bombs.get(k).getXCell() - i].isBreakable())
-									matrix[bombs.get(k).getYCell()][bombs.get(k).getXCell() - i].explode();
+									getBrick(bombs.get(k).getXCell() - i,bombs.get(k).getYCell()).decreaseExplosionTime();
 							}
 						}
 						if (bombs.get(k).getXCell() - i < 0) {
@@ -629,7 +642,8 @@ public class Gioco {
 							} else {
 								stopLeft = true;
 								if (matrix[bombs.get(k).getYCell()][width + bombs.get(k).getXCell() - i].isBreakable())
-									matrix[bombs.get(k).getYCell()][width + bombs.get(k).getXCell() - i].explode();
+									getBrick(width + bombs.get(k).getXCell() - i, bombs.get(k).getYCell()).decreaseExplosionTime();
+									//matrix[bombs.get(k).getYCell()][width + bombs.get(k).getXCell() - i].explode();
 							}
 						}
 					}
@@ -694,6 +708,39 @@ public class Gioco {
 		return explosions;
 	}
 
+	private Brick getBrick(int xCell , int yCell) {
+		for(Brick brick : bricks) {
+			if(brick.equals(xCell , yCell))
+				return brick;
+		}
+		return null;
+	}
+	
+	public void checkBricks() {
+		Vector<Brick> toBeRemoved = new Vector<Brick>();
+		for(Brick brick : bricks) {
+			if(brick.getExplosionTime()<=0) {
+				toBeRemoved.add(brick);
+				matrix[brick.getyCell()][brick.getxCell()].explode();
+			}
+			if(brick.inExplosion())
+				brick.decreaseExplosionTime();
+		}
+		bricks.removeAll(toBeRemoved);
+	}
+	
+	public Vector<Brick> getBricks() {
+		return bricks;
+	}
+
+	public void setBricks(Vector<Brick> bricks) {
+		this.bricks = bricks;
+	}
+
+	public int getPlayersAlive() {
+		return playersAlive;
+	}
+
 	public void setBombs(Vector<Bomb> bombs) {
 		this.bombs = bombs;
 	}
@@ -722,11 +769,11 @@ public class Gioco {
 		return battleRoyale;
 	}
 
-	public String getMap() {
+	public int getMap() {
 		return map;
 	}
 
-	public void setMap(String map) {
+	public void setMap(int map) {
 		this.map = map;
 	}
 
@@ -754,10 +801,25 @@ public class Gioco {
 			}
 		}
 	}
+	
+	public int countsAlive() {
+		int alive=0;
+		for(Player player: players) {
+			if(!player.isDead())
+				alive++;
+		}
+		playersAlive = alive;
+		return alive;
+	}
+
+	public Vector<Player> getPlayers() {
+		return players;
+	}
 
 	public void next() {
 		checkBombs();
 		checkExplosions();
+		checkBricks();
 		movePlayers();
 		collisionExplosion();
 		collisionEnemyPlayer();
