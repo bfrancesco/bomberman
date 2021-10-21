@@ -1,0 +1,5 @@
+Comandi
+Usa i tasti W A S D oppure le frecce direzionali per muoverti all'interno del campo di battaglia.
+Rilascia le bombe premendo SPAZIO oppure SHIFT.
+Premi ESC per vedere il menu di pausa 
+Attiva/Disattiva l'audio durante una partita premendo M.

@@ -1,16 +1,30 @@
 package gioco.utilities;
 
+import java.awt.Font;
+import java.awt.GraphicsEnvironment;
 import java.awt.Image;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.Vector;
 
 import javax.imageio.ImageIO;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.ImageIcon;
 
-import gioco.model.Brick;
+import gioco.model.PowerUp;
 
+/*
+ * Contiene tutte le risorse utilizzate nell'applicazione , è necessario che tutte possano essere lette in maniera corretta per il corretto sviiuppo del gioco
+ * I metodi di lettura permettono di accedere alle immagini desiderate 
+ * */
 public class Resources {
 	
+	/***GRAPHICFILES***/
 	public static Vector<Image> leftWhiteBomberman;
 	public static Vector<Image> rightWhiteBomberman;
 	public static Vector<Image> upWhiteBomberman;
@@ -64,7 +78,6 @@ public class Resources {
 	
 	public static  Vector<Image> bombSteps;
 	
-	
 	public static Vector<Image> rightEnemy1;
 	public static Vector<Image> downEnemy1;
 	public static Vector<Image> leftEnemy1;
@@ -85,9 +98,32 @@ public class Resources {
 	
 	public static Vector<Image> maps;
 	public static Vector<Image> bricks;
-	public static Image createGameMenu;
 	
-
+	public static Vector<Image> victory;
+	
+	public static Image createGameMenu;	
+	public static Image singlePlayer ;
+	public static Image multiPlayer ;
+	public static Image battleRoyale ;
+	
+	public static Image annulla;
+	public static Image conferma;
+	public static Image indietro ;
+	public static Image indietroSelected ;
+	public static Image gioca ;
+	public static Image giocaSelected ;
+	public static Image riprendi ;
+	public static Image ricomincia ;
+	public static Image abbandona ;
+	public static Image esci;
+	public static Image giocaAncora;
+	public static Image prossimo;
+	public static Image rivincita;
+	public static Image indietroButton;
+	
+	public static Image firePowerUp ;
+	public static Image bombPowerUp ;
+	public static Image speedPowerUp ;
 	//Player1 - Player2 - Player3 ...
 	
 	//l'ordine dei colori deve essere rispettato per avere corrispondenza fra il colore scelto e quello visualizzato
@@ -95,15 +131,69 @@ public class Resources {
 	public static Image iconEnemy;
 	public static Image iconClock;
 	
-	
+	public static Image info;
 	public static Image iconWindow;
 	public static Image loading;
+	public static Image iconMyDialog;
+	
+	public static Image enemiesImage;
+	public static Image keys;
+	
+	public static Image muteEffects;
+	public static Image notMuteEffects;
 	
 	public static Image wallpaper;
 	public static Image pauseWallpaper;
+	public static Image  mydialogWallpaper;
 	public static Image wallpaperConnecting;
 	public static Image logo;
 	public static Image key;
+	
+	public static Image loss;
+	public static Image draw;
+	public static Font  myFont;
+	
+	/***AUDIOFILES***/
+	public static Clip  gameSoundtrack ;	
+	public static Clip  menuSoundtrack ;
+	public static Clip  steps ;	
+	public static Clip  pause;
+	public static Clip  explosion;
+	public static Clip  clicked;	
+	public static Clip  placeBomb;	
+	public static Clip  getPowerUp;
+	public static Clip  dyingEnemySound;
+	public static Clip  enteredMenuButton;
+	public static Clip  enteredStandardButton;
+	public static Clip  bombSelection;
+	public static Clip  playerDeathSound;
+	public static Clip  lossSounds;
+	public static Clip  victorySound;
+	public static Clip  drawSound;
+	
+	/***TEXTFILES***/
+	public static File controls;
+	public static File enemies;
+	public static File rules;
+	public static File powerup;
+	public static File mode;
+	public static File credit;
+	
+	
+
+	public static void loadInfoFiles() {
+		controls = new File("src/gioco/resources/infoFiles/controls.txt");
+		enemies = new File("src/gioco/resources/infoFiles/enemies.txt");
+		rules =  new File("src/gioco/resources/infoFiles/rules.txt");
+		powerup = new File("src/gioco/resources/infoFiles/powerup.txt");
+		mode = new File("src/gioco/resources/infoFiles/mode.txt");
+		credit = new File("src/gioco/resources/infoFiles/credit.txt");
+	}
+	
+	public static void loadInfoImages() throws IOException{
+		enemiesImage = ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/infoFiles/enemies.png"));
+		keys =  ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/infoFiles/keys.png"));
+	}
 	
 	public static void loadWindowIcon()throws IOException{
 		
@@ -117,22 +207,71 @@ public class Resources {
 
 	}
 	
-	public static void loadResources() {
-		try {
-			//brick = ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/blocks/brick_0.png"));
-			wallpaper = ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/other/sfondo4.jpg"));
-			wallpaperConnecting = ImageIO
-					.read(Resources.class.getClassLoader().getResource("gioco/resources/other/wallpaperConnecting.jpg"));
-			pauseWallpaper = ImageIO
-					.read(Resources.class.getClassLoader().getResource("gioco/resources/other/pauseWallpaper.jpg"));
-			logo = ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/other/logo.png"));
-			createGameMenu = ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/other/createGameMenu.jpg"));
-			
-		} catch (IOException e) {
-			System.out.println(" RESOURCES ARE UNAVAILABLE");
-			e.printStackTrace();
+	public static void loadResult() throws IOException {
+		victory = new Vector<Image>();
+		draw = ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/result/pareggio.png"));
+		loss = ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/result/loss.png"));
+		Image white =  ImageIO
+				.read(Resources.class.getClassLoader().getResource("gioco/resources/result/victoryWhite.png"));
+		Image black =ImageIO
+				.read(Resources.class.getClassLoader().getResource("gioco/resources/result/victoryBlack.png")) ;
+		Image orange = ImageIO
+				.read(Resources.class.getClassLoader().getResource("gioco/resources/result/victoryOrange.png"));
+		Image blue =ImageIO
+				.read(Resources.class.getClassLoader().getResource("gioco/resources/result/victoryBlue.png"));
+		Image green  = ImageIO
+				.read(Resources.class.getClassLoader().getResource("gioco/resources/result/victoryGreen.png"));
+		
+		victory.add(white);
+		victory.add(black);
+		victory.add(orange);
+		victory.add(blue);
+		victory.add(green);
+	}
+	
+	public static Image getPowerUp(int type) {
+		switch (type) {
+		case PowerUp.DOUBLEBOMB:
+			return bombPowerUp;
+		case PowerUp.DOUBLEFIRE:
+			return firePowerUp;
+		case PowerUp.SPEEDUP:
+			return speedPowerUp; 
+		default:
+			throw new IllegalArgumentException("Unexpected value: " + type);
 		}
+	}
+	
+	public static void loadWallpapers() throws IOException {
+		wallpaper = ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/other/sfondo.jpg"));
+		wallpaperConnecting = ImageIO
+				.read(Resources.class.getClassLoader().getResource("gioco/resources/other/wallpaperConnecting.png"));
+		pauseWallpaper = ImageIO
+				.read(Resources.class.getClassLoader().getResource("gioco/resources/other/pauseWallpaper.jpg"));
+		logo = ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/other/logo.png"));
+		mydialogWallpaper = ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/other/mydialog.jpg"));
+		createGameMenu = ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/other/createGameMenu.png"));
+	}
+	
+	public static void loadFont()  {
+		try {
+			myFont =  Font.createFont( Font.TRUETYPE_FONT , Resources.class.getResourceAsStream("/gioco/resources/other/magicDream.ttf"));
+			myFont = myFont.deriveFont(15f);
+			GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		    //register the font
+		    ge.registerFont(myFont);
+		} catch (Exception e) {
+			System.out.println("sans");
+			myFont = Font.getFont(Font.SANS_SERIF);
+		}
+	}
+	
+	
+	public static void loadResources() {		
+		
+		try {
 		loadBricks();
+		loadPowerUp();
 		loadWhiteBombermanImages();
 		loadBlackBombermanImages();
 		loadOrangeBombermanImages();
@@ -140,38 +279,115 @@ public class Resources {
 		loadEnemyImages();
 		loadExplosionImages();
 		loadIcons();
+		loadInfoFiles();
+		loadSounds();
 		loadMaps();
-	}
-	
-	public static void loadBricks() {
-		bricks = new Vector<Image>();
-		for(int i = 0 ; i<5; i++)
-			try {
-				bricks.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/bricks/brick_"+i+".png")));
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-	}
-	
-	public static void loadIcons() {
-		try {
-			bombermanIcons = new Vector<Image>();
-			iconEnemy =  ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/icons/enemiesIcon.png")).getScaledInstance(30 , 30, 0);
-			iconClock =  ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/icons/clock.png")).getScaledInstance(30 , 30, 0);
-			bombermanIcons.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/icons/whiteBombermanIcon.png")).getScaledInstance(30 , 30, 0));
-			bombermanIcons.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/icons/blackBombermanIcon.png")).getScaledInstance(30 , 30, 0));
-			bombermanIcons.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/icons/orangeBombermanIcon.png")).getScaledInstance(30 , 30, 0));
-			bombermanIcons.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/icons/blueBombermanIcon.png")).getScaledInstance(30 , 30, 0));
-			bombermanIcons.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/icons/greenBombermanIcon.png")).getScaledInstance(30 , 30, 0));
-		} catch (IOException e) {
-			System.out.println("ICONS RESOURCES ARE UNAVAILABLE");
-			e.printStackTrace();
+		loadWallpapers();
+		loadInfoImages();
+		loadFont();
+		loadButtons();
+		loadResult();
+		loadWindowIcon();
 		}
+		catch (IOException e) {
+			System.out.println("RESOURCES ARE UNAVAILABLE");
+			System.exit(0);
+			
+		}
+	}
+	
+	private static void loadBricks() throws IOException {
+		bricks = new Vector<Image>();
+		for(int i = 0 ; i<6; i++)
+				bricks.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/bricks/brick_"+i+".png")));
+
+	}
+	
+	private static void loadPowerUp() throws IOException {
+		bombPowerUp = ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/powerUps/bombPowerUp.png"));
+		firePowerUp = ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/powerUps/firePowerUp.png"));
+		speedPowerUp = ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/powerUps/speedPowerUp.png"));
 		
 	}
 	
-	public static void loadEnemyImages() {
+	private static void loadButtons() throws IOException{
+		annulla = ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/buttons/annulla.png"));
+		conferma = ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/buttons/conferma.png"));
+		singlePlayer = ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/buttons/singleplayer.png"));
+		multiPlayer = ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/buttons/multiplayer.png"));
+		battleRoyale = ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/buttons/battleRoyale.png"));
+		indietro = ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/buttons/indietro.png"));
+		indietroSelected = ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/buttons/indietroSelected.png"));
+		gioca = ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/buttons/gioca.png"));
+		giocaSelected = ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/buttons/giocaSelected.png"));
+		riprendi = ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/buttons/riprendi.png"));
+		ricomincia = ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/buttons/ricomincia.png"));
+		abbandona = ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/buttons/abbandona.png"));
+		indietroButton = ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/buttons/indietroButton.png"));
+		esci = ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/buttons/esci.png"));
+		giocaAncora =  ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/buttons/giocaAncora.png"));
+		rivincita =  ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/buttons/rivincita.png"));
+		prossimo =  ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/buttons/prossimo.png"));
+	}
+	
+	private static void loadSounds() {
+		try {
+			clicked = AudioSystem.getClip();
+			gameSoundtrack = AudioSystem.getClip();
+			menuSoundtrack = AudioSystem.getClip();
+			getPowerUp = AudioSystem.getClip();
+			steps= AudioSystem.getClip();
+			playerDeathSound = AudioSystem.getClip();
+			explosion  = AudioSystem.getClip();
+			enteredMenuButton =AudioSystem.getClip();
+			enteredStandardButton =AudioSystem.getClip();
+			pause = AudioSystem.getClip();
+			drawSound = AudioSystem.getClip();
+			victorySound = AudioSystem.getClip();
+			lossSounds = AudioSystem.getClip();
+			drawSound = AudioSystem.getClip();
+			bombSelection = AudioSystem.getClip();
+			placeBomb= AudioSystem.getClip();
+			dyingEnemySound = AudioSystem.getClip();
+			gameSoundtrack.open(AudioSystem.getAudioInputStream(Resources.class.getResourceAsStream("/gioco/resources/sounds/BombermanTheme.wav")));					
+			menuSoundtrack.open(AudioSystem.getAudioInputStream(Resources.class.getResourceAsStream("/gioco/resources/sounds/menuTheme.wav")));				
+			steps.open(AudioSystem.getAudioInputStream(Resources.class.getResourceAsStream("/gioco/resources/sounds/Walking.wav")));
+			explosion.open(AudioSystem.getAudioInputStream(Resources.class.getResourceAsStream("/gioco/resources/sounds/Explosion.wav")));
+			pause.open(AudioSystem.getAudioInputStream(Resources.class.getResourceAsStream("/gioco/resources/sounds/Pause.wav")));
+			clicked.open(AudioSystem.getAudioInputStream(Resources.class.getResourceAsStream("/gioco/resources/sounds/buttonPress.wav")));
+			placeBomb.open(AudioSystem.getAudioInputStream(Resources.class.getResourceAsStream("/gioco/resources/sounds/placeBomb.wav")));
+			getPowerUp.open(AudioSystem.getAudioInputStream(Resources.class.getResourceAsStream("/gioco/resources/sounds/getPowerUp.wav")));
+			dyingEnemySound.open(AudioSystem.getAudioInputStream(Resources.class.getResourceAsStream("/gioco/resources/sounds/dyingEnemy.wav")));
+			enteredMenuButton.open(AudioSystem.getAudioInputStream(Resources.class.getResourceAsStream("/gioco/resources/sounds/enteredButton.wav")));
+			enteredStandardButton.open(AudioSystem.getAudioInputStream(Resources.class.getResourceAsStream("/gioco/resources/sounds/standardSelection.wav")));
+			bombSelection.open(AudioSystem.getAudioInputStream(Resources.class.getResourceAsStream("/gioco/resources/sounds/bombButton.wav")));
+			playerDeathSound.open(AudioSystem.getAudioInputStream(Resources.class.getResourceAsStream("/gioco/resources/sounds/playerDeath.wav")));
+			victorySound.open(AudioSystem.getAudioInputStream(Resources.class.getResourceAsStream("/gioco/resources/sounds/win.wav")));
+			lossSounds.open(AudioSystem.getAudioInputStream(Resources.class.getResourceAsStream("/gioco/resources/sounds/loss.wav")));
+			drawSound.open(AudioSystem.getAudioInputStream(Resources.class.getResourceAsStream("/gioco/resources/sounds/draw.wav")));
+		} catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+			gameSoundtrack = null;
+			menuSoundtrack= null;
+			e.printStackTrace();
+		}
+	}
+	
+	private static void loadIcons() throws IOException {
+		bombermanIcons = new Vector<Image>();
+		iconEnemy =  ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/icons/enemiesIcon.png")).getScaledInstance(30 , 30, 0);
+		iconClock =  ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/icons/clock.png")).getScaledInstance(30 , 30, 0);
+		bombermanIcons.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/icons/whiteBombermanIcon.png")).getScaledInstance(30 , 30, 0));
+		bombermanIcons.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/icons/blackBombermanIcon.png")).getScaledInstance(30 , 30, 0));
+		bombermanIcons.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/icons/orangeBombermanIcon.png")).getScaledInstance(30 , 30, 0));
+		bombermanIcons.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/icons/blueBombermanIcon.png")).getScaledInstance(30 , 30, 0));
+		bombermanIcons.add(ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/icons/greenBombermanIcon.png")).getScaledInstance(30 , 30, 0));
+		muteEffects=ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/icons/muteEffects.png"));
+		notMuteEffects=ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/icons/notMuteEffects.png"));
+		info = ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/icons/info.png"));
+		iconMyDialog = ImageIO.read(Resources.class.getResourceAsStream("/gioco/resources/icons/iconMyDialog.png"));
+	}
+	
+	private static void loadEnemyImages() {
 		rightEnemy1 = new Vector<Image>();
 		downEnemy1 = new Vector<Image>();
 		leftEnemy1 = new Vector<Image>();
@@ -181,7 +397,7 @@ public class Resources {
 		rightEnemy2 = new Vector<Image>();
 		downEnemy2= new Vector<Image>();
 		dyingExplosionEnemy2 = new Vector<Image>();
-		leftEnemy2 = new Vector<Image>();
+		leftEnemy2 = new Vector<Image>(); 
 		upEnemy2 = new Vector<Image>();
 		
 		rightEnemy3 = new Vector<Image>();
@@ -224,7 +440,7 @@ public class Resources {
 		}
 	}
 	
-	public static void loadBombImages() {
+	private static void loadBombImages() {
 		bombSteps = new Vector<Image>();
 		try {
 
@@ -240,7 +456,7 @@ public class Resources {
 		}
 	}
 	
-	public static void loadMaps() {
+	private static void loadMaps() {
 		maps = new Vector<Image>();
 		try {
 			for(int i = 1;i<=Settings.MAPSNUMBER;++i) {
@@ -251,7 +467,7 @@ public class Resources {
 		}
 	}
 	
-	public static void loadExplosionImages() {
+	private static void loadExplosionImages() {
 		center = new Vector<Image>();
 		end_up = new Vector<Image>();
 		middle_up = new Vector<Image>();
@@ -285,7 +501,7 @@ public class Resources {
 		}
 	}
 	
-	public static void loadWhiteBombermanImages() {
+	private static void loadWhiteBombermanImages() {
 		leftWhiteBomberman = new Vector<Image>();
 		rightWhiteBomberman = new Vector<Image>();
 		upWhiteBomberman = new Vector<Image>();
@@ -318,7 +534,7 @@ public class Resources {
 	}
 	
 	
-	public static void loadBlackBombermanImages() {
+	private static void loadBlackBombermanImages() {
 		leftBlackBomberman = new Vector<Image>();
 		rightBlackBomberman = new Vector<Image>();
 		upBlackBomberman = new Vector<Image>();
@@ -351,7 +567,7 @@ public class Resources {
 	}
 	
 	
-	public static void loadOrangeBombermanImages() {
+	private static void loadOrangeBombermanImages() {
 		leftOrangeBomberman = new Vector<Image>();
 		rightOrangeBomberman = new Vector<Image>();
 		upOrangeBomberman = new Vector<Image>();
@@ -417,124 +633,6 @@ public class Resources {
 		}
 	}
 	
-	/*public static Vector<Image> downBomberman(int player){
-		switch(player) {
-		case Settings.PLAYER1:
-			return downWhiteBomberman;
-		case Settings.PLAYER2:
-			return downBlackBomberman;
-		case Settings.PLAYER3:
-			return downOrangeBomberman;
-		case Settings.PLAYER4:
-			return downBlueBomberman;
-		case Settings.PLAYER5:
-			return downGreenBomberman;
-		default:
-			return  downBlackBomberman;
-		}
-	}
-	
-	public static Vector<Image> upBomberman(int player){
-		switch(player) {
-		case Settings.PLAYER1:
-			return upWhiteBomberman;
-		case Settings.PLAYER2:
-			return upBlackBomberman;
-		case Settings.PLAYER3:
-			return upOrangeBomberman;
-		case Settings.PLAYER4:
-			return upBlueBomberman;
-		case Settings.PLAYER5:
-			return upGreenBomberman;
-		default:
-			return  upBlackBomberman;
-		}
-	}
-	
-	public static Vector<Image> rightBomberman(int player){
-		switch(player) {
-		case Settings.PLAYER1:
-			return rightWhiteBomberman;
-		case Settings.PLAYER2:
-			return rightBlackBomberman;
-		case Settings.PLAYER3:
-			return rightOrangeBomberman;
-		case Settings.PLAYER4:
-			return rightBlueBomberman;
-		case Settings.PLAYER5:
-			return rightGreenBomberman;
-		default:
-			return  rightBlackBomberman;
-		}
-	}
-	
-	public static Vector<Image> leftBomberman(int player){
-		switch(player) {
-		case Settings.PLAYER1:
-			return leftWhiteBomberman;
-		case Settings.PLAYER2:
-			return leftBlackBomberman;
-		case Settings.PLAYER3:
-			return leftOrangeBomberman;
-		case Settings.PLAYER4:
-			return leftBlueBomberman;
-		case Settings.PLAYER5:
-			return leftGreenBomberman;
-		default:
-			return  leftBlackBomberman;
-		}
-	}
-	
-	public static Vector<Image> dyingByEnemyBomberman(int player){
-		switch(player) {
-		case Settings.PLAYER1:
-			return dyingByEnemyWhiteBomberman;
-		case Settings.PLAYER2:
-			return dyingByEnemyBlackBomberman;
-		case Settings.PLAYER3:
-			return dyingByEnemyOrangeBomberman;
-		case Settings.PLAYER4:
-			return dyingByEnemyBlueBomberman;
-		case Settings.PLAYER5:
-			return dyingByEnemyGreenBomberman;
-		default:
-			return  dyingByEnemyBlackBomberman;
-		}
-	}
-	
-	public static Vector<Image> dyingExplosionBomberman(int player){
-		switch(player) {
-		case Settings.PLAYER1:
-			return  dyingExplosionWhiteBomberman;
-		case Settings.PLAYER2:
-			return  dyingExplosionBlackBomberman;
-		case Settings.PLAYER3:
-			return  dyingExplosionOrangeBomberman;
-		case Settings.PLAYER4:
-			return dyingExplosionBlueBomberman;
-		case Settings.PLAYER5:
-			return dyingExplosionGreenBomberman;
-		default:
-			return   dyingExplosionBlackBomberman;
-		}
-	}
-	
-	public static Vector<Image> victoryBomberman(int player){
-		switch(player) {
-		case Settings.PLAYER1:
-			return victoryWhiteBomberman;
-		case Settings.PLAYER2:
-			return victoryBlackBomberman;
-		case Settings.PLAYER3:
-			return victoryOrangeBomberman;
-		case Settings.PLAYER4:
-			return victoryBlueBomberman;
-		case Settings.PLAYER5:
-			return victoryGreenBomberman;
-		default:
-			return  victoryBlackBomberman;
-		}
-	}*/
 	public static Vector<Image> downBomberman(int player){
 		switch(player) {
 		case Settings.WHITE:
@@ -654,5 +752,13 @@ public class Resources {
 		}
 	}
 	
+	
+	public static Image victory(int color) {
+		int pos = color - Settings.WHITE;
+		if(pos >= victory.size())
+			pos = 0;
+		return victory.get(pos);
+		
+	}
 	
 }

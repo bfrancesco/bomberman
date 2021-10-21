@@ -2,33 +2,28 @@ package gioco.model;
 
 import gioco.utilities.Settings;
 
+/*
+ * Ogni brick ha una cella di posizione e un tempo di esplosione
+ * che viene decremenato, allo zero dovrebbe essere rimosso
+ * */
 public class Brick {
 
-	private int xCell;
-	private int yCell;
+	private Cell cell;
 	private int explosionTime;
 
 	public Brick(int xCell, int yCell) {
 		super();
-		this.xCell = xCell;
-		this.yCell = yCell;
+		cell = new Cell(xCell, yCell);
 		explosionTime = Settings.BRICKEXPLOSIONTIME;
 	}
 
-	public int getxCell() {
-		return xCell;
+	public Cell getCell() {
+		return cell;
 	}
+	
 
-	public void setxCell(int xCell) {
-		this.xCell = xCell;
-	}
-
-	public int getyCell() {
-		return yCell;
-	}
-
-	public void setyCell(int yCell) {
-		this.yCell = yCell;
+	public void setCell(Cell cell) {
+		this.cell = cell;
 	}
 
 	public int getExplosionTime() {
@@ -52,11 +47,11 @@ public class Brick {
 		if(obj.getClass()!=this.getClass())
 			return false;
 		Brick tmp = (Brick) obj;
-		return tmp.xCell == this.xCell && tmp.yCell == this.yCell;
+		return this.cell.equals(tmp.cell);
 	}
 	
 	public boolean equals(int xCell , int yCell) {
-		return xCell == this.xCell && yCell == this.yCell;
+		return xCell == this.getCell().getxCell() && yCell == this.getCell().getyCell();
 	}
 
 }

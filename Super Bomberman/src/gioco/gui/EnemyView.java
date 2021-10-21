@@ -10,7 +10,10 @@ import gioco.model.Entity;
 import gioco.model.Player;
 import gioco.utilities.Resources;
 
-
+//Ogni nemico è associato a un EnemyView
+//Avviene la lettura dello stato  del nemico 
+//in base al tipo e all'indice (valore che  indica da quanto sui trova in quello stato)
+//viene visualizzata l'immagine di riferimento , permettendo l'animazione
 public class EnemyView {
 
 
@@ -47,6 +50,9 @@ public class EnemyView {
 		return currentState;
 	}
 
+	//aggiorna l'immagine corrente in base allo stato attuale
+	//se è uguale a quello precedente allora avanza l'animazione
+	//altrimenti ne parte una nuova
 	public void update(int state) {
 		if(type == 1) {
 		switch (state) {

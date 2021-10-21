@@ -11,12 +11,18 @@ import gioco.model.Player;
 import gioco.utilities.Resources;
 import gioco.utilities.Settings;
 
+// Permette di visualizzare gli stati di un player 
+// Ogni Player è associato a un BombermanView che ha un determinato colore e uno stato corrente e un indice
+// Se lo stato rimane lo stesso , allora l'indice potrebbe incrementare per mostrare tutta l'animazione associata allo stato
+//se lo stato cambia , allora si azzera l'indice e si ricomincia con la nuova animazione
+// l'introduzione di parametri permette di decidere la velocità dell'animazione durante il metodo get
+//Ovvero ad ogni stato-indice è associato una immagine del corrispettivo vettore 
 public class BombermanView {
 
-	Image currentImage;
-	int currentState;
-	int index;
-	int color;
+	private Image currentImage;
+	private int currentState;
+	private int index;
+	private int color;
 	
 	public BombermanView(int color) {
 
@@ -47,7 +53,8 @@ public class BombermanView {
 	public int getState() {
 		return currentState;
 	}
-
+	
+	//prende l'immagine corretta in base all'indice e al colore tramite il metodo di Resources adatto, se lo stato è uguale al precedente , incrementa l'indice, altrimenti lo pone a 0
 	public void update(int state) {
 		switch (state) {
 			case Player.IDLE_DOWN :

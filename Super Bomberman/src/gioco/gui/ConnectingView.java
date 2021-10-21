@@ -13,6 +13,7 @@ import java.awt.event.MouseEvent;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -27,27 +28,27 @@ import gioco.utilities.Settings;
 public class ConnectingView extends JPanel {
 private Client client ;
 	
+//permette di visualizzare la schermata di connessione
 public ConnectingView(Client client) {
 	this.setLayout(new BorderLayout());
 	this.setOpaque(true);
 	this.setBackground(Color.BLACK);
 	this.setPreferredSize(new Dimension( Settings.WINDOWWIDTH,Settings.WINDOWHEIGHT));
-	ImageIcon loading = new ImageIcon(Resources.loading.getScaledInstance(50, 50, Image.SCALE_DEFAULT));
+	ImageIcon loading = new ImageIcon(Resources.loading.getScaledInstance(Settings.iconWidthSelected, Settings.iconHeightSelected, Image.SCALE_DEFAULT));
 	JLabel label= new JLabel(loading );
-	label.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 25));
+	label.setFont(Resources.myFont.deriveFont(40f));
 	label.setIconTextGap(20);
-	label.setText("Connecting...");
+	label.setText("Connecting . . .");
 	label.setForeground(Color.WHITE);
-	label.setPreferredSize(new Dimension(100 , 100));
 	label.setAlignmentX(CENTER_ALIGNMENT);
 	label.setAlignmentY(TOP_ALIGNMENT);
 	this.add(label,BorderLayout.CENTER);
-	JLabel exitText = new JLabel(new ImageIcon(Resources.key.getScaledInstance(30,30 , Image.SCALE_SMOOTH)));
-	exitText.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 15));
+	JLabel exitText = new JLabel(new ImageIcon(Resources.key.getScaledInstance(Settings.iconWidth,Settings.iconHeight , Image.SCALE_SMOOTH)));
+	exitText.setFont(Resources.myFont.deriveFont(17f));
 	exitText.setIconTextGap(20);
-	exitText.setText("Premi un tasto qualsiasi per annullare la connessione...");
+	exitText.setText("Premi un tasto qualsiasi per annullare la connessione . . .");
 	exitText.setForeground(Color.WHITE);
-	exitText.setPreferredSize(new Dimension(100 , 100));
+	exitText.setBorder(BorderFactory.createEmptyBorder(20,20, 20, 20));
 	exitText.setAlignmentX(LEFT_ALIGNMENT);
 	exitText.setAlignmentY(CENTER_ALIGNMENT);
 	this.add(exitText, BorderLayout.SOUTH);
@@ -58,12 +59,11 @@ public ConnectingView(Client client) {
 			// TODO Auto-generated method stub
 			
 		}
-		
+		//interrompe il client per evitare che modifichi la grafica contemporaneamente, una volta interrotto , imposta il menu come principale
 		@Override
 		public void keyReleased(KeyEvent e) {
+			client.interrupt();
 			WindowsHandler.getWindowsHandler().setMenu();
-			client.setExited(true);
-			client.disconnect();
 			
 		}
 		
@@ -92,6 +92,6 @@ public void setClient(Client client) {
 @Override
 protected void paintComponent(Graphics g) {
 	super.paintComponent(g);
-	g.drawImage(Resources.wallpaperConnecting.getScaledInstance(330, 300, Image.SCALE_SMOOTH) , 600 , 475 , null);
+	g.drawImage(Resources.wallpaperConnecting.getScaledInstance(Settings.WINDOWWIDTH, Settings.WINDOWHEIGHT, Image.SCALE_SMOOTH) , 0 , 0, null);
 }
 }

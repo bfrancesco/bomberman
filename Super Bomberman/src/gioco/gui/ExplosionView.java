@@ -7,6 +7,7 @@ import gioco.model.Explosion;
 import gioco.utilities.Resources;
 import gioco.utilities.Settings;
 
+//permette di ottenere l'animazione corretta per ogni tipo di esplosione , in base alla durata e direzione
 public class ExplosionView {
 
 	public ExplosionView() {

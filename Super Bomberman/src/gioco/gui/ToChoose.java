@@ -9,7 +9,13 @@ import javax.swing.JLabel;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
+import javax.swing.border.TitledBorder;
 
+import gioco.utilities.Resources;
+
+//Bottone che permette di modificare la visualizzazione del bordo , contiene all'interno un'immagine
+// può avere o non avere un titolo reso visibile dall'apposito metodo setTitleVIsibile
+// ha un controlle che regola come deve cambiare la visualizzazione in base agli eventi notificati
 public class ToChoose extends JButton {
 	private static final long serialVersionUID = -8082942945747198431L;
 	private boolean choosen;
@@ -46,6 +52,7 @@ public class ToChoose extends JButton {
 	public String getTitle() {
 		return title;
 	}
+	
 
 	public void setTitle(String title) {
 		this.title = title;
@@ -55,6 +62,12 @@ public class ToChoose extends JButton {
 		if(visibility) {
 			redBorder =  BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.RED,6),title );
 			normalBorder = BorderFactory.createTitledBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED, Color.black, Color.BLACK),title );
+			TitledBorder tmpNormal = (TitledBorder) normalBorder;
+			tmpNormal.setTitleFont(Resources.myFont);
+			tmpNormal.setTitleColor(Color.black);
+			TitledBorder tmpRed = (TitledBorder) redBorder;
+			tmpRed.setTitleFont(Resources.myFont);
+			tmpRed.setTitleColor(Color.black);
 		} else {
 			redBorder = BorderFactory.createLineBorder(Color.RED,6);
 			normalBorder = BorderFactory.createBevelBorder(BevelBorder.RAISED, Color.BLACK, Color.BLACK);
@@ -64,9 +77,13 @@ public class ToChoose extends JButton {
 
 	public void setHighlighted(boolean val) {
 		if(!choosen) {
-			if(val)
-				this.setBorder( BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED, Color.WHITE, Color.WHITE),title));
-			else this.setBorder(normalBorder);
+			if(val) {
+				TitledBorder tmp = BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED, Color.WHITE, Color.WHITE),title);
+				tmp.setTitleFont(Resources.myFont);
+				tmp.setTitleColor(Color.white);
+				this.setBorder(tmp);
+			
+			} else this.setBorder(normalBorder);
 		}
 			
 	}

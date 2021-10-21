@@ -8,7 +8,14 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Vector;
-
+/*
+ * Il server gestisce un la connessione da parte dei client
+ * si mette in attesa di un connessione , un volta ricevuta una richiesta , legge la modalità e pone il client nell'apposito vettore : multiplaye o battleroyale
+ * per ogni vettore che ha raggiunto la capienza massima , viene inviato un segnale di conferma KEEPALIVE , se non si ottiene risposta , allora il client è eliminato e si attende una nuova connessione,
+ * Se tutti i client hanno confermato , allora viene fatta partire un nuova room con le partite
+ * Il numero massimo di room ospitabili è variabile (in questo caso 2)
+ * Se non c'è spazio nelle room , allora si attende che una partita termini per far iniziare la prossima
+ * */
 public class Server {
 	private ServerSocket server;
 	private Vector<Room> rooms;
@@ -17,6 +24,8 @@ public class Server {
 	private Vector<Socket> battleRoyaleLobby;
 	
 	private int n_players_br= 5;
+	private int n_players_multi= 2;
+	private int n_rooms= 2;
 	
 	public void startServer() throws IOException {
 		server = new ServerSocket(8000);
@@ -28,14 +37,14 @@ public class Server {
 				if(rooms.get(i).getT().isInterrupted())
 					rooms.remove(i);
 			}
-			if(rooms.size()<2) {
+			if(rooms.size()<n_rooms) {
 				addConnections();				
 			}
 		}
-				
+				 
 	}
 
-
+	//controlla che la lobby sia tutta connessa con KEEPALIVE, altrimenti elimina il client
 	private void checkLobby(Vector<Socket> toBeChecked) throws IOException {
 		Vector<Socket> toBeRemoved = new Vector<Socket>(toBeChecked);
 		for(Socket s : toBeChecked) {
@@ -52,23 +61,13 @@ public class Server {
 				}
 			}
 		}
-		/*for(Socket s : toBeChecked) {
-			BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream())); 
-			if(in.ready()) {
-				String str = in.readLine();
-				if(str.equals(Protocol.DISCONNECTION)) {
-					toBeRemoved.add(s);
-				}
-			}
-		}*/
 		toBeChecked.removeAll(toBeRemoved);
 	}
 	
+	//aggiunge una nuova connessione , se raggiunta la dimensione scelta per la modalità considerata, allora viene chiamato checkLobby
+	//se nessun client si è disconnesso allora viene create una nuova Room
 	private void addConnections() throws IOException {	
-		if(server.isClosed()) {
-			System.out.println("CHIUSO");
-		}
-		
+		if(!server.isClosed()) {	
 		Socket player;
 		player = server.accept();
 		BufferedReader in = new BufferedReader(new InputStreamReader(player.getInputStream())); 
@@ -88,135 +87,26 @@ public class Server {
 				rooms.add(room);
 				battleRoyaleLobby.clear();
 			}
-		}
+		} 
 		else if(gameMode.equals(Protocol.MULTIPLAYER)) {
 			multiplayerLobby.add(player);
 			checkLobby(multiplayerLobby);
-			if(multiplayerLobby.size() == 2) {
+			if(multiplayerLobby.size() == n_players_multi) {
 				Room room = new Room(multiplayerLobby);
 				rooms.add(room);
 				multiplayerLobby.clear();
 			}
 		}
-		
-		//System.out.println("READY TO START!");
-		//Room room = new Room(player1, player2, "MAP1");
-		//rooms.add(room);
-		
-		//se ne volessi avere di più , allora faccio partire con almeno 2 e poi aggiungo una lista di altri giocatori connessi
-		/*out1 = new PrintWriter(new BufferedOutputStream(player1.getOutputStream()), true);
-		in1 = new BufferedReader(new InputStreamReader(player1.getInputStream()));
-		out2 = new PrintWriter(new BufferedOutputStream(player2.getOutputStream()), true);
-		in2 = new BufferedReader(new InputStreamReader(player2.getInputStream()));
-		gioco = null;
-		gioco = new Gioco(true , "Map1");
-		writeMessage(Protocol.READY);
-		out1.println(Settings.PLAYER1);
-		out2.println(Settings.PLAYER2);
-		gioco.inizia();*/
-		
-	}
-
-
-/*	private void writeMessage(String message) {
-		if (out1 != null)
-			out1.println(message);
-		if (out2 != null)
-			out2.println(message);
-	}
-
-	private void read() throws IOException {
-		boolean read2 = false;
-		boolean read1 = false;
-		long time = System.currentTimeMillis();
-		while(!read1 || !read2) {
-			if(!read1 && in1.ready()) {
-				readMessage(in1);
-				read1 = true;
-			}
-			if(!read2 && in2.ready()) {
-				readMessage(in2);
-				read2 = true;
-			}
-			if(System.currentTimeMillis()-time >=5000 ) {
-				resetServer();
-			}
 		}
 	}
-	
 
-	private void readMessage(BufferedReader in) throws IOException {
-		
-		if (in != null ) {
-			Player player;
-			if(in==in1) 
-				player = gioco.getPlayer1();
-			else 
-				player = gioco.getPlayer2();
-			int state = player.getState();
-			int i = 0;
-			String line = in.readLine();
-			String res  [] = line.split(" ");
-			if(res[i].equals(Protocol.BOMBADDED) ) {
-				gioco.addBomb(player);
-				i+=1;
-			}
-				
-			if(res[i].equals(Protocol.STATE)) {
-				state = Integer.parseInt(res[i+1]);
-				 player.setState(state);
 
-			}
-			
-		}
-	}
-	
-	
-	public synchronized void writeInformations() {
-		StringBuffer message = new StringBuffer();
-		message.append(Protocol.player(gioco.getPlayer1().toString())+" ");
-		message.append(Protocol.player(gioco.getPlayer2().toString())+" ");
-		for(Enemy e : gioco.getEnemies()) {
-			if(e!=null)
-				message.append(Protocol.enemy(e.toString())+ " ");
-		}
-		for(Bomb b : gioco.getBombs()) {
-			message.append(Protocol.bomb(b.toString())+" ");
-		}
-		for(Explosion e : gioco.getExplosions())
-			message.append(Protocol.explosion(e.toString())+" ");
-		
-		message.append(Protocol.ENDCOMUNICATION);
-		writeMessage(message.toString());
-	}
-	
-	
-
-	/*@Override
-	public void run() {
-		while (!Thread.currentThread().isInterrupted()) {
-			try{	
-					gioco.next();
-					writeInformations();									
-					read();
-					
-			}catch (Exception e) {
-				
-			}
-			
-		}
-
-	}*/
-	
 	public static void main(String[] args) {
 		Server s = new Server();
 		try {
 			System.out.println("Starting server...");
 			s.startServer();
-			//Thread t = new Thread(s);
-			//t.run();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

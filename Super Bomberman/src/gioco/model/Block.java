@@ -1,22 +1,28 @@
 package gioco.model;
 
+/*
+ * Indica la tipologia di blocco, presenta delle proprietà come breakable o powerUp
+ * in base al suo tipo può cambiare stato rompendosi esplodendo 
+ * */
 public class Block {
 	public final static int BRICK = 4;
 	public final static int IRON = 5 ;
 	public final static int BOMB = 6;
 	public final static int FLOOR = 7;
-	
-	int type;
-	boolean breakable;
+
+	private int type;
+	private boolean breakable;
+	private int powerUp;
 	
 	public Block() {
-		
+		powerUp = PowerUp.EMPTY;
 		type = Block.FLOOR;
 		breakable = true;
 	}
 	
 	public Block(int type ) {
 		this.type = type ; 
+		powerUp = PowerUp.EMPTY;
 		if(type == Block.IRON) {
 				breakable = false;
 		}
@@ -28,6 +34,11 @@ public class Block {
 			type = Block.FLOOR;
 		}
 	}
+	
+	public boolean hasPowerUp() {
+		return powerUp!=PowerUp.EMPTY;
+	}
+	
 	
 	public boolean equals(Object obj) {
 		if(this == obj)
@@ -48,6 +59,7 @@ public class Block {
 		this.type = tipo;
 		if(tipo == Block.BRICK)
 				breakable = true;
+		else breakable = false;
 	}
 
 	public boolean isBreakable() {
@@ -59,5 +71,16 @@ public class Block {
 			return true;
 		return false;
 	}
+
+	public int getPowerUp() {
+		return powerUp;
+	}
+	
+	
+
+	public synchronized void setPowerUp(int powerUp) {
+		this.powerUp = powerUp;
+	}
+	
 	
 }

@@ -1,5 +1,10 @@
 package gioco.net;
-
+/*
+ *Protocollo di comunicazione fra server e client
+ *i rispettivi metodi servono ad appendere la keyword prima dei dati
+ * per poter notificare al server il tipo di dato che si sta ricevendo
+ */
+ 
 public class Protocol {
 	public static final String READY = "rd";
 	public static final String MOVE = "mv";
@@ -12,6 +17,7 @@ public class Protocol {
 	public static final String ENDCOMUNICATION = "END";
 	public static final String DISCONNECTION = "D";
 	public static final String KEEPALIVE = "K";
+	public static final String POWERUP ="u";
 	
 	public static final String BATTLEROYALE = "br";
 	public static final String MULTIPLAYER = "mp";
@@ -43,14 +49,9 @@ public class Protocol {
 	public static String startingInfo(int player , int map, long time ) {
 		return Integer.toString(player)+" "+map+ " "+Long.toString(time);
 	}
-	/*public static int[] parsePosition(String line) {
-		String[] res = line.split(" ");
-		if(res.length != 3 || !res[0].equals(POSITION))
-			return null;
-		int[] ret = new int[3];
-		ret[0] = Integer.parseInt(res[1]);
-		ret[1] = Integer.parseInt(res[2]);
-		return ret;
-	}*/
+	
+	public static String powerup(String p) {
+		return POWERUP+" " +p;
+	}
 	
 }

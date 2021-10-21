@@ -15,17 +15,15 @@ import gioco.controller.PlayerController;
 import gioco.net.Client;
 import gioco.utilities.Settings;
 
-
+//pannello che contiene la visualizazione del gioco e dei punti 
+//permette l'accesso a quest'ultimi
 public class GamePanel extends JPanel {
-	
-
-
 	private static final long serialVersionUID = -5129791240805142753L;
 	private PlayerController controller;
 	private int height; 
 	private int width;
 	private GameView giocoView;
-	private pointsPanel pointView;
+	private PointsPanel pointView;
 	
 	public GamePanel() {
 		this.height = Settings.WINDOWHEIGHT;
@@ -43,39 +41,21 @@ public class GamePanel extends JPanel {
 		addKeyListener(controller);	
 		requestFocus();
 		giocoView = new GameView(controller , Settings.WINDOWHEIGHT , Settings.WINDOWWIDTH);
-		pointView = new pointsPanel(controller.isMultiplayer() , controller.isBattleRoyale());
+		pointView = new PointsPanel(controller);
 		BoxLayout b = new BoxLayout(this, BoxLayout.Y_AXIS);
 		this.setLayout( b );
 		this.add(pointView , b);
-		pointView.setPreferredSize(new Dimension(Settings.WINDOWWIDTH ,45));
-		this.add(giocoView , b);
-	
 
-		 
-//giocoView.setPreferredSize(new Dimension(715,715));	
+		pointView.setPreferredSize(new Dimension(Settings.WINDOWWIDTH ,Settings.HEIGHTSTAT));
+		this.add(giocoView , b);
+		
+		controller.setBlockSizes(Settings.WINDOWWIDTH , Settings.WINDOWHEIGHT-Settings.HEIGHTSTAT);	  
 	}
 	
 	public void setStat(int time) {
-		if(controller.isBattleRoyale()) {
-			pointView.setPoints(controller.getGioco().getPlayer(Client.getClient().getOrderConnection()).getPoints(),0, controller.getGioco().getEnemies().size());
-		}
-		else if(controller.isMultiplayer())
-			pointView.setPoints(controller.getGioco().getPlayer(Settings.PLAYER1).getPoints(), controller.getGioco().getPlayer(Settings.PLAYER2).getPoints(), controller.getGioco().getEnemies().size());
-		else
-			pointView.setPoints(controller.getGioco().getPlayer(Settings.PLAYER1).getPoints(),0 ,  controller.getGioco().getEnemies().size());
-		
+		pointView.setPoints();
 		pointView.setTime(time);
 	}
-	
-	/*@Override
-	public void paintComponents(Graphics g) {
-		// TODO Auto-generated method stub
-		super.paintComponents(g);
-	}*/
-	
-/*	public void paintMap() {
-		repaint();
-	}*/
 	
 
 	public GameView getGiocoView() {

@@ -1,6 +1,5 @@
 package gioco.net;
 
-import java.awt.datatransfer.SystemFlavorMap;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -10,52 +9,56 @@ import java.net.Socket;
 import java.util.Random;
 import java.util.Vector;
 
+import gioco.utilities.*;
 import gioco.model.Bomb;
 import gioco.model.Enemy;
-import gioco.model.Enemy1;
-import gioco.model.Enemy2;
-import gioco.model.Enemy3;
-import gioco.model.Entity;
-import gioco.model.Explosion;
 import gioco.model.Gioco;
 import gioco.model.Player;
-import gioco.utilities.Settings;
+import gioco.model.PowerUp;
 
+/*
+ * Gestisce lo svolgimento delle partite : 
+ * Viene inviiato ai client il segnale di READY con le informazioni necessarie cui sono la mappa il tempo di inizio e l'ordine di connessione , ossia l'identificativo del player che si controlla
+ * Un client perde la connessione se non invia segnali per più di CLOSINGTIME e il corrispettivo player è vivo
+ * Una volta rimosso la room continua la sua esecuzione
+ */
 public class Room implements Runnable {
 
-	//private Vector<Sender> out;
-	 private Vector<PrintWriter> out;
+	private Vector<PrintWriter> out;
 	private Vector<BufferedReader> in;
 	private Gioco gioco;
 	private Thread t;
-
+	private long startTime;
+	private static int  CLOSINGTIME = 1500;
 	public Room(Vector<Socket> players) throws IOException {
-		//out = new Vector<Sender>();
 		out = new Vector<PrintWriter>();
 		in = new Vector<BufferedReader>();
 		for (Socket player : players) {
-			//out.add(new Sender(new PrintWriter(new BufferedOutputStream(player.getOutputStream()), true)));
 			in.add(new BufferedReader(new InputStreamReader(player.getInputStream())));
 			out.add(new PrintWriter(new BufferedOutputStream(player.getOutputStream()), true));
 		}
-		
-		int map = new Random().nextInt(8)+1;
-		
+		int map = new Random().nextInt(Settings.MAPSNUMBER) + 1;
+		//map = 1;
 		if (players.size() == 2)
 			gioco = new Gioco(true, false, map);
-		else
+		else if (players.size() == 5)
 			gioco = new Gioco(true, true, map);
+		else {
+			return;
+		}
 		writeMessage(Protocol.READY);
+		startTime = System.currentTimeMillis();
 		for (int i = 0; i < out.size(); ++i) {
-			if (out.get(i) != null)
-				out.get(i).println(Protocol.startingInfo(Settings.PLAYER1 + i , map, System.currentTimeMillis()));
+			if (out != null) {
+				out.get(i).println(Protocol.startingInfo(Settings.PLAYER1 + i, map, startTime));
+			}
 		}
 		gioco.inizia();
 		t = new Thread(this);
 		t.start();
 
 	}
-
+//scrive a tutti i client
 	private void writeMessage(String message) {
 		for (int i = 0; i < out.size(); ++i) {
 			if (out != null) {
@@ -63,23 +66,13 @@ public class Room implements Runnable {
 			}
 		}
 	}
-/*
-	private void writeMessageConcurrently(String message) {
-
-		for (int i = 0; i < out.size(); ++i) {
-			if (out != null) {
-				out.get(i).setMessage(message);
-				new Thread(out.get(i)).start();
-
-			} else
-				System.out.println("SONO NULLO");
-		}
-	}*/
 
 	public Thread getT() {
 		return t;
 	}
 
+	//legge i messaggi dei client che valgono come HEARTBEAT, indicando che la connessione persistente,
+	//qualora un client non dovesse essere pronto ,allora vengono letti quelli disponibili , se si disconnette o non invia messaggi ed è ancora vivo , allora viene disconnesso
 	private void read() throws IOException {
 		Vector<Boolean> read = new Vector<Boolean>();
 		for (int i = 0; i < in.size(); ++i) {
@@ -91,22 +84,33 @@ public class Room implements Runnable {
 		while (letti < in.size()) {
 			for (int i = 0; i < in.size(); ++i) {
 				if (read.get(i).equals(Boolean.FALSE)) {
-					if (in.get(i).ready()) {
-						Player player = gioco.getPlayer(Settings.PLAYER1 + i);
+					Player player = gioco.getPlayer(Settings.PLAYER1 + i);
+					if(player == null) {
+						System.out.println(i);
+						t.interrupt();
+					}
+					if (player.isDead()) {
+						letti += 1;
+						read.set(i, Boolean.TRUE);
+					} else if (in.get(i).ready()) {
 						readMessage(i, player);
 						read.set(i, Boolean.TRUE);
 						letti += 1;
 					}
+					// il ready serve a indicare che non è pronto alcun messaggio -> se passa troppo
+					// tempo , la comunicazione deve essere interrotta (fine del gioco) oppure viene rimosso il player
+					if (System.currentTimeMillis() - time >= CLOSINGTIME  && !in.get(i).ready()) {
+						if (gioco.isGameOver() && System.currentTimeMillis() - time >= CLOSINGTIME ) {
+							System.out.println(" CHIUSURA ");
+							closeAll();
+							Thread.currentThread().interrupt();
+						} else if (!in.get(i).ready()) {
+							player.setState(Player.DYING_ENEMY);
+							letti += 1;
+							read.set(i, Boolean.TRUE);
+						}
+					}
 				}
-				// il ready serve a indicare che non è pronto alcun messaggio -> se passa troppo
-				// tempo , la comunicazione deve essere interrotta (fine del gioco) oppure è
-				// stata interrotta
-				if (System.currentTimeMillis() - time >= 5000 && !in.get(i).ready()) {
-					System.out.println(" CHIUSURA ");
-					closeAll();
-					Thread.currentThread().interrupt();
-				}
-
 			}
 		}
 	}
@@ -120,9 +124,11 @@ public class Room implements Runnable {
 		}
 
 	}
-
+	/*
+	 * legge secondo il protocollo le informazioni dai client
+	 * */
 	private void readMessage(int index, Player player) throws IOException {
-		if (player == null || player.isDead())
+		if (player == null)
 			return;
 		int state = player.getState();
 		int i = 0;
@@ -144,17 +150,20 @@ public class Room implements Runnable {
 		}
 
 	}
-
+	/*
+	 * Scrive le informazioni ai client secondo il protocollo 
+	 * */
 	public synchronized void writeInformations() {
 		StringBuffer message = new StringBuffer();
 		for (int i = 0; i < in.size(); ++i) {
 			Player player = gioco.getPlayer(Settings.PLAYER1 + i);
-			if (player == null)
-				System.out.println("COS " + i);
-			else
+			//errore nel gioco, l'evento non dovrebbe mai accadere
+			if(player == null) {
+				t.interrupt();
+			}
+			if (player != null)
 				message.append(Protocol.player(player.toString()) + " ");
 		}
-
 		for (Enemy e : gioco.getEnemies()) {
 			if (e != null)
 				message.append(Protocol.enemy(e.toString()) + " ");
@@ -162,25 +171,22 @@ public class Room implements Runnable {
 		for (Bomb b : gioco.getBombs()) {
 			message.append(Protocol.bomb(b.toString()) + " ");
 		}
-
 		message.append(Protocol.ENDCOMUNICATION);
-		//writeMessageConcurrently(message.toString());
+
 		writeMessage(message.toString());
-//		boolean alive = true;
-//		while (alive) {
-//			alive = false;
-//			for (Sender s : out) {
-//				if (s.isAlive()) {
-//					alive = true;
-//					break;
-//				}
-//			}
-//		}
 	}
 
+	/*
+	 * Il run regola il thread che gestisce la room : 
+	 * esso invia all'inizio i powerup affinchè tutti i client siano uniformati , in seguito ciclicamente calcola il nuovo passo , scrive le informazioni nuove e legge dai client 
+	 * */
 	@Override
 	public void run() {
-		long startTime = System.currentTimeMillis();
+		StringBuilder sb = new StringBuilder();
+		for (PowerUp p : gioco.getPowerups()) {
+			sb.append(Protocol.powerup(p.toString()) + " ");
+		}
+		writeMessage(sb.toString());
 		int remainingTime = gioco.getTime();
 		while (!Thread.currentThread().isInterrupted()) {
 			try {
@@ -193,7 +199,7 @@ public class Room implements Runnable {
 				writeInformations();
 				read();
 			} catch (Exception e) {
-
+				break;
 			}
 		}
 	}

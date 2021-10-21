@@ -2,36 +2,54 @@ package gioco.model;
 
 import gioco.utilities.Settings;
 
+/*Classe che identifica una bomba , ha una cella di riferimento , un timer , un raggio e un Player che l'ha posizionata
+ * Una volta posizionata 
+ * ad ogni passo deve decrementare il timer
+ * */
 public class Bomb {
-	private int xCell;
-	private int yCell;
+	private Cell cell;
 	private int timer;
+	private int radius;
 	private Player player;
 
-	public Bomb(int x, int y, Player player) {
+	public Bomb(int x, int y, int radius ,  Player player) {
 		super();
+		cell = new Cell(x , y);
 		this.player = player;
-		this.xCell = x;
-		this.yCell = y;
+		this.radius = radius;
 		this.timer = Settings.BOMBTIME; 
 	}
 	
-	public Bomb(int x, int y, int timer ,Player player) {
+	public Bomb(int x, int y, int radius, int timer ,Player player) {
 		super();
 		this.player = player;
-		this.xCell = x;
-		this.yCell = y;
+		this.radius = radius;
+		cell = new Cell(x , y);
 		this.timer = timer; 
 	}
 
-	public int getXCell() {
-		return xCell;
+	
+	
+	public int getRadius() {
+		return radius;
 	}
 
-	public void setXCell(int x) {
-		this.xCell = x;
+	public Cell getCell() {
+		return cell;
 	}
 	
+	
+	public void setCell(Cell cell) {
+		this.cell = cell;
+	}
+
+	public int getXCell() {
+		return cell.getxCell();
+	}
+	
+	public int getYCell() {
+		return cell.getyCell();
+	}
 	
 
 	public Player getPlayer() {
@@ -39,8 +57,8 @@ public class Bomb {
 	}
 	
 	public void update(int x , int y , int durata) {
-		xCell = x;
-		yCell = y;
+		cell.setxCell(x);
+		cell.setyCell(y);
 		timer = durata;
 	}
 	
@@ -48,13 +66,6 @@ public class Bomb {
 		this.player = player;
 	}
 
-	public int getYCell() {
-		return yCell;
-	}
-
-	public void setYCell(int y) {
-		this.yCell = y;
-	}
 
 	public int getTimer() {
 		return timer;
@@ -77,13 +88,13 @@ public class Bomb {
 		if(obj.getClass() != this.getClass())
 			return false;
 		Bomb b = (Bomb) obj;
-		return b.getXCell() == this.getXCell() && b.getYCell() == this.getYCell();	
+		return this.getCell().equals(b.getCell());
 	}
 	
+	//utile per facilitare la comunicazione fra client e server
 	@Override
-	public String toString() {
-		
-		return xCell+" " +yCell+ " "+timer+ " "+player.getType();
+	public String toString() {		
+		return cell.getxCell()+" " +cell.getyCell()+ " " +radius +" "+timer+ " "+player.getType();
 	}
 	
 }

@@ -15,13 +15,16 @@ import gioco.model.Block;
 import gioco.utilities.Resources;
 import gioco.utilities.Settings;
 
+//Il pannello contiene un EntitiesPanel per i modificabili
+// gestisce la visualizzazione della mappa , elemento statico 
+// inizializza e permette l'accesso a entitiesPanel
 public class GameView extends JPanel {
 
 	private static final long serialVersionUID = -4664820033827585199L;
 
 	private PlayerController controller;
 	private Image map;
-	private EntitiesPanel notStatics;
+	private EntitiesPanel notStatics; 
 
 	public GameView(PlayerController controller , int h , int w) {
 		this.controller = controller;
@@ -41,18 +44,11 @@ public class GameView extends JPanel {
 
 	@Override
 	protected void paintComponent(Graphics g) {
-		//Block matrix[][] = controller.getGioco().getMatrix();
 		g.drawImage(map.getScaledInstance(Settings.BLOCKSIZEX*Settings.LOGICWIDTH, Settings.BLOCKSIZEY*Settings.LOGICHEIGHT, Image.SCALE_SMOOTH),0,0, null);
-		/*for(int i = 0;i<matrix.length;++i) {
-			for(int j = 0;j<matrix[0].length;++j) {
-				if(matrix[i][j].getType() == Block.IRON)
-					g.drawImage(iron.getScaledInstance(Settings.BLOCKSIZEX, Settings.BLOCKSIZEY, Image.SCALE_SMOOTH),j*Settings.BLOCKSIZEX,i*Settings.BLOCKSIZEY, null);
-				else g.drawImage(floor.getScaledInstance(Settings.BLOCKSIZEX, Settings.BLOCKSIZEY, Image.SCALE_SMOOTH),j*Settings.BLOCKSIZEX,i*Settings.BLOCKSIZEY, null);
-			}
-		}*/
+
 	}
 
-	public EntitiesPanel getNotStatics() {
+	public EntitiesPanel getEntitiesPanel() {
 		return notStatics;
 	}
 	

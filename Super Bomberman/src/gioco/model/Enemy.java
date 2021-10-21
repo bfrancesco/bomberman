@@ -6,6 +6,10 @@ import java.util.Random;
 
 import gioco.utilities.Settings;
 
+/*
+ * Enemy è una estensione di entità ed è classe padre di altre classi specializzati che sono gli enemy di vario tipo ,
+ * ogni nemico ha un ID e un tempo di eliminazione, dopo del quale dovrebbe essere rimosso
+ * */
 public class Enemy extends Entity{
 	
 	protected int dyingTime;
@@ -30,7 +34,7 @@ public class Enemy extends Entity{
 		}
 		else {
 			Random r = new Random();
-			r.setSeed(System.currentTimeMillis()+x+y);
+			r.setSeed(System.currentTimeMillis()+ID*x*y);
 			int dir = r.nextInt(directions.size());
 			this.direction = directions.get(dir);
 			switch(direction) {
@@ -86,10 +90,9 @@ public class Enemy extends Entity{
 		return e.ID == this.ID;
 	}
 	
-	protected int getType() {
-		return 0;
-	}
+
 	
+	//facilita la comunicazione server - client mediante il protocollo
 	@Override
 	public String toString() {
 		return ID+ " " +x+" " +y+" " +state ;

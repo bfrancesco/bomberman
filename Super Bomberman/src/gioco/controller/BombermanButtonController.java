@@ -7,8 +7,13 @@ import java.util.ArrayList;
 
 
 import gioco.gui.ToChoose;
+import gioco.sound.SoundsHandler;
 import gioco.utilities.Settings;
-
+/*
+ * Il controller possiede un arraylist di ToChoose , il funzionamento è esclusivo , ovvero può essere selezionato un solo bottone fra quelli della lista
+ * Selezionare il bottone button di riferimento , a cui è collegato il controller , implica che tutti gli altri bottoni vengano disattivati
+ * Una volta che l' elemento è stato selezionato, viene aggiornata la variabile in Settings che indica quale bomberman è stato scelto
+ * */
 public class BombermanButtonController implements MouseListener {
 	private ArrayList<ToChoose> bombermen;
 	private ToChoose button ;
@@ -18,6 +23,7 @@ public class BombermanButtonController implements MouseListener {
 		this.button = button;
 		this.color = color;
 	}
+	//deseleziona tutti gli altri toChoose e seleziona quello cliccato
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		Settings.selectedbomberman = color;
@@ -27,10 +33,12 @@ public class BombermanButtonController implements MouseListener {
 		
 	}@Override
 	public void mouseEntered(MouseEvent e) {
+		SoundsHandler.getSoundsHandler().enteredStandardButton();
 		button.setHighlighted(true);
 		
 	}@Override
 	public void mouseExited(MouseEvent e) {
+		SoundsHandler.getSoundsHandler().exitedStandardButton();
 		button.setHighlighted(false);
 		
 	}@Override

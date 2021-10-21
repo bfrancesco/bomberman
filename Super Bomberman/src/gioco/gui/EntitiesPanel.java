@@ -1,21 +1,16 @@
 package gioco.gui;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.FlowLayout;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.Vector;
 
-import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
-import gioco.WindowsHandler;
+
 import gioco.controller.PlayerController;
-import gioco.model.Block;
 import gioco.model.Bomb;
 import gioco.model.Brick;
 import gioco.model.Enemy;
@@ -24,9 +19,18 @@ import gioco.model.Enemy2;
 import gioco.model.Enemy3;
 import gioco.model.Explosion;
 import gioco.model.Player;
+import gioco.model.PowerUp;
+import gioco.net.Client;
 import gioco.utilities.Resources;
 import gioco.utilities.Settings;
 
+//pannello che permette di visualizzare le entità e gli oggetti modificabili in generale del gioco
+//la mappa statica non è gestita dal panel
+//contiene 5 bombermanview , uno per ogni player 
+//il gioco non supporta infatti più di 5 player 
+// Un vector di view di nemici e tutti gli oggetti che permettono di eseguire l'animazione degli elementi del gioco
+//il gioco si sviluppa su una LogicSize fittizia , l'entities panel permette di scalare in proporzione alla dimensione della finestra 
+// i metodi update e paintComponent permettono di aggiornare con i nuovi stati ed elementi per poi disegnarli
 public class EntitiesPanel extends JPanel {
 
 	private static final long serialVersionUID = 971861536905109107L;
@@ -44,8 +48,8 @@ public class EntitiesPanel extends JPanel {
 	public EntitiesPanel(PlayerController controller) {
 		this.controller = controller;
 		this.setOpaque(false);
-
 		player1 = new BombermanView(Settings.selectedbomberman);
+		this.setLayout(new FlowLayout());
 		if (controller.isMultiplayer()) {
 			player1.setColor(Settings.WHITE);
 			player2 = new BombermanView(Settings.BLACK);
@@ -70,15 +74,17 @@ public class EntitiesPanel extends JPanel {
 		}
 
 	}
-
+	//scala la x dalla dimensione fittizia della logicSize alla dimensione del blocco reale
 	private int scaleByX(int a) {
 		return a * Settings.BLOCKSIZEX / Settings.LOGICBLOCKSIZEX;
 	}
-
+	//scala la y  dalla dimensione fittizia della logicSize alla dimensione del blocco reale
 	private int scaleByY(int a) {
 		return a * Settings.BLOCKSIZEY / Settings.LOGICBLOCKSIZEY;
 	}
-
+	// aggiorna gli stati delle corrispettive view dell'entità (player , nemici)
+	//Es: aggiorna lo stato e l'immagine corrente dell'enemyView che corrisponde al nemico x
+	// disegna gli aggiornamenti
 	public void update() {
 		player1.update(controller.getGioco().getPlayer(Settings.PLAYER1).getState());
 		if (controller.isMultiplayer())
@@ -91,7 +97,8 @@ public class EntitiesPanel extends JPanel {
 		updateEnemies();
 		repaint();
 	}
-
+	
+	//se un nemico è morto ed è stato eliminato , allora viene trovata la corrispettiva view per essre eliminata a sua volta
 	private void updateEnemies() {
 		Vector<EnemyView> enemyViewToBeRemoved = new Vector<EnemyView>();
 		for (int i = 0; i < controller.getGioco().getEnemies().size(); ++i) {
@@ -106,15 +113,33 @@ public class EntitiesPanel extends JPanel {
 		}
 		enemyview.removeAll(enemyViewToBeRemoved);
 	}
-
+	
+	//tutti i modificabili del gioco vengono disegnati 
+	//i bomberman sono spostati ed ingranditi di un fattore3d calcolato dal playerController
+	//permette di rendere l'immagine tridimensionale, tuttavia le immagini usate per i bomberman permettono di non avere alcuna distorsione o allungamento considerate  la loro dimensione e forma
+	//è nercessario usare un insieme di immagini adatte se usate con il factor3d
 	@Override
 	protected synchronized void paintComponent(Graphics g) {
+		Vector<PowerUp> tmpPowerUp = new Vector<PowerUp>(controller.getGioco().getPowerups());
+		for (int i = 0;i<tmpPowerUp.size();++i) {
+			PowerUp powerUp = tmpPowerUp.get(i);
+			g.drawImage( 
+					Resources.getPowerUp(powerUp.getType()).getScaledInstance(Settings.BLOCKSIZEX, Settings.BLOCKSIZEY,
+							Image.SCALE_FAST),
+					powerUp.getCell().getxCell() * Settings.BLOCKSIZEX, powerUp.getCell().getyCell() * Settings.BLOCKSIZEY, null);
+		}
+		
+		Player selected = controller.getGioco().getPlayer(Settings.PLAYER1);
+		if(controller.isMultiplayer()) {
+			selected = controller.getGioco().getPlayer(Client.getClient().getOrderConnection());
+		}		
+	
 		Vector<Brick> tmpbrick = new Vector<Brick>(controller.getGioco().getBricks());
 		for (Brick brick : tmpbrick) {
 			g.drawImage(
 					bricks.get(brick.getExplosionTime()).getScaledInstance(Settings.BLOCKSIZEX, Settings.BLOCKSIZEY,
 							Image.SCALE_FAST),
-					brick.getxCell() * Settings.BLOCKSIZEX, brick.getyCell() * Settings.BLOCKSIZEY, null);
+					brick.getCell().getxCell() * Settings.BLOCKSIZEX, brick.getCell().getyCell() * Settings.BLOCKSIZEY, null);
 		}
 		Vector<Bomb> tmpB = new Vector<Bomb>(controller.getGioco().getBombs());
 		for (Bomb b : tmpB) {
@@ -124,32 +149,22 @@ public class EntitiesPanel extends JPanel {
 					b.getXCell() * Settings.BLOCKSIZEX, b.getYCell() * Settings.BLOCKSIZEY, null);
 		}
 
-		Player p1 = controller.getGioco().getPlayer(Settings.PLAYER1);
-		g.drawImage(player1.getCurrentImage().getScaledInstance(scaleByX(p1.getWidth()), scaleByY(p1.getHeight()),
-				Image.SCALE_FAST), scaleByX(p1.getX()), scaleByY(p1.getY()), null);
-		if (controller.isMultiplayer()) {
-			Player p2 = controller.getGioco().getPlayer(Settings.PLAYER2);
-			g.drawImage(player2.getCurrentImage().getScaledInstance(scaleByX(p2.getWidth()), scaleByY(p2.getHeight()),
-					Image.SCALE_FAST), scaleByX(p2.getX()), scaleByY(p2.getY()), null);
-			if (controller.getGioco().isBattleRoyale()) {
-				Player p3 = controller.getGioco().getPlayer(Settings.PLAYER3);
-				g.drawImage(player3.getCurrentImage().getScaledInstance(scaleByX(p1.getWidth()),
-						scaleByY(p1.getHeight()), Image.SCALE_FAST), scaleByX(p3.getX()), scaleByY(p3.getY()), null);
-				Player p4 = controller.getGioco().getPlayer(Settings.PLAYER4);
-				g.drawImage(player4.getCurrentImage().getScaledInstance(scaleByX(p4.getWidth()),
-						scaleByY(p4.getHeight()), Image.SCALE_FAST), scaleByX(p4.getX()), scaleByY(p4.getY()), null);
-				Player p5 = controller.getGioco().getPlayer(Settings.PLAYER5);
-				g.drawImage(player5.getCurrentImage().getScaledInstance(scaleByX(p5.getWidth()),
-						scaleByY(p5.getHeight()), Image.SCALE_FAST), scaleByX(p5.getX()), scaleByY(p5.getY()), null);
-			}
+		
+		
+		Vector<Explosion> tmpE = new Vector<Explosion>(controller.getGioco().getExplosions());
+		for (Explosion b : tmpE) {
+			g.drawImage(
+					explosions.get(b.getType(), b.getDurata(), b.getDirection()).getScaledInstance(Settings.BLOCKSIZEX,
+							Settings.BLOCKSIZEY, Image.SCALE_SMOOTH),
+					b.getXCell() * Settings.BLOCKSIZEX, b.getYCell() * Settings.BLOCKSIZEY , null);
 		}
-
+		
 		for (int i = 0; i < controller.getGioco().getEnemies().size(); ++i) {
 			Enemy b = controller.getGioco().getEnemies().get(i);
 			if (b instanceof Enemy1 || b instanceof Enemy2) {
 				g.drawImage(
 						enemyview.get(i).getCurrentImage().getScaledInstance(scaleByX(b.getWidth()),
-								scaleByY(b.getHeight()), Image.SCALE_FAST),
+								scaleByY(b.getHeight()) , Image.SCALE_FAST),
 						scaleByX(b.getX()), scaleByY(b.getY()), null);
 			} else if (b instanceof Enemy3) {
 				if (((Enemy3) b).isVisible()) {
@@ -167,13 +182,27 @@ public class EntitiesPanel extends JPanel {
 				}
 			}
 		}
-		Vector<Explosion> tmpE = new Vector<Explosion>(controller.getGioco().getExplosions());
-		for (Explosion b : tmpE) {
-			g.drawImage(
-					explosions.get(b.getType(), b.getDurata(), b.getDirection()).getScaledInstance(Settings.BLOCKSIZEX,
-							Settings.BLOCKSIZEY, Image.SCALE_SMOOTH),
-					b.getXCell() * Settings.BLOCKSIZEX, b.getYCell() * Settings.BLOCKSIZEY, null);
+		Player p1 = controller.getGioco().getPlayer(Settings.PLAYER1);
+		g.drawImage(player1.getCurrentImage().getScaledInstance(scaleByX(p1.getWidth()), scaleByY(p1.getHeight())+Settings.factor3d,
+				Image.SCALE_FAST), scaleByX(p1.getX()), scaleByY(p1.getY())-Settings.factor3d, null);
+		if (controller.isMultiplayer()) {
+			Player p2 = controller.getGioco().getPlayer(Settings.PLAYER2);
+			g.drawImage(player2.getCurrentImage().getScaledInstance(scaleByX(p2.getWidth()), scaleByY(p2.getHeight())+Settings.factor3d,
+					Image.SCALE_FAST), scaleByX(p2.getX()), scaleByY(p2.getY())-Settings.factor3d, null);
+			if (controller.getGioco().isBattleRoyale()) {
+				Player p3 = controller.getGioco().getPlayer(Settings.PLAYER3);
+				g.drawImage(player3.getCurrentImage().getScaledInstance(scaleByX(p1.getWidth()),
+						scaleByY(p1.getHeight())+Settings.factor3d, Image.SCALE_FAST), scaleByX(p3.getX()), scaleByY(p3.getY())-Settings.factor3d, null);
+				Player p4 = controller.getGioco().getPlayer(Settings.PLAYER4);
+				g.drawImage(player4.getCurrentImage().getScaledInstance(scaleByX(p4.getWidth()),
+						scaleByY(p4.getHeight())+Settings.factor3d, Image.SCALE_FAST), scaleByX(p4.getX()), scaleByY(p4.getY())-Settings.factor3d, null);
+				Player p5 = controller.getGioco().getPlayer(Settings.PLAYER5);
+				g.drawImage(player5.getCurrentImage().getScaledInstance(scaleByX(p5.getWidth()),
+						scaleByY(p5.getHeight())+Settings.factor3d, Image.SCALE_FAST), scaleByX(p5.getX()), scaleByY(p5.getY())-Settings.factor3d
+								, null);
+			}
 		}
+		
 
 	}
 

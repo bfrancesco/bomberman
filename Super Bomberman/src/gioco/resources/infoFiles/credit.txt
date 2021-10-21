@@ -1,0 +1,3 @@
+Crediti
+A cura di Bruno Francesco Barbara per il Corso di Interfacce grafiche e programmazione ad eventi, corso di Laurea in Informatica, Unical. 
+Grazie per aver giocato!
