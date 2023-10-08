@@ -1,12 +1,8 @@
 package gioco;
 
 import gioco.controller.PlayerController;
-import gioco.model.Gioco;
-import gioco.model.Player;
+
 import gioco.net.Client;
-import gioco.net.Protocol;
-import gioco.sound.SoundsHandler;
-import gioco.utilities.Settings;
 
 /*
  * Estende un thread e permette l'esecuzione del gioco

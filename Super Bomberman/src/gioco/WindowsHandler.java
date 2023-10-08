@@ -175,10 +175,10 @@ public class WindowsHandler {
 		f.revalidate();
 		PlayerController pc = new PlayerController(gamePanel, multi, battleRoyale, Settings.selectedMap, Client.getClient());
 		gamePanel.setController(pc);
-		gl = new GameLoop(pc);
-		gl.start();
 		gamePanel.setFocusable(true);
 		gamePanel.requestFocus();
+		gl = new GameLoop(pc);
+		gl.start();
 	}
 
 	//imposta come content il pannello delle informazioni

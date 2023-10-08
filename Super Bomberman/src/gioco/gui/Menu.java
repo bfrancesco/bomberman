@@ -11,6 +11,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.TextField;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -39,6 +40,7 @@ public class Menu extends JPanel {
 	private CustomButton battleRoyale;
 	private MuteButton muteEffects;
 	private CustomButton info;
+
 	
 	public Menu(int w , int h ) {
 		int hgapButtons = 20;

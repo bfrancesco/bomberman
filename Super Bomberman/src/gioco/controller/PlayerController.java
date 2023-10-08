@@ -1,14 +1,8 @@
 package gioco.controller;
 
-import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
 import java.util.Vector;
-
-import javax.swing.JPanel;
-
 
 import gioco.WindowsHandler;
 import gioco.gui.GamePanel;
@@ -18,7 +12,6 @@ import gioco.model.Bomb;
 import gioco.model.Enemy;
 import gioco.model.Enemy3;
 import gioco.model.Entity;
-import gioco.model.Explosion;
 import gioco.model.Gioco;
 import gioco.model.Player;
 import gioco.model.PowerUp;

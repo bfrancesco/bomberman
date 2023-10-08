@@ -86,6 +86,7 @@ public class EntitiesPanel extends JPanel {
 	//Es: aggiorna lo stato e l'immagine corrente dell'enemyView che corrisponde al nemico x
 	// disegna gli aggiornamenti
 	public void update() {
+		//System.out.println("Player "+Settings.PLAYER1+" "+controller.getGioco().getPlayer(Settings.PLAYER1) );
 		player1.update(controller.getGioco().getPlayer(Settings.PLAYER1).getState());
 		if (controller.isMultiplayer())
 			player2.update(controller.getGioco().getPlayer(Settings.PLAYER2).getState());

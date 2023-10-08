@@ -86,6 +86,7 @@ public class Gioco {
 
 		} catch (IOException e) {
 			e.printStackTrace();
+			System.out.println("ERRORE?");
 		}
 		randomPowerUps();
 		playersAlive = players.size();
@@ -134,7 +135,7 @@ public class Gioco {
 	public void loadMap(int map) throws IOException {
 		BufferedReader reader = null;
 		try {
-			reader =  new BufferedReader(new FileReader("src/gioco/resources/maps/Map"+map+".txt"));
+			reader = Resources.loadMap(map);
 			String s = reader.readLine();
 			// lettura dei players e dei nemici
 			int enemyID = 0;
@@ -215,6 +216,7 @@ public class Gioco {
 			}
 		} 
 		catch (Exception e) {
+			System.out.println("Unable to load map");
 		}finally {
 			if (reader != null)
 				reader.close();

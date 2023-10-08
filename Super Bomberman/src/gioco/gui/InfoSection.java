@@ -39,7 +39,7 @@ public class InfoSection extends JPanel {
 	private JTextArea text;
 	private JPanel center;
 
-	public InfoSection(File file, Image image) {
+	public InfoSection(BufferedReader file, Image image) {
 		center = new JPanel();
 		this.setLayout(new BorderLayout(Settings.iconButtonHeight/4,Settings.iconButtonHeight/4));
 		this.setBorder(BorderFactory.createEmptyBorder(0 ,3,0,0));
@@ -89,10 +89,8 @@ public class InfoSection extends JPanel {
 	//lettura del file di testo 
 	//si legge il titolo da inserire nella titleLabel
 	//si legge il testo da inserire nella JtestArea
-	public void parseFile(File file) {
-		BufferedReader reader ;
+	public void parseFile(BufferedReader reader) {
 		try {
-			reader = new BufferedReader(new FileReader(file));
 			String str = reader.readLine();
 			title = str;
 			while(reader.ready()) {

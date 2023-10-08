@@ -3,10 +3,13 @@ package gioco.utilities;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Vector;
 
 import javax.imageio.ImageIO;
@@ -172,22 +175,37 @@ public class Resources {
 	public static Clip  drawSound;
 	
 	/***TEXTFILES***/
-	public static File controls;
-	public static File enemies;
-	public static File rules;
-	public static File powerup;
-	public static File mode;
-	public static File credit;
+	public static BufferedReader controls;
+	public static BufferedReader enemies;
+	public static BufferedReader rules;
+	public static BufferedReader powerup;
+	public static BufferedReader mode;
+	public static BufferedReader credit;
 	
 	
 
 	public static void loadInfoFiles() {
-		controls = new File("src/gioco/resources/infoFiles/controls.txt");
-		enemies = new File("src/gioco/resources/infoFiles/enemies.txt");
-		rules =  new File("src/gioco/resources/infoFiles/rules.txt");
-		powerup = new File("src/gioco/resources/infoFiles/powerup.txt");
-		mode = new File("src/gioco/resources/infoFiles/mode.txt");
-		credit = new File("src/gioco/resources/infoFiles/credit.txt");
+		try {
+		InputStream input = Resources.class.getResourceAsStream("/gioco/resources/infoFiles/controls.txt");
+		controls =   new BufferedReader(new InputStreamReader(input));
+		
+		input = Resources.class.getResourceAsStream("/gioco/resources/infoFiles/enemies.txt");
+		enemies =   new BufferedReader(new InputStreamReader(input));
+		
+		input = Resources.class.getResourceAsStream("/gioco/resources/infoFiles/rules.txt");
+		rules =   new BufferedReader(new InputStreamReader(input));
+		
+		input = Resources.class.getResourceAsStream("/gioco/resources/infoFiles/powerup.txt");
+		powerup =   new BufferedReader(new InputStreamReader(input));
+		
+		input = Resources.class.getResourceAsStream("/gioco/resources/infoFiles/mode.txt");
+		mode =   new BufferedReader(new InputStreamReader(input));
+	
+		input = Resources.class.getResourceAsStream("/gioco/resources/infoFiles/credit.txt");
+		credit =   new BufferedReader(new InputStreamReader(input));
+		}catch (Exception e) {
+			System.out.println("INFO FILES NOT LOADED");
+		}
 	}
 	
 	public static void loadInfoImages() throws IOException{
@@ -266,6 +284,10 @@ public class Resources {
 		}
 	}
 	
+	public static BufferedReader loadMap(int i) throws FileNotFoundException {
+		InputStream input = Resources.class.getResourceAsStream("/gioco/resources/maps/Map"+i+".txt");
+		return  new BufferedReader(new InputStreamReader(input));
+	}
 	
 	public static void loadResources() {		
 		
@@ -349,22 +371,22 @@ public class Resources {
 			bombSelection = AudioSystem.getClip();
 			placeBomb= AudioSystem.getClip();
 			dyingEnemySound = AudioSystem.getClip();
-			gameSoundtrack.open(AudioSystem.getAudioInputStream(Resources.class.getResourceAsStream("/gioco/resources/sounds/BombermanTheme.wav")));					
-			menuSoundtrack.open(AudioSystem.getAudioInputStream(Resources.class.getResourceAsStream("/gioco/resources/sounds/menuTheme.wav")));				
-			steps.open(AudioSystem.getAudioInputStream(Resources.class.getResourceAsStream("/gioco/resources/sounds/Walking.wav")));
-			explosion.open(AudioSystem.getAudioInputStream(Resources.class.getResourceAsStream("/gioco/resources/sounds/Explosion.wav")));
-			pause.open(AudioSystem.getAudioInputStream(Resources.class.getResourceAsStream("/gioco/resources/sounds/Pause.wav")));
-			clicked.open(AudioSystem.getAudioInputStream(Resources.class.getResourceAsStream("/gioco/resources/sounds/buttonPress.wav")));
-			placeBomb.open(AudioSystem.getAudioInputStream(Resources.class.getResourceAsStream("/gioco/resources/sounds/placeBomb.wav")));
-			getPowerUp.open(AudioSystem.getAudioInputStream(Resources.class.getResourceAsStream("/gioco/resources/sounds/getPowerUp.wav")));
-			dyingEnemySound.open(AudioSystem.getAudioInputStream(Resources.class.getResourceAsStream("/gioco/resources/sounds/dyingEnemy.wav")));
-			enteredMenuButton.open(AudioSystem.getAudioInputStream(Resources.class.getResourceAsStream("/gioco/resources/sounds/enteredButton.wav")));
-			enteredStandardButton.open(AudioSystem.getAudioInputStream(Resources.class.getResourceAsStream("/gioco/resources/sounds/standardSelection.wav")));
-			bombSelection.open(AudioSystem.getAudioInputStream(Resources.class.getResourceAsStream("/gioco/resources/sounds/bombButton.wav")));
-			playerDeathSound.open(AudioSystem.getAudioInputStream(Resources.class.getResourceAsStream("/gioco/resources/sounds/playerDeath.wav")));
-			victorySound.open(AudioSystem.getAudioInputStream(Resources.class.getResourceAsStream("/gioco/resources/sounds/win.wav")));
-			lossSounds.open(AudioSystem.getAudioInputStream(Resources.class.getResourceAsStream("/gioco/resources/sounds/loss.wav")));
-			drawSound.open(AudioSystem.getAudioInputStream(Resources.class.getResourceAsStream("/gioco/resources/sounds/draw.wav")));
+			gameSoundtrack.open(AudioSystem.getAudioInputStream(new BufferedInputStream(Resources.class.getResourceAsStream("/gioco/resources/sounds/BombermanTheme.wav"))));					
+			menuSoundtrack.open(AudioSystem.getAudioInputStream(new BufferedInputStream(Resources.class.getResourceAsStream("/gioco/resources/sounds/menuTheme.wav"))));				
+			steps.open(AudioSystem.getAudioInputStream(new BufferedInputStream(Resources.class.getResourceAsStream("/gioco/resources/sounds/Walking.wav"))));
+			explosion.open(AudioSystem.getAudioInputStream(new BufferedInputStream(Resources.class.getResourceAsStream("/gioco/resources/sounds/Explosion.wav"))));
+			pause.open(AudioSystem.getAudioInputStream(new BufferedInputStream(Resources.class.getResourceAsStream("/gioco/resources/sounds/Pause.wav"))));
+			clicked.open(AudioSystem.getAudioInputStream(new BufferedInputStream(Resources.class.getResourceAsStream("/gioco/resources/sounds/buttonPress.wav"))));
+			placeBomb.open(AudioSystem.getAudioInputStream(new BufferedInputStream(Resources.class.getResourceAsStream("/gioco/resources/sounds/placeBomb.wav"))));
+			getPowerUp.open(AudioSystem.getAudioInputStream(new BufferedInputStream(Resources.class.getResourceAsStream("/gioco/resources/sounds/getPowerUp.wav"))));
+			dyingEnemySound.open(AudioSystem.getAudioInputStream(new BufferedInputStream(Resources.class.getResourceAsStream("/gioco/resources/sounds/dyingEnemy.wav"))));
+			enteredMenuButton.open(AudioSystem.getAudioInputStream(new BufferedInputStream(Resources.class.getResourceAsStream("/gioco/resources/sounds/enteredButton.wav"))));
+			enteredStandardButton.open(AudioSystem.getAudioInputStream(new BufferedInputStream(Resources.class.getResourceAsStream("/gioco/resources/sounds/standardSelection.wav"))));
+			bombSelection.open(AudioSystem.getAudioInputStream(new BufferedInputStream(Resources.class.getResourceAsStream("/gioco/resources/sounds/bombButton.wav"))));
+			playerDeathSound.open(AudioSystem.getAudioInputStream(new BufferedInputStream(Resources.class.getResourceAsStream("/gioco/resources/sounds/playerDeath.wav"))));
+			victorySound.open(AudioSystem.getAudioInputStream(new BufferedInputStream(Resources.class.getResourceAsStream("/gioco/resources/sounds/win.wav"))));
+			lossSounds.open(AudioSystem.getAudioInputStream(new BufferedInputStream(Resources.class.getResourceAsStream("/gioco/resources/sounds/loss.wav"))));
+			drawSound.open(AudioSystem.getAudioInputStream(new BufferedInputStream(Resources.class.getResourceAsStream("/gioco/resources/sounds/draw.wav"))));
 		} catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
 			gameSoundtrack = null;
 			menuSoundtrack= null;
