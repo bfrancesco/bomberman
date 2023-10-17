@@ -1,0 +1,8 @@
+MODALITA'
+Sono disponibili 3 modalita' di gioco :
+
+Il SINGLEPLAYER permette di personalizzare la partita, scegliendo il colore del personaggio e scegliendo la mappa. Vinci se riesci ad eliminare i nemici senza morire e far scadere il tempo.
+
+Il MULTIPLAYER ti scaraventa in degli avvincenti scontri 1 contro 1 con un altro giocatore, vinci se elimini il tuo avversario o se possiedi piu' punti quando tutti i nemici sono stati eliminati o allo scadere del tempo.
+
+La BATTLE ROYALE e' solo caos, partite con un totale di 5 giocatori, vince l'ultimo giocatore che riesce a sopravvivere prima dello scadere del tempo.

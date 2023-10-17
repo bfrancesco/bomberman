@@ -1,0 +1,5 @@
+Nemici
+All'interno di un campo di battaglia ci possono essere piu' nemici di diverso tipo:
+Il VIRUS si muove lentamente.
+La Mummia puo' CORRERE VELOCEMENTE!
+Il FANTASMA ha la capacita' di SVANIRE e RIAPPARIRE proprio alle tue spalle!

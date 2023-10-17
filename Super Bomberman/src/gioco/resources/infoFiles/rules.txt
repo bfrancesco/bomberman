@@ -1,0 +1,6 @@
+REGOLE
+I giocatori non potenziati possono rilasciare una bomba per volta, scappa dall'esplosione e dai nemici per sopravvivere!
+Eliminare i giocatori o i nemici ti fa ottenere punti che potrebbero farti vincere la partita.
+Usa la strategia a tuo vantaggio, distruggi i blocchi di mattone e ottieni i potenziamenti! 
+Le scorciatoie permettono ad esplosioni, nemici e giocatori di attraversare velocemente il campo, fanne buon uso.
+infine ricorda che spesso il tuo piu' grande avversario e' il tempo!
