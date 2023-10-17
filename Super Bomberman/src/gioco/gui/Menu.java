@@ -21,6 +21,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
 import gioco.WindowsHandler;
@@ -40,7 +42,7 @@ public class Menu extends JPanel {
 	private CustomButton battleRoyale;
 	private MuteButton muteEffects;
 	private CustomButton info;
-
+	private JTextField ip ;
 	
 	public Menu(int w , int h ) {
 		int hgapButtons = 20;
@@ -55,7 +57,15 @@ public class Menu extends JPanel {
 		menu.setBorder(new EmptyBorder(10 ,0,5,0));
 		buttons.setLayout(new GridLayout(0 , 1 , hgapButtons , hgapButtons));
 
-
+		ip = new JTextField() {
+		   
+		};
+		ip.setBackground( new Color(250, 170, 0) );
+		ip.setFont(Resources.myFont);
+		ip.setForeground(Color.WHITE);
+		ip.setText(Settings.HOST);
+		ip.setHorizontalAlignment(JTextField.CENTER);
+		ip.setPreferredSize(new Dimension(Settings.iconButtonWidthSelected+8,Settings.iconButtonHeightSelected-10));
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.gridwidth = GridBagConstraints.REMAINDER;	
 		
@@ -65,6 +75,7 @@ public class Menu extends JPanel {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				WindowsHandler windowshandler = WindowsHandler.getWindowsHandler();
+				Settings.HOST=ip.getText();
 				windowshandler.setConnectingView(false);
 				super.mouseClicked(e);
 			}		
@@ -75,6 +86,7 @@ public class Menu extends JPanel {
 		battleRoyale.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				Settings.HOST=ip.getText();
 				WindowsHandler windowshandler = WindowsHandler.getWindowsHandler();
 				windowshandler.setConnectingView(true);
 				super.mouseClicked(e);
@@ -96,6 +108,7 @@ public class Menu extends JPanel {
 		
 		JLabel logo = new JLabel (new ImageIcon(Resources.logo.getScaledInstance(Settings.wLogo,Settings.hLogo, Image.SCALE_SMOOTH)));
 		gbc.anchor = GridBagConstraints.NORTH;	
+		menu.add(ip);
 		menu.add(logo , gbc);
 		
 		buttons.setPreferredSize(new Dimension(Settings.wMenuButtonSelected , (Settings.hMenuButtonSelected)*3+hgapButtons*2));
@@ -113,6 +126,7 @@ public class Menu extends JPanel {
 		
 		icons.setLayout(new BoxLayout(icons , BoxLayout.X_AXIS));
 		icons.setOpaque(false); 
+			
 		muteEffects= new MuteButton(SoundsHandler.getSoundsHandler().isEffectMute());	
 		muteEffects.setAlignmentX(CENTER_ALIGNMENT);
 		muteEffects.setPreferredSize(new Dimension(Settings.iconButtonWidthSelected+10,Settings.iconButtonHeightSelected+10));		
@@ -133,10 +147,11 @@ public class Menu extends JPanel {
 		muteEffects.setAlignmentY(TOP_ALIGNMENT);
 		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
 		icons.add(Box.createHorizontalGlue());
+		menu.add(ip);
 		icons.add(muteEffects);
 		icons.add(info);
 		icons.add(Box.createHorizontalStrut(Settings.iconWidth));
-
+		
 		this.add(icons , BorderLayout.SOUTH);
 		this.add(menu,BorderLayout.CENTER);
 		repaint();

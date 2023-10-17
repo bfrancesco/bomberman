@@ -127,6 +127,7 @@ public class WindowsHandler {
 		f.setContentPane(mapChooser);
 		f.revalidate();
 		f.pack();
+		f.repaint();
 		current = mapChooser;
 		mapChooser.setFocusable(true);
 		mapChooser.requestFocus();

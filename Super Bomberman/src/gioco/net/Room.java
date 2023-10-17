@@ -101,7 +101,7 @@ public class Room implements Runnable {
 					// tempo , la comunicazione deve essere interrotta (fine del gioco) oppure viene rimosso il player
 					if (System.currentTimeMillis() - time >= CLOSINGTIME  && !in.get(i).ready()) {
 						if (gioco.isGameOver() && System.currentTimeMillis() - time >= CLOSINGTIME ) {
-							System.out.println(" CHIUSURA ");
+							//System.out.println(" CHIUSURA ");
 							closeAll();
 							Thread.currentThread().interrupt();
 						} else if (!in.get(i).ready()) {

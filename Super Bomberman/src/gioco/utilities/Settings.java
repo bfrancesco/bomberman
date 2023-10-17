@@ -28,7 +28,9 @@ public class Settings {
 	public static int LOGICBLOCKSIZEX = 1800 / LOGICWIDTH;
 	public static int LOGICBLOCKSIZEY = 1560 / LOGICHEIGHT;
 	public static int LOGICNORMALSPEED = LOGICBLOCKSIZEY / 12;
-
+	
+	public static String HOST = "localhost";
+	
 	public static int MAPSNUMBER = 8;
 
 	public static int EXPLOSIONTIME = 12;

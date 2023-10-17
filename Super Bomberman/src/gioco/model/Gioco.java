@@ -32,7 +32,7 @@ public class Gioco {
 	private static final int POINTSENEMY2 = 2500;
 	private static final int POINTSENEMY3 = 3000;
 	private static final int POINTSPLAYER = 5000;
-	private int time = 150;
+	private int time = 120;
 	private Block[][] matrix;
 	private Vector<Brick> bricks;
 	private Vector<PowerUp> powerups;

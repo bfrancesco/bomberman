@@ -72,7 +72,7 @@ public class Server {
 		player = server.accept();
 		BufferedReader in = new BufferedReader(new InputStreamReader(player.getInputStream())); 
 		String gameMode = in.readLine();
-		System.out.println(gameMode);
+		//System.out.println(gameMode);
 		if(gameMode == null) {
 			in.close();
 			player.close();
@@ -104,7 +104,7 @@ public class Server {
 	public static void main(String[] args) {
 		Server s = new Server();
 		try {
-			System.out.println("Starting server...");
+			//System.out.println("Starting server...");
 			s.startServer();
 		} catch (IOException e) {
 			e.printStackTrace();
